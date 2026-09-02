@@ -64,7 +64,26 @@ function SkillFinderPage() {
       setCaptchaToken(null);
     },
   });
-...
+
+  const download = useMutation({
+    mutationFn: async (ids: string[]) => {
+      const files = await runFetch({ data: { ids } });
+      if (files.length === 0) throw new Error("None of the selected skills could be downloaded.");
+      await downloadSkillsZip(files);
+    },
+  });
+
+  const results: SkillSuggestion[] = search.data ?? [];
+
+  const toggle = (id: string) => {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
   const submit = (value: string) => {
     const trimmed = value.trim();
     if (trimmed.length < 3 || search.isPending || !captchaToken) return;
