@@ -48,38 +48,27 @@ const EXAMPLES = [
 function SkillFinderPage() {
   const [prompt, setPrompt] = useState("");
   const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const captchaRef = useRef<HCaptcha | null>(null);
 
   const runSearch = useServerFn(searchSkills);
   const runFetch = useServerFn(fetchSkillFiles);
 
   const search = useMutation({
-    mutationFn: (value: string) => runSearch({ data: { prompt: value } }),
+    mutationFn: (value: { prompt: string; captchaToken: string }) =>
+      runSearch({ data: value }),
     onSuccess: () => setSelected(new Set()),
-  });
-
-  const download = useMutation({
-    mutationFn: async (ids: string[]) => {
-      const files = await runFetch({ data: { ids } });
-      if (files.length === 0) throw new Error("None of the selected skills could be downloaded.");
-      await downloadSkillsZip(files);
+    onSettled: () => {
+      // hCaptcha tokens are single-use; force a fresh challenge each search.
+      captchaRef.current?.resetCaptcha();
+      setCaptchaToken(null);
     },
   });
-
-  const results: SkillSuggestion[] = search.data ?? [];
-
-  const toggle = (id: string) => {
-    setSelected((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
-  };
-
+...
   const submit = (value: string) => {
     const trimmed = value.trim();
-    if (trimmed.length < 3 || search.isPending) return;
-    search.mutate(trimmed);
+    if (trimmed.length < 3 || search.isPending || !captchaToken) return;
+    search.mutate({ prompt: trimmed, captchaToken });
   };
 
   return (
