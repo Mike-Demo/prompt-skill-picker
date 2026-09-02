@@ -21,7 +21,7 @@ const DESCRIPTION =
 // hCaptcha's official test sitekey (always passes). Set VITE_HCAPTCHA_SITEKEY
 // for production traffic.
 const HCAPTCHA_SITEKEY =
-  (import.meta.env.VITE_HCAPTCHA_SITEKEY as string | undefined) ??
+  (import.meta.env["VITE_HCAPTCHA_SITEKEY"] as string | undefined) ??
   "10000000-ffff-ffff-ffff-000000000001";
 
 export const Route = createFileRoute("/")({
