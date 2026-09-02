@@ -4,7 +4,20 @@ import { useMutation } from "@tanstack/react-query";
 import { useRef, useState } from "react";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
 import { Download, ExternalLink, Library, Loader2, Search } from "lucide-react";
-...
+
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Textarea } from "@/components/ui/textarea";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Badge } from "@/components/ui/badge";
+import { downloadSkillsZip } from "@/lib/zip";
+import { fetchSkillFiles, searchSkills, type SkillSuggestion } from "@/lib/skills.functions";
+import { formatInstalls } from "@/lib/format";
+
+const TITLE = "Skill Finder — discover and bundle agent skills";
+const DESCRIPTION =
+  "Describe what you want your AI agent to do, get ranked skill suggestions from the open skills registry, and download the ones you pick as a single zip.";
+
 // hCaptcha's official test sitekey (always passes). Set VITE_HCAPTCHA_SITEKEY
 // for production traffic.
 const HCAPTCHA_SITEKEY =
