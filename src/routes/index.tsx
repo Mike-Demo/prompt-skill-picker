@@ -1,8 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
-import { Download, ExternalLink, Loader2, Search } from "lucide-react";
+import { Download, ExternalLink, Library, Loader2, Search } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -11,6 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { downloadSkillsZip } from "@/lib/zip";
 import { fetchSkillFiles, searchSkills, type SkillSuggestion } from "@/lib/skills.functions";
+import { formatInstalls } from "@/lib/format";
 
 const TITLE = "Skill Finder — discover and bundle agent skills";
 const DESCRIPTION =
@@ -29,12 +30,6 @@ export const Route = createFileRoute("/")({
   }),
   component: SkillFinderPage,
 });
-
-const formatInstalls = (count: number): string => {
-  if (count >= 1_000_000) return `${(count / 1_000_000).toFixed(1).replace(/\.0$/, "")}M installs`;
-  if (count >= 1_000) return `${(count / 1_000).toFixed(1).replace(/\.0$/, "")}K installs`;
-  return `${count} install${count === 1 ? "" : "s"}`;
-};
 
 const EXAMPLES = [
   "Write better React components and review pull requests",
@@ -90,6 +85,12 @@ function SkillFinderPage() {
             Describe what you want your agent to do. We search the open skills registry, rank the
             matches with AI, and bundle the ones you pick into a zip of markdown files.
           </p>
+          <Link
+            to="/library"
+            className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
+          >
+            <Library className="size-4" /> Browse the full skill library
+          </Link>
         </header>
 
         <form

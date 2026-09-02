@@ -120,3 +120,24 @@ export function parseDescription(markdown: string): string | null {
   if (!line?.[1]) return null;
   return line[1].trim().replace(/^["']|["']$/g, "");
 }
+
+/**
+ * Extracts a short usage example: the first fenced code block, falling back to
+ * the first prose paragraph of the document body.
+ */
+export function parseExample(markdown: string): string {
+  const body = markdown.replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n?/, "");
+
+  const fence = body.match(/```[\w-]*\r?\n([\s\S]*?)```/);
+  if (fence?.[1]) {
+    const code = fence[1].trim();
+    if (code.length > 0) return code.slice(0, 600);
+  }
+
+  const paragraph = body
+    .split(/\r?\n\s*\r?\n/)
+    .map((block) => block.trim())
+    .find((block) => block.length > 0 && !block.startsWith("#") && !block.startsWith(">"));
+
+  return paragraph ? paragraph.slice(0, 600) : "";
+}

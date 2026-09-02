@@ -33,3 +33,21 @@ export const fetchSkillFiles = createServerFn({ method: "POST" })
     const { collectSkillFiles } = await import("./skills-ranking.server");
     return collectSkillFiles(data.ids);
   });
+
+export interface SkillLibraryEntry {
+  id: string;
+  name: string;
+  source: string;
+  installs: number;
+  description: string;
+  example: string;
+  htmlUrl: string | null;
+  hasMarkdown: boolean;
+}
+
+export const listSkills = createServerFn({ method: "GET" }).handler(
+  async (): Promise<SkillLibraryEntry[]> => {
+    const { listSkillLibrary } = await import("./skills-library.server");
+    return listSkillLibrary();
+  },
+);
