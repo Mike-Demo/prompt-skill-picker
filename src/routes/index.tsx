@@ -129,8 +129,18 @@ function SkillFinderPage() {
               }
             }}
           />
+          <HCaptcha
+            ref={captchaRef}
+            sitekey={HCAPTCHA_SITEKEY}
+            onVerify={(token) => setCaptchaToken(token)}
+            onExpire={() => setCaptchaToken(null)}
+            onError={() => setCaptchaToken(null)}
+          />
           <div className="flex flex-wrap items-center gap-2">
-            <Button type="submit" disabled={prompt.trim().length < 3 || search.isPending}>
+            <Button
+              type="submit"
+              disabled={prompt.trim().length < 3 || search.isPending || !captchaToken}
+            >
               {search.isPending ? (
                 <Loader2 className="size-4 animate-spin" />
               ) : (
