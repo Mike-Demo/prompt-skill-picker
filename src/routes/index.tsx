@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import HCaptcha from "@hcaptcha/react-hcaptcha";
 import { Download, ExternalLink, Library, Loader2, Search } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -17,11 +18,18 @@ const TITLE = "Skill Finder — discover and bundle agent skills";
 const DESCRIPTION =
   "Describe what you want your AI agent to do, get ranked skill suggestions from the open skills registry, and download the ones you pick as a single zip.";
 
+// hCaptcha's official test sitekey (always passes). Set VITE_HCAPTCHA_SITEKEY
+// for production traffic.
+const HCAPTCHA_SITEKEY =
+  (import.meta.env["VITE_HCAPTCHA_SITEKEY"] as string | undefined) ??
+  "10000000-ffff-ffff-ffff-000000000001";
+
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: TITLE },
       { name: "description", content: DESCRIPTION },
+      { name: "robots", content: "noindex, nofollow" },
       { property: "og:title", content: TITLE },
       { property: "og:description", content: DESCRIPTION },
       { property: "og:type", content: "website" },
@@ -40,13 +48,21 @@ const EXAMPLES = [
 function SkillFinderPage() {
   const [prompt, setPrompt] = useState("");
   const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const captchaRef = useRef<HCaptcha | null>(null);
 
   const runSearch = useServerFn(searchSkills);
   const runFetch = useServerFn(fetchSkillFiles);
 
   const search = useMutation({
-    mutationFn: (value: string) => runSearch({ data: { prompt: value } }),
+    mutationFn: (value: { prompt: string; captchaToken: string }) =>
+      runSearch({ data: value }),
     onSuccess: () => setSelected(new Set()),
+    onSettled: () => {
+      // hCaptcha tokens are single-use; force a fresh challenge each search.
+      captchaRef.current?.resetCaptcha();
+      setCaptchaToken(null);
+    },
   });
 
   const download = useMutation({
@@ -70,8 +86,8 @@ function SkillFinderPage() {
 
   const submit = (value: string) => {
     const trimmed = value.trim();
-    if (trimmed.length < 3 || search.isPending) return;
-    search.mutate(trimmed);
+    if (trimmed.length < 3 || search.isPending || !captchaToken) return;
+    search.mutate({ prompt: trimmed, captchaToken });
   };
 
   return (
@@ -113,8 +129,18 @@ function SkillFinderPage() {
               }
             }}
           />
+          <HCaptcha
+            ref={captchaRef}
+            sitekey={HCAPTCHA_SITEKEY}
+            onVerify={(token) => setCaptchaToken(token)}
+            onExpire={() => setCaptchaToken(null)}
+            onError={() => setCaptchaToken(null)}
+          />
           <div className="flex flex-wrap items-center gap-2">
-            <Button type="submit" disabled={prompt.trim().length < 3 || search.isPending}>
+            <Button
+              type="submit"
+              disabled={prompt.trim().length < 3 || search.isPending || !captchaToken}
+            >
               {search.isPending ? (
                 <Loader2 className="size-4 animate-spin" />
               ) : (

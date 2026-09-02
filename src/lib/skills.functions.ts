@@ -17,12 +17,17 @@ export interface SkillFile {
   content: string;
 }
 
-const SearchInput = z.object({ prompt: z.string().min(3).max(2000) });
+const SearchInput = z.object({
+  prompt: z.string().min(3).max(2000),
+  captchaToken: z.string().min(1, "Please complete the captcha."),
+});
 const FetchInput = z.object({ ids: z.array(z.string()).min(1).max(50) });
 
 export const searchSkills = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => SearchInput.parse(input))
   .handler(async ({ data }): Promise<SkillSuggestion[]> => {
+    const { verifyCaptchaToken } = await import("./captcha.server");
+    await verifyCaptchaToken(data.captchaToken);
     const { rankSkills } = await import("./skills-ranking.server");
     return rankSkills(data.prompt);
   });
