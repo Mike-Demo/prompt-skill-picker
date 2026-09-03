@@ -307,14 +307,14 @@ function SkillFinderPage() {
             </div>
             <Button
               onClick={() => download.mutate([...selected])}
-              disabled={download.isPending}
+              disabled={download.isPending || downloadCooldown > 0}
             >
               {download.isPending ? (
                 <Loader2 className="size-4 animate-spin" />
               ) : (
                 <Download className="size-4" />
               )}
-              Download zip
+              {downloadCooldown > 0 ? `Retry in ${downloadCooldown}s` : "Download zip"}
             </Button>
           </div>
         </div>
