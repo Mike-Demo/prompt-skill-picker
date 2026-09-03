@@ -32,6 +32,15 @@ export const searchSkills = createServerFn({ method: "POST" })
     return rankSkills(data.prompt);
   });
 
+// The hCaptcha site key is public by design (it ships in every page that
+// renders the widget), so it is safe to hand to the browser.
+export const getCaptchaSitekey = createServerFn({ method: "GET" }).handler(
+  async (): Promise<string> => {
+    const { getCaptchaSitekey: resolve } = await import("./captcha.server");
+    return resolve();
+  },
+);
+
 export const fetchSkillFiles = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => FetchInput.parse(input))
   .handler(async ({ data }): Promise<SkillFile[]> => {
