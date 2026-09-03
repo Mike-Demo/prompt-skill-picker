@@ -3,7 +3,7 @@
 // The backend has no built-in rate-limiting primitive, so limits are counted
 // from rows in `rate_limit_events`. IPs are hashed with a server-side salt
 // before storage, so raw addresses are never persisted.
-import { getRequestHeader } from "@tanstack/react-start/server";
+import { getRequest } from "@tanstack/react-start/server";
 
 export type RateLimitAction = "search" | "enhance" | "download" | "library";
 type Outcome = "allowed" | "limited" | "captcha_failed";
