@@ -161,6 +161,10 @@ export async function collectSkillFiles(ids: string[]): Promise<SkillFile[]> {
   const used = new Set<string>();
 
   for (const id of ids) {
+    // Only ids this server previously surfaced through search or the library
+    // may be resolved, so the endpoint cannot fetch arbitrary repo paths.
+    if (!isWellFormedSkillId(id) || !isSkillIdAllowed(id)) continue;
+
     const parts = id.split("/");
     const skillId = parts[parts.length - 1] ?? id;
     const source = parts.slice(0, -1).join("/");
