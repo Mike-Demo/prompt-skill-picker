@@ -168,23 +168,19 @@ function SkillFinderPage() {
           <div className="flex flex-wrap items-center gap-2">
             <Button
               type="submit"
-              disabled={
-                prompt.trim().length < 3 || search.isPending || enhance.isPending || !captchaToken
-              }
+              disabled={prompt.trim().length < 3 || busy || !captchaToken}
             >
               {search.isPending ? (
                 <Loader2 className="size-4 animate-spin" />
               ) : (
                 <Search className="size-4" />
               )}
-              Find skills
+              {cooldown > 0 ? `Find skills in ${cooldown}s` : "Find skills"}
             </Button>
             <Button
               type="button"
               variant="outline"
-              disabled={
-                prompt.trim().length < 3 || search.isPending || enhance.isPending || !captchaToken
-              }
+              disabled={prompt.trim().length < 3 || busy || !captchaToken}
               onClick={runEnhanceClick}
             >
               {enhance.isPending ? (
