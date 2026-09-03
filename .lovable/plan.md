@@ -12,6 +12,7 @@ Nebula Sans is a humanist sans-serif released under the SIL Open Font License, s
 1. Install `@fontsource/nebula-sans` (weights 400, 500, 600, 700 — the ones the UI actually uses).
 2. Add its `@import` lines to the existing top import block in `src/styles.css`, above `@theme`.
 3. Define `--font-sans: "Nebula Sans", ui-sans-serif, system-ui, sans-serif;` inside the `@theme inline` block so every Tailwind `font-sans` utility and the base body font resolve to it.
+4. Add a Nebula Sans credit to the `/licenses` page — a new typeface section in `src/lib/licenses.ts` naming Nebula Entertainment & Broadcasting LLC, SIL Open Font License 1.1, linking to nebulasans.com, with a note that it is based on Adobe's Source Sans — and render it on `src/routes/licenses.tsx` alongside the existing credit lists.
 
 No changes to `__root.tsx`, no remote stylesheet link, and the font is bundled so there's no flash of unstyled text from a third-party request.
 
