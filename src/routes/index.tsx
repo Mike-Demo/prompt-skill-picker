@@ -8,6 +8,12 @@ import { Check, Library, Link2, Loader2, Search, Sparkles, Trash2 } from "lucide
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { SelectionBar } from "@/components/selection-bar";
 import { SkillResultCard } from "@/components/skill-result-card";
 import {
@@ -59,7 +65,9 @@ function SkillFinderPage() {
   const [shareToken, setShareToken] = useState<string | null>(null);
   const [shareCopied, setShareCopied] = useState(false);
   const [recent, setRecent] = useState<RecentSearch[]>([]);
+  const [enhanceHint, setEnhanceHint] = useState<string | null>(null);
   const captchaRef = useRef<HCaptcha | null>(null);
+  const enhanceHintTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Local storage is browser-only, so hydrate the list after mount.
   useEffect(() => setRecent(readRecentSearches()), []);
