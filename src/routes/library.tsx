@@ -54,6 +54,7 @@ function SkillLibraryPage() {
   });
 
   const entries: SkillLibraryEntry[] = library.data ?? [];
+  const downloadCooldown = useCooldown(download.error);
 
   const visible = useMemo(() => {
     const needle = filter.trim().toLowerCase();
