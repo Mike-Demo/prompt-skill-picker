@@ -231,6 +231,21 @@ function SkillFinderPage() {
               </Tooltip>
             </TooltipProvider>
           </div>
+          <div className="flex flex-wrap justify-center gap-2 pt-1">
+            {EXAMPLES.map((example) => (
+              <button
+                key={example}
+                type="button"
+                className="rounded-full border border-border px-3 py-1 text-xs text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+                onClick={() => {
+                  setPrompt(example);
+                  submit(example);
+                }}
+              >
+                {example}
+              </button>
+            ))}
+          </div>
           {enhanceHint ? (
             <p className="text-xs text-muted-foreground">{enhanceHint}</p>
           ) : null}
@@ -245,7 +260,7 @@ function SkillFinderPage() {
           ) : (
             <Skeleton className="h-[78px] w-[303px]" />
           )}
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex justify-center">
             <Button
               type="submit"
               disabled={prompt.trim().length < 3 || busy || !captchaToken}
@@ -257,19 +272,6 @@ function SkillFinderPage() {
               )}
               {cooldown > 0 ? `Find skills in ${cooldown}s` : "Find skills"}
             </Button>
-            {EXAMPLES.map((example) => (
-              <button
-                key={example}
-                type="button"
-                className="rounded-full border border-border px-3 py-1 text-xs text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
-                onClick={() => {
-                  setPrompt(example);
-                  submit(example);
-                }}
-              >
-                {example}
-              </button>
-            ))}
           </div>
         </form>
 
