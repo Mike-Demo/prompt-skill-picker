@@ -35,7 +35,8 @@ export function openInCodePen(name: string, markdown: string): void {
   const input = document.createElement("input");
   input.type = "hidden";
   input.name = "data";
-  input.value = JSON.stringify(payload).replace(/"/g, "&quot;").replace(/'/g, "&apos;");
+  // Set through the DOM (not HTML markup), so the JSON needs no entity escaping.
+  input.value = JSON.stringify(payload);
   form.appendChild(input);
 
   document.body.appendChild(form);
