@@ -78,14 +78,21 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "Skill Finder — discover and bundle agent skills" },
+      {
+        name: "description",
+        content:
+          "Search the open skills registry, get AI-ranked matches for what you want your agent to do, and download the ones you pick as a single zip.",
+      },
+      { property: "og:site_name", content: "Skill Finder" },
+      { property: "og:title", content: "Skill Finder — discover and bundle agent skills" },
+      {
+        property: "og:description",
+        content:
+          "Search the open skills registry, get AI-ranked matches for what you want your agent to do, and download the ones you pick as a single zip.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
     ],
     links: [
       {
