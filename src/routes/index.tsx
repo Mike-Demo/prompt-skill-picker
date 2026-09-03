@@ -105,13 +105,13 @@ function SkillFinderPage() {
 
   const submit = (value: string) => {
     const trimmed = value.trim();
-    if (trimmed.length < 3 || search.isPending || enhance.isPending || !captchaToken) return;
+    if (trimmed.length < 3 || busy || !captchaToken) return;
     search.mutate({ prompt: trimmed, captchaToken });
   };
 
   const runEnhanceClick = () => {
     const trimmed = prompt.trim();
-    if (trimmed.length < 3 || search.isPending || enhance.isPending || !captchaToken) return;
+    if (trimmed.length < 3 || busy || !captchaToken) return;
     enhance.mutate({ prompt: trimmed, captchaToken });
   };
 
