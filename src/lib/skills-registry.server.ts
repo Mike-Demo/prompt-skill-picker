@@ -103,10 +103,29 @@ async function fetchRaw(
   return res.text();
 }
 
+interface Attempt {
+  branch: string;
+  path: string;
+}
+
+/** First successful attempt in list order, resolved in a single round trip. */
+async function firstHit(source: string, attempts: readonly Attempt[]) {
+  const settled = await Promise.all(
+    attempts.map(async (attempt) => {
+      const markdown = await fetchRaw(source, attempt.path, attempt.branch).catch(() => null);
+      return markdown === null ? null : { ...attempt, markdown };
+    }),
+  );
+  return settled.find((entry) => entry !== null) ?? null;
+}
+
 /**
- * Resolves and downloads the SKILL.md for a registry entry. Conventional raw
- * paths are tried first because raw.githubusercontent.com is not subject to the
- * GitHub REST rate limit; the tree API is only a fallback.
+ * Resolves and downloads the SKILL.md for a registry entry.
+ *
+ * Candidate raw URLs are probed concurrently (raw.githubusercontent.com has no
+ * REST rate limit), so resolution costs one round trip instead of up to eight
+ * sequential ones. When every convention misses, the repo tree — cached once
+ * per repository — locates the file exactly.
  */
 export async function fetchSkillDocument(skill: RegistrySkill): Promise<SkillDocument | null> {
   if (docCache.has(skill.id)) return docCache.get(skill.id) ?? null;
@@ -119,29 +138,24 @@ export async function fetchSkillDocument(skill: RegistrySkill): Promise<SkillDoc
 
   let result: SkillDocument | null = null;
   try {
+    const attempts: Attempt[] = [];
     for (const branch of BRANCHES) {
-      for (const path of candidatePaths(skill.skillId)) {
-        const markdown = await fetchRaw(skill.source, path, branch);
-        if (markdown !== null) {
-          result = build(branch, path, markdown);
-          break;
-        }
-      }
-      if (result) break;
+      for (const path of candidatePaths(skill.skillId)) attempts.push({ branch, path });
     }
 
-    if (!result) {
+    const hit = await firstHit(skill.source, attempts);
+    if (hit) {
+      result = build(hit.branch, hit.path, hit.markdown);
+    } else {
       const tree = await getRepoTree(skill.source);
       const suffix = `/${skill.skillId}/SKILL.md`;
       const match = tree.find((e) => e.type === "blob" && e.path.endsWith(suffix));
       if (match) {
-        for (const branch of BRANCHES) {
-          const markdown = await fetchRaw(skill.source, match.path, branch);
-          if (markdown !== null) {
-            result = build(branch, match.path, markdown);
-            break;
-          }
-        }
+        const treeHit = await firstHit(
+          skill.source,
+          BRANCHES.map((branch) => ({ branch, path: match.path })),
+        );
+        if (treeHit) result = build(treeHit.branch, treeHit.path, treeHit.markdown);
       }
     }
   } catch {
