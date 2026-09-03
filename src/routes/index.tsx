@@ -173,12 +173,12 @@ function SkillFinderPage() {
         <header className="space-y-3">
           <div className="flex items-center gap-3">
             <img
-              src="/favicon.png"
+              src="/favicon.svg"
               alt=""
               aria-hidden="true"
               width={40}
               height={40}
-              className="size-10 shrink-0 rounded-md"
+              className="size-10 shrink-0"
             />
             <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
               Skill Finder — discover and bundle AI agent skills
