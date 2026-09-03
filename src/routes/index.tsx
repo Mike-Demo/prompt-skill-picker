@@ -171,9 +171,19 @@ function SkillFinderPage() {
     <main className="bg-background">
       <div className="mx-auto w-full max-w-3xl px-4 py-10 sm:py-16">
         <header className="space-y-3">
-          <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-            Skill Finder — discover and bundle AI agent skills
-          </h1>
+          <div className="flex items-center gap-3">
+            <img
+              src="/favicon.png"
+              alt=""
+              aria-hidden="true"
+              width={40}
+              height={40}
+              className="size-10 shrink-0 rounded-md"
+            />
+            <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+              Skill Finder — discover and bundle AI agent skills
+            </h1>
+          </div>
           <p className="text-sm text-muted-foreground sm:text-base">
             Describe what you want your agent to do. We search the open skills registry, rank the
             matches with AI, and bundle the ones you pick into a zip of markdown files.
