@@ -176,9 +176,9 @@ function SkillFinderPage() {
               src="/favicon.svg"
               alt=""
               aria-hidden="true"
-              width={40}
-              height={40}
-              className="size-10 shrink-0"
+              width={56}
+              height={56}
+              className="size-14 shrink-0"
             />
             <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
               Skill Finder — discover and bundle AI agent skills
