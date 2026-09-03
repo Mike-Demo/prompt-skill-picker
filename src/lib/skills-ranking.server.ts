@@ -3,6 +3,11 @@ import { z } from "zod";
 
 import { AI_MODEL, createLovableAiGatewayProvider, getLovableApiKey } from "./ai-gateway.server";
 import {
+  allowSkillIds,
+  isSkillIdAllowed,
+  isWellFormedSkillId,
+} from "./skills-allowlist.server";
+import {
   fetchSkillDocument,
   parseDescription,
   searchRegistry,
@@ -114,7 +119,7 @@ export async function rankSkills(prompt: string): Promise<SkillSuggestion[]> {
 
   const source = ordered.length > 0 ? ordered : enriched.slice(0, 12).map((e) => ({ id: e.skill.id, score: 0, reason: "" }));
 
-  return source.flatMap((r) => {
+  const suggestions = source.flatMap((r) => {
     const entry = byId.get(r.id);
     if (!entry) return [];
     return [
@@ -130,6 +135,9 @@ export async function rankSkills(prompt: string): Promise<SkillSuggestion[]> {
       } satisfies SkillSuggestion,
     ];
   });
+
+  allowSkillIds(suggestions.map((s) => s.id));
+  return suggestions;
 }
 
 const MAX_ENHANCED_LENGTH = 2000;
@@ -153,6 +161,10 @@ export async function collectSkillFiles(ids: string[]): Promise<SkillFile[]> {
   const used = new Set<string>();
 
   for (const id of ids) {
+    // Only ids this server previously surfaced through search or the library
+    // may be resolved, so the endpoint cannot fetch arbitrary repo paths.
+    if (!isWellFormedSkillId(id) || !isSkillIdAllowed(id)) continue;
+
     const parts = id.split("/");
     const skillId = parts[parts.length - 1] ?? id;
     const source = parts.slice(0, -1).join("/");
