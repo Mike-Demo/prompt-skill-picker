@@ -53,6 +53,7 @@ function SkillFinderPage() {
 
   const runSearch = useServerFn(searchSkills);
   const runFetch = useServerFn(fetchSkillFiles);
+  const runEnhance = useServerFn(enhancePrompt);
   const fetchSitekey = useServerFn(getCaptchaSitekey);
 
   const sitekeyQuery = useQuery({ queryKey: ["captcha-sitekey"], queryFn: fetchSitekey });
@@ -66,6 +67,14 @@ function SkillFinderPage() {
       captchaRef.current?.resetCaptcha();
       setCaptchaToken(null);
     },
+  });
+
+  const enhance = useMutation({
+    mutationFn: (value: { prompt: string; captchaToken: string }) =>
+      runEnhance({ data: value }),
+    onSuccess: (result) => setPrompt(result.enhanced),
+    // The verified token stays valid server-side for a few minutes, so the
+    // same captcha solve still covers the search that follows an enhance.
   });
 
   const download = useMutation({
