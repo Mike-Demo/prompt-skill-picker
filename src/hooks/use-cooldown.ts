@@ -2,6 +2,12 @@ import { useEffect, useState } from "react";
 
 const RETRY_PATTERN = /in (\d+)s/;
 
+/** True when an error came from the abuse limiter rather than a transient failure. */
+export function isRateLimitMessage(error: unknown): boolean {
+  if (!(error instanceof Error)) return false;
+  return error.message.includes("Too many requests") || error.message.includes("temporarily paused");
+}
+
 /** Extracts the retry delay a rate-limit error advertises in its message. */
 export function parseRetryAfterSeconds(error: unknown): number | null {
   if (!(error instanceof Error)) return null;
