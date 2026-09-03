@@ -57,9 +57,10 @@ export class RateLimitError extends Error {
 
 /** Resolves the caller's IP from proxy headers; falls back to a shared bucket. */
 export function getClientIp(): string {
-  const direct = getRequestHeader("cf-connecting-ip");
+  const headers = getRequest().headers;
+  const direct = headers.get("cf-connecting-ip");
   if (direct) return direct;
-  const forwarded = getRequestHeader("x-forwarded-for");
+  const forwarded = headers.get("x-forwarded-for");
   const first = forwarded?.split(",")[0]?.trim();
   return first && first.length > 0 ? first : "unknown";
 }
