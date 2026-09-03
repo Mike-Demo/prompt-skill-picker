@@ -157,7 +157,7 @@ export async function enforceRateLimit(ip: string, action: RateLimitAction): Pro
     const { data } = await db.rpc("check_rate_limit", {
       _ip_hash: ipHash,
       _action: action,
-      _windows: LIMITS[action] as unknown as Window[],
+      _windows: LIMITS[action].map((w) => ({ seconds: w.seconds, max: w.max })),
     });
     verdict = parseVerdict(data);
   } catch {
