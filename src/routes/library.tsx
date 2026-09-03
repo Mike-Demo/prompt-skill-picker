@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { downloadSkillsZip } from "@/lib/zip";
 import { fetchSkillFiles, listSkills, type SkillLibraryEntry } from "@/lib/skills.functions";
+import { useCooldown } from "@/hooks/use-cooldown";
 import { formatInstalls } from "@/lib/format";
 
 const TITLE = "Skill library — browse every downloadable agent skill";
@@ -54,6 +55,7 @@ function SkillLibraryPage() {
   });
 
   const entries: SkillLibraryEntry[] = library.data ?? [];
+  const downloadCooldown = useCooldown(download.error);
 
   const visible = useMemo(() => {
     const needle = filter.trim().toLowerCase();
@@ -200,13 +202,16 @@ function SkillLibraryPage() {
                 </span>
               ) : null}
             </div>
-            <Button onClick={() => download.mutate([...selected])} disabled={download.isPending}>
+            <Button
+              onClick={() => download.mutate([...selected])}
+              disabled={download.isPending || downloadCooldown > 0}
+            >
               {download.isPending ? (
                 <Loader2 className="size-4 animate-spin" />
               ) : (
                 <Download className="size-4" />
               )}
-              Download zip
+              {downloadCooldown > 0 ? `Retry in ${downloadCooldown}s` : "Download zip"}
             </Button>
           </div>
         </div>

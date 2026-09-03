@@ -19,6 +19,7 @@ import {
   type SkillSuggestion,
 } from "@/lib/skills.functions";
 import { formatInstalls } from "@/lib/format";
+import { useCooldown } from "@/hooks/use-cooldown";
 
 const TITLE = "Skill Finder — discover and bundle agent skills";
 const DESCRIPTION =
@@ -87,6 +88,12 @@ function SkillFinderPage() {
 
   const results: SkillSuggestion[] = search.data ?? [];
 
+  const searchCooldown = useCooldown(search.error);
+  const enhanceCooldown = useCooldown(enhance.error);
+  const downloadCooldown = useCooldown(download.error);
+  const cooldown = Math.max(searchCooldown, enhanceCooldown);
+  const busy = search.isPending || enhance.isPending || cooldown > 0;
+
   const toggle = (id: string) => {
     setSelected((prev) => {
       const next = new Set(prev);
@@ -98,13 +105,13 @@ function SkillFinderPage() {
 
   const submit = (value: string) => {
     const trimmed = value.trim();
-    if (trimmed.length < 3 || search.isPending || enhance.isPending || !captchaToken) return;
+    if (trimmed.length < 3 || busy || !captchaToken) return;
     search.mutate({ prompt: trimmed, captchaToken });
   };
 
   const runEnhanceClick = () => {
     const trimmed = prompt.trim();
-    if (trimmed.length < 3 || search.isPending || enhance.isPending || !captchaToken) return;
+    if (trimmed.length < 3 || busy || !captchaToken) return;
     enhance.mutate({ prompt: trimmed, captchaToken });
   };
 
@@ -161,23 +168,19 @@ function SkillFinderPage() {
           <div className="flex flex-wrap items-center gap-2">
             <Button
               type="submit"
-              disabled={
-                prompt.trim().length < 3 || search.isPending || enhance.isPending || !captchaToken
-              }
+              disabled={prompt.trim().length < 3 || busy || !captchaToken}
             >
               {search.isPending ? (
                 <Loader2 className="size-4 animate-spin" />
               ) : (
                 <Search className="size-4" />
               )}
-              Find skills
+              {cooldown > 0 ? `Find skills in ${cooldown}s` : "Find skills"}
             </Button>
             <Button
               type="button"
               variant="outline"
-              disabled={
-                prompt.trim().length < 3 || search.isPending || enhance.isPending || !captchaToken
-              }
+              disabled={prompt.trim().length < 3 || busy || !captchaToken}
               onClick={runEnhanceClick}
             >
               {enhance.isPending ? (
@@ -304,14 +307,14 @@ function SkillFinderPage() {
             </div>
             <Button
               onClick={() => download.mutate([...selected])}
-              disabled={download.isPending}
+              disabled={download.isPending || downloadCooldown > 0}
             >
               {download.isPending ? (
                 <Loader2 className="size-4 animate-spin" />
               ) : (
                 <Download className="size-4" />
               )}
-              Download zip
+              {downloadCooldown > 0 ? `Retry in ${downloadCooldown}s` : "Download zip"}
             </Button>
           </div>
         </div>
