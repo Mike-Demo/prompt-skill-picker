@@ -203,6 +203,12 @@ function SkillFinderPage() {
           </div>
         </form>
 
+        {enhance.isError ? (
+          <p className="mt-6 rounded-md border border-destructive/40 bg-destructive/10 p-4 text-sm text-destructive">
+            {enhance.error instanceof Error ? enhance.error.message : "Enhance failed."}
+          </p>
+        ) : null}
+
         {search.isError ? (
           <p className="mt-6 rounded-md border border-destructive/40 bg-destructive/10 p-4 text-sm text-destructive">
             {search.error instanceof Error ? search.error.message : "Search failed."}
