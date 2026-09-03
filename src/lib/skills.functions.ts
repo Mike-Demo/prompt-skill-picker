@@ -23,11 +23,31 @@ const SearchInput = z.object({
 });
 const FetchInput = z.object({ ids: z.array(z.string()).min(1).max(50) });
 
+/** Blocks abusive callers, enforces the quota, then verifies the captcha. */
+async function guard(
+  action: "search" | "enhance" | "download" | "library",
+  captchaToken?: string,
+): Promise<void> {
+  const { enforceRateLimit, getClientIp, recordCaptchaFailure } = await import(
+    "./rate-limit.server"
+  );
+  const ip = getClientIp();
+  await enforceRateLimit(ip, action);
+
+  if (captchaToken === undefined) return;
+  const { verifyCaptchaToken } = await import("./captcha.server");
+  try {
+    await verifyCaptchaToken(captchaToken);
+  } catch (error) {
+    await recordCaptchaFailure(ip);
+    throw error;
+  }
+}
+
 export const searchSkills = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => SearchInput.parse(input))
   .handler(async ({ data }): Promise<SkillSuggestion[]> => {
-    const { verifyCaptchaToken } = await import("./captcha.server");
-    await verifyCaptchaToken(data.captchaToken);
+    await guard("search", data.captchaToken);
     const { rankSkills } = await import("./skills-ranking.server");
     return rankSkills(data.prompt);
   });
@@ -35,8 +55,7 @@ export const searchSkills = createServerFn({ method: "POST" })
 export const enhancePrompt = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => SearchInput.parse(input))
   .handler(async ({ data }): Promise<{ enhanced: string }> => {
-    const { verifyCaptchaToken } = await import("./captcha.server");
-    await verifyCaptchaToken(data.captchaToken);
+    await guard("enhance", data.captchaToken);
     const { enhancePrompt: enhance } = await import("./skills-ranking.server");
     return { enhanced: await enhance(data.prompt) };
   });
