@@ -59,6 +59,33 @@ export type Database = {
         }
         Relationships: []
       }
+      saved_searches: {
+        Row: {
+          created_at: string
+          expires_at: string
+          id: string
+          prompt: string
+          results: Json
+          token: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at: string
+          id?: string
+          prompt: string
+          results: Json
+          token: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string
+          id?: string
+          prompt?: string
+          results?: Json
+          token?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
