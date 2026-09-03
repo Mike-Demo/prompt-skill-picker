@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { downloadSkillsZip } from "@/lib/zip";
 import { fetchSkillFiles, listSkills, type SkillLibraryEntry } from "@/lib/skills.functions";
-import { useCooldown } from "@/hooks/use-cooldown";
+import { isRateLimitMessage, useCooldown } from "@/hooks/use-cooldown";
 import { formatInstalls } from "@/lib/format";
 
 const TITLE = "Skill library — browse every downloadable agent skill";
@@ -44,6 +44,8 @@ function SkillLibraryPage() {
     queryKey: ["skill-library"],
     queryFn: () => loadSkills(),
     staleTime: 5 * 60 * 1000,
+    // Retrying a rate-limit rejection only deepens the limit, so surface it instead.
+    retry: (attempt, error) => attempt < 2 && !isRateLimitMessage(error),
   });
 
   const download = useMutation({
