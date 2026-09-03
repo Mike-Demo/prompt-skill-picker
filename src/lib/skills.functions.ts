@@ -90,6 +90,7 @@ export interface SkillLibraryEntry {
 
 export const listSkills = createServerFn({ method: "GET" }).handler(
   async (): Promise<SkillLibraryEntry[]> => {
+    await guard("library");
     const { listSkillLibrary } = await import("./skills-library.server");
     return listSkillLibrary();
   },
