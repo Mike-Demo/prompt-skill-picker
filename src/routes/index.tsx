@@ -3,7 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRef, useState } from "react";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
-import { Download, ExternalLink, Library, Loader2, Search } from "lucide-react";
+import { Download, ExternalLink, Library, Loader2, Search, Sparkles } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -12,6 +12,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { downloadSkillsZip } from "@/lib/zip";
 import {
+  enhancePrompt,
   fetchSkillFiles,
   getCaptchaSitekey,
   searchSkills,
@@ -52,6 +53,7 @@ function SkillFinderPage() {
 
   const runSearch = useServerFn(searchSkills);
   const runFetch = useServerFn(fetchSkillFiles);
+  const runEnhance = useServerFn(enhancePrompt);
   const fetchSitekey = useServerFn(getCaptchaSitekey);
 
   const sitekeyQuery = useQuery({ queryKey: ["captcha-sitekey"], queryFn: fetchSitekey });
@@ -65,6 +67,14 @@ function SkillFinderPage() {
       captchaRef.current?.resetCaptcha();
       setCaptchaToken(null);
     },
+  });
+
+  const enhance = useMutation({
+    mutationFn: (value: { prompt: string; captchaToken: string }) =>
+      runEnhance({ data: value }),
+    onSuccess: (result) => setPrompt(result.enhanced),
+    // The verified token stays valid server-side for a few minutes, so the
+    // same captcha solve still covers the search that follows an enhance.
   });
 
   const download = useMutation({
@@ -88,8 +98,14 @@ function SkillFinderPage() {
 
   const submit = (value: string) => {
     const trimmed = value.trim();
-    if (trimmed.length < 3 || search.isPending || !captchaToken) return;
+    if (trimmed.length < 3 || search.isPending || enhance.isPending || !captchaToken) return;
     search.mutate({ prompt: trimmed, captchaToken });
+  };
+
+  const runEnhanceClick = () => {
+    const trimmed = prompt.trim();
+    if (trimmed.length < 3 || search.isPending || enhance.isPending || !captchaToken) return;
+    enhance.mutate({ prompt: trimmed, captchaToken });
   };
 
   return (
@@ -145,7 +161,9 @@ function SkillFinderPage() {
           <div className="flex flex-wrap items-center gap-2">
             <Button
               type="submit"
-              disabled={prompt.trim().length < 3 || search.isPending || !captchaToken}
+              disabled={
+                prompt.trim().length < 3 || search.isPending || enhance.isPending || !captchaToken
+              }
             >
               {search.isPending ? (
                 <Loader2 className="size-4 animate-spin" />
@@ -153,6 +171,21 @@ function SkillFinderPage() {
                 <Search className="size-4" />
               )}
               Find skills
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              disabled={
+                prompt.trim().length < 3 || search.isPending || enhance.isPending || !captchaToken
+              }
+              onClick={runEnhanceClick}
+            >
+              {enhance.isPending ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : (
+                <Sparkles className="size-4" />
+              )}
+              Enhance
             </Button>
             {EXAMPLES.map((example) => (
               <button
@@ -169,6 +202,12 @@ function SkillFinderPage() {
             ))}
           </div>
         </form>
+
+        {enhance.isError ? (
+          <p className="mt-6 rounded-md border border-destructive/40 bg-destructive/10 p-4 text-sm text-destructive">
+            {enhance.error instanceof Error ? enhance.error.message : "Enhance failed."}
+          </p>
+        ) : null}
 
         {search.isError ? (
           <p className="mt-6 rounded-md border border-destructive/40 bg-destructive/10 p-4 text-sm text-destructive">
