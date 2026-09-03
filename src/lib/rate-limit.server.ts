@@ -1,12 +1,13 @@
 // Ad-hoc per-IP rate limiting and temporary abuse blocking.
 //
-// The backend has no built-in rate-limiting primitive, so limits are counted
-// from rows in `rate_limit_events`. IPs are hashed with a server-side salt
-// before storage, so raw addresses are never persisted.
+// The durable counters live in `rate_limit_events` / `ip_blocks`, but the whole
+// decision (block check, window counts, attempt record, retention trim) runs in
+// a single `check_rate_limit` database call to keep the cost per request low.
+// IPs are hashed with a server-side salt before storage, so raw addresses are
+// never persisted.
 import { getRequest } from "@tanstack/react-start/server";
 
 export type RateLimitAction = "search" | "enhance" | "download" | "library";
-type Outcome = "allowed" | "limited" | "captcha_failed";
 
 interface Window {
   readonly seconds: number;
@@ -23,15 +24,13 @@ const LIMITS: Record<RateLimitAction, readonly Window[]> = {
     { seconds: 24 * 60 * 60, max: 30 },
   ],
   download: [{ seconds: 60, max: 10 }],
+  // The library is served from a shared server cache, so its limit is enforced
+  // in memory and never writes a database row.
   library: [{ seconds: 60, max: 20 }],
 };
 
-const BLOCK_WINDOW_SECONDS = 10 * 60;
-const BLOCK_DURATION_SECONDS = 60 * 60;
-const CAPTCHA_FAILURES_TO_BLOCK = 5;
-const LIMIT_REJECTIONS_TO_BLOCK = 20;
-const EVENT_RETENTION_HOURS = 24;
-const CLEANUP_CHANCE = 0.02;
+/** Actions counted in memory instead of in the database. */
+const IN_MEMORY_ACTIONS: ReadonlySet<RateLimitAction> = new Set<RateLimitAction>(["library"]);
 
 const ACTION_LABELS: Record<RateLimitAction, string> = {
   search: "search again",
@@ -76,95 +75,68 @@ async function admin() {
   return supabaseAdmin;
 }
 
-function since(seconds: number): string {
-  return new Date(Date.now() - seconds * 1000).toISOString();
-}
+// ---------------------------------------------------------------------------
+// In-memory sliding window for cheap, cache-backed actions.
+// ---------------------------------------------------------------------------
 
-async function pruneOldEvents(): Promise<void> {
-  if (Math.random() > CLEANUP_CHANCE) return;
-  const db = await admin();
-  await db
-    .from("rate_limit_events")
-    .delete()
-    .lt("created_at", since(EVENT_RETENTION_HOURS * 60 * 60));
-}
+const MEMORY_MAX_KEYS = 5000;
+const memoryHits = new Map<string, number[]>();
 
-/** Records an attempt outcome. Failures here never block the request. */
-export async function recordOutcome(
-  ip: string,
-  action: RateLimitAction,
-  outcome: Outcome,
-): Promise<void> {
-  try {
-    const db = await admin();
-    await db
-      .from("rate_limit_events")
-      .insert({ ip_hash: await hashIp(ip), action, outcome });
-    await pruneOldEvents();
-  } catch {
-    // Telemetry must not break the user-facing action.
+function pruneMemory(): void {
+  if (memoryHits.size <= MEMORY_MAX_KEYS) return;
+  for (const key of memoryHits.keys()) {
+    memoryHits.delete(key);
+    if (memoryHits.size <= MEMORY_MAX_KEYS) break;
   }
 }
 
-async function activeBlockSeconds(ipHash: string): Promise<number> {
-  const db = await admin();
-  const { data } = await db
-    .from("ip_blocks")
-    .select("blocked_until")
-    .eq("ip_hash", ipHash)
-    .maybeSingle();
-  if (!data) return 0;
-  const remaining = Math.ceil((new Date(data.blocked_until).getTime() - Date.now()) / 1000);
-  return remaining > 0 ? remaining : 0;
+function enforceInMemory(key: string, action: RateLimitAction): void {
+  const now = Date.now();
+  const longest = Math.max(...LIMITS[action].map((w) => w.seconds));
+  const hits = (memoryHits.get(key) ?? []).filter((at) => at > now - longest * 1000);
+
+  for (const window of LIMITS[action]) {
+    const used = hits.filter((at) => at > now - window.seconds * 1000).length;
+    if (used < window.max) continue;
+    memoryHits.set(key, hits);
+    throw new RateLimitError(
+      `Too many requests. You can ${ACTION_LABELS[action]} in ${window.seconds}s.`,
+      window.seconds,
+      false,
+    );
+  }
+
+  hits.push(now);
+  memoryHits.set(key, hits);
+  pruneMemory();
 }
 
-async function countEvents(
-  ipHash: string,
-  seconds: number,
-  outcomes: readonly Outcome[],
-  action?: RateLimitAction,
-): Promise<number> {
-  const db = await admin();
-  let query = db
-    .from("rate_limit_events")
-    .select("id", { count: "exact", head: true })
-    .eq("ip_hash", ipHash)
-    .in("outcome", outcomes as string[])
-    .gte("created_at", since(seconds));
-  if (action) query = query.eq("action", action);
-  const { count } = await query;
-  return count ?? 0;
+// ---------------------------------------------------------------------------
+// Durable limiter
+// ---------------------------------------------------------------------------
+
+interface Verdict {
+  allowed: boolean;
+  blocked: boolean;
+  retry_after_seconds: number;
 }
 
-/**
- * Blocks the caller for an hour once recent captcha failures or limit
- * rejections cross the abuse thresholds.
- */
-async function maybeBlock(ipHash: string): Promise<number> {
-  const [captchaFailures, limitRejections] = await Promise.all([
-    countEvents(ipHash, BLOCK_WINDOW_SECONDS, ["captcha_failed"]),
-    countEvents(ipHash, BLOCK_WINDOW_SECONDS, ["limited"]),
-  ]);
-
-  const reason =
-    captchaFailures >= CAPTCHA_FAILURES_TO_BLOCK
-      ? "repeated captcha failures"
-      : limitRejections >= LIMIT_REJECTIONS_TO_BLOCK
-        ? "repeated rate limit breaches"
-        : null;
-  if (!reason) return 0;
-
-  const db = await admin();
-  const blockedUntil = new Date(Date.now() + BLOCK_DURATION_SECONDS * 1000).toISOString();
-  await db
-    .from("ip_blocks")
-    .upsert({ ip_hash: ipHash, reason, blocked_until: blockedUntil }, { onConflict: "ip_hash" });
-  return BLOCK_DURATION_SECONDS;
+function parseVerdict(value: unknown): Verdict | null {
+  if (typeof value !== "object" || value === null) return null;
+  const record = value as Record<string, unknown>;
+  if (typeof record["allowed"] !== "boolean") return null;
+  return {
+    allowed: record["allowed"],
+    blocked: record["blocked"] === true,
+    retry_after_seconds:
+      typeof record["retry_after_seconds"] === "number" ? record["retry_after_seconds"] : 60,
+  };
 }
 
 /**
- * Rejects blocked callers and callers over their quota. Throws RateLimitError;
- * otherwise records the allowed attempt.
+ * Rejects blocked callers and callers over their quota. Throws RateLimitError.
+ * Fails open when the abuse store is unreachable, so an outage cannot lock
+ * everyone out.
  */
 export async function enforceRateLimit(ip: string, action: RateLimitAction): Promise<void> {
   let ipHash: string;
@@ -174,39 +146,40 @@ export async function enforceRateLimit(ip: string, action: RateLimitAction): Pro
     return;
   }
 
-  let blockedSeconds = 0;
-  try {
-    blockedSeconds = await activeBlockSeconds(ipHash);
-  } catch {
-    // If the abuse store is unreachable, fail open rather than lock everyone out.
+  if (IN_MEMORY_ACTIONS.has(action)) {
+    enforceInMemory(ipHash, action);
     return;
   }
-  if (blockedSeconds > 0) throw new RateLimitError(BLOCKED_MESSAGE, blockedSeconds, true);
 
-  for (const window of LIMITS[action]) {
-    const used = await countEvents(ipHash, window.seconds, ["allowed"], action);
-    if (used < window.max) continue;
-
-    await recordOutcome(ip, action, "limited");
-    const newBlock = await maybeBlock(ipHash);
-    if (newBlock > 0) throw new RateLimitError(BLOCKED_MESSAGE, newBlock, true);
-
-    const retryAfter = window.seconds <= 60 ? window.seconds : 60 * 60;
-    throw new RateLimitError(
-      `Too many requests. You can ${ACTION_LABELS[action]} in ${retryAfter}s.`,
-      retryAfter,
-      false,
-    );
+  let verdict: Verdict | null = null;
+  try {
+    const db = await admin();
+    const { data } = await db.rpc("check_rate_limit", {
+      _ip_hash: ipHash,
+      _action: action,
+      _windows: LIMITS[action] as unknown as Window[],
+    });
+    verdict = parseVerdict(data);
+  } catch {
+    return;
   }
 
-  await recordOutcome(ip, action, "allowed");
+  if (!verdict || verdict.allowed) return;
+  if (verdict.blocked) {
+    throw new RateLimitError(BLOCKED_MESSAGE, verdict.retry_after_seconds, true);
+  }
+  throw new RateLimitError(
+    `Too many requests. You can ${ACTION_LABELS[action]} in ${verdict.retry_after_seconds}s.`,
+    verdict.retry_after_seconds,
+    false,
+  );
 }
 
 /** Records a captcha failure and blocks the caller when failures pile up. */
 export async function recordCaptchaFailure(ip: string): Promise<void> {
   try {
-    await recordOutcome(ip, "search", "captcha_failed");
-    await maybeBlock(await hashIp(ip));
+    const db = await admin();
+    await db.rpc("record_captcha_failure", { _ip_hash: await hashIp(ip) });
   } catch {
     // Never mask the original captcha error.
   }
