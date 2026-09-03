@@ -231,6 +231,9 @@ function SkillFinderPage() {
               </Tooltip>
             </TooltipProvider>
           </div>
+          {enhanceHint ? (
+            <p className="text-xs text-muted-foreground">{enhanceHint}</p>
+          ) : null}
           {sitekeyQuery.data ? (
             <HCaptcha
               ref={captchaRef}
@@ -253,19 +256,6 @@ function SkillFinderPage() {
                 <Search className="size-4" />
               )}
               {cooldown > 0 ? `Find skills in ${cooldown}s` : "Find skills"}
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              disabled={prompt.trim().length < 3 || busy || !captchaToken}
-              onClick={runEnhanceClick}
-            >
-              {enhance.isPending ? (
-                <Loader2 className="size-4 animate-spin" />
-              ) : (
-                <Sparkles className="size-4" />
-              )}
-              Enhance
             </Button>
             {EXAMPLES.map((example) => (
               <button
