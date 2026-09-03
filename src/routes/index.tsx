@@ -3,7 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRef, useState } from "react";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
-import { Download, ExternalLink, Library, Loader2, Search } from "lucide-react";
+import { Download, ExternalLink, Library, Loader2, Search, Sparkles } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -12,6 +12,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { downloadSkillsZip } from "@/lib/zip";
 import {
+  enhancePrompt,
   fetchSkillFiles,
   getCaptchaSitekey,
   searchSkills,
