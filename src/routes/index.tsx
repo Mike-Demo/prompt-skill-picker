@@ -152,9 +152,19 @@ function SkillFinderPage() {
     search.mutate({ prompt: trimmed, captchaToken });
   };
 
+  const showEnhanceHint = (message: string) => {
+    if (enhanceHintTimer.current) clearTimeout(enhanceHintTimer.current);
+    setEnhanceHint(message);
+    enhanceHintTimer.current = setTimeout(() => setEnhanceHint(null), 4000);
+  };
+
   const runEnhanceClick = () => {
     const trimmed = prompt.trim();
-    if (trimmed.length < 3 || busy || !captchaToken) return;
+    if (trimmed.length < 3 || busy) return;
+    if (!captchaToken) {
+      showEnhanceHint("Complete the CAPTCHA first to use Enhance.");
+      return;
+    }
     enhance.mutate({ prompt: trimmed, captchaToken });
   };
 
