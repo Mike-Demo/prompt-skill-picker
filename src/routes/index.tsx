@@ -102,7 +102,14 @@ function SkillFinderPage() {
     },
   });
 
-  const results: SkillSuggestion[] = search.data ?? [];
+  const results: SkillSuggestion[] = search.data?.results ?? [];
+
+  const copyShareLink = async () => {
+    if (!shareToken) return;
+    await navigator.clipboard.writeText(`${window.location.origin}/s/${shareToken}`);
+    setShareCopied(true);
+    window.setTimeout(() => setShareCopied(false), 2000);
+  };
 
   // A rate-limited attempt retries itself once the cooldown ends, but only when
   // a captcha token is still available: hCaptcha tokens are single-use and the
