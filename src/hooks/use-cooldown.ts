@@ -27,22 +27,23 @@ export function useCooldown(error: unknown, onExpire?: () => void): number {
   const seconds = parseRetryAfterSeconds(error);
   const expireRef = useRef(onExpire);
   expireRef.current = onExpire;
+  const armedRef = useRef(false);
 
   useEffect(() => {
     if (seconds === null) return;
+    armedRef.current = true;
     setRemaining(seconds);
     const timer = setInterval(() => {
-      setRemaining((value) => {
-        if (value <= 1) {
-          clearInterval(timer);
-          expireRef.current?.();
-          return 0;
-        }
-        return value - 1;
-      });
+      setRemaining((value) => (value <= 1 ? 0 : value - 1));
     }, 1000);
     return () => clearInterval(timer);
   }, [seconds, error]);
+
+  useEffect(() => {
+    if (remaining > 0 || !armedRef.current) return;
+    armedRef.current = false;
+    expireRef.current?.();
+  }, [remaining]);
 
   return remaining;
 }
