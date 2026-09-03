@@ -43,7 +43,7 @@ function SkillLibraryPage() {
   const library = useQuery({
     queryKey: ["skill-library"],
     queryFn: () => loadSkills(),
-    staleTime: 5 * 60 * 1000,
+    staleTime: 30 * 60 * 1000,
     // Retrying a rate-limit rejection only deepens the limit, so surface it instead.
     retry: (attempt, error) => attempt < 2 && !isRateLimitMessage(error),
   });
@@ -57,7 +57,16 @@ function SkillLibraryPage() {
   });
 
   const entries: SkillLibraryEntry[] = library.data ?? [];
-  const downloadCooldown = useCooldown(download.error);
+
+  // A rate-limited load is not retried by React Query; instead the cooldown
+  // expiring retries it once, so the page recovers without a click.
+  useCooldown(library.error, () => {
+    void library.refetch();
+  });
+
+  const downloadCooldown = useCooldown(download.error, () => {
+    if (selected.size > 0) download.mutate([...selected]);
+  });
 
   const visible = useMemo(() => {
     const needle = filter.trim().toLowerCase();
