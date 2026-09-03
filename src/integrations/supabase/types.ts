@@ -14,7 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      ip_blocks: {
+        Row: {
+          blocked_until: string
+          created_at: string
+          ip_hash: string
+          reason: string
+        }
+        Insert: {
+          blocked_until: string
+          created_at?: string
+          ip_hash: string
+          reason: string
+        }
+        Update: {
+          blocked_until?: string
+          created_at?: string
+          ip_hash?: string
+          reason?: string
+        }
+        Relationships: []
+      }
+      rate_limit_events: {
+        Row: {
+          action: string
+          created_at: string
+          id: string
+          ip_hash: string
+          outcome: string
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          id?: string
+          ip_hash: string
+          outcome: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          id?: string
+          ip_hash?: string
+          outcome?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
