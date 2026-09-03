@@ -46,4 +46,4 @@ Frontend:
 
 Rollback: the change is additive — reverting `rate-limit.server.ts`, the guard lines in the server functions, and the countdown UI restores current behaviour; the two tables can be left in place harmlessly.
 
-Risks: IP-based limits punish shared networks (offices, mobile carriers) — 1/minute is strict, and several people behind one NAT will collide. Say the word if you'd rather start at 3/minute.
+Risks: IP-based limits punish shared networks (offices, mobile carriers), so 3/minute is the starting point and is easy to tune later in one constant.
