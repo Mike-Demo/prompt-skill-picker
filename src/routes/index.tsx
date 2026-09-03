@@ -88,6 +88,12 @@ function SkillFinderPage() {
 
   const results: SkillSuggestion[] = search.data ?? [];
 
+  const searchCooldown = useCooldown(search.error);
+  const enhanceCooldown = useCooldown(enhance.error);
+  const downloadCooldown = useCooldown(download.error);
+  const cooldown = Math.max(searchCooldown, enhanceCooldown);
+  const busy = search.isPending || enhance.isPending || cooldown > 0;
+
   const toggle = (id: string) => {
     setSelected((prev) => {
       const next = new Set(prev);
