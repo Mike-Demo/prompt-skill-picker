@@ -119,7 +119,7 @@ export async function rankSkills(prompt: string): Promise<SkillSuggestion[]> {
 
   const source = ordered.length > 0 ? ordered : enriched.slice(0, 12).map((e) => ({ id: e.skill.id, score: 0, reason: "" }));
 
-  return source.flatMap((r) => {
+  const suggestions = source.flatMap((r) => {
     const entry = byId.get(r.id);
     if (!entry) return [];
     return [
@@ -135,6 +135,9 @@ export async function rankSkills(prompt: string): Promise<SkillSuggestion[]> {
       } satisfies SkillSuggestion,
     ];
   });
+
+  allowSkillIds(suggestions.map((s) => s.id));
+  return suggestions;
 }
 
 const MAX_ENHANCED_LENGTH = 2000;
