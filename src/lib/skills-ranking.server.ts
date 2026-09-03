@@ -13,9 +13,22 @@ import {
   searchRegistry,
   type RegistrySkill,
 } from "./skills-registry.server";
+import { mapWithConcurrency } from "./concurrency";
 import type { SkillFile, SkillSuggestion } from "./skills.functions";
 
 const MAX_CANDIDATES = 24;
+const DOC_CONCURRENCY = 8;
+
+/** Dedupes several registry result sets, keeping the most-installed first. */
+function mergeCandidates(batches: readonly RegistrySkill[][]): RegistrySkill[] {
+  const byId = new Map<string, RegistrySkill>();
+  for (const batch of batches) {
+    for (const skill of batch) {
+      if (!byId.has(skill.id)) byId.set(skill.id, skill);
+    }
+  }
+  return [...byId.values()].sort((a, b) => b.installs - a.installs).slice(0, MAX_CANDIDATES);
+}
 
 const querySchema = z.object({ queries: z.array(z.string()) });
 const rankingSchema = z.object({
@@ -66,22 +79,26 @@ interface EnrichedSkill {
 }
 
 async function enrich(candidates: RegistrySkill[]): Promise<EnrichedSkill[]> {
-  return Promise.all(
-    candidates.map(async (skill) => {
-      const doc = await fetchSkillDocument(skill);
-      return {
-        skill,
-        description: (doc ? parseDescription(doc.markdown) : null) ?? "",
-        htmlUrl: doc?.htmlUrl ?? null,
-        hasMarkdown: Boolean(doc),
-      };
-    }),
-  );
+  return mapWithConcurrency(candidates, DOC_CONCURRENCY, async (skill) => {
+    const doc = await fetchSkillDocument(skill);
+    return {
+      skill,
+      description: (doc ? parseDescription(doc.markdown) : null) ?? "",
+      htmlUrl: doc?.htmlUrl ?? null,
+      hasMarkdown: Boolean(doc),
+    };
+  });
 }
 
 export async function rankSkills(prompt: string): Promise<SkillSuggestion[]> {
-  const queries = await expandQueries(prompt);
-  const candidates = await gatherCandidates(queries);
+  // The literal prompt search runs alongside the keyword-expansion model call,
+  // so the expansion round trip is off the critical path.
+  const [direct, queries] = await Promise.all([
+    searchRegistry(prompt).catch(() => [] as RegistrySkill[]),
+    expandQueries(prompt),
+  ]);
+  const expanded = await gatherCandidates(queries);
+  const candidates = mergeCandidates([direct, expanded]);
   if (candidates.length === 0) return [];
 
   const enriched = await enrich(candidates);

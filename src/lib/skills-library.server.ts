@@ -6,6 +6,7 @@ import {
   type RegistrySkill,
 } from "./skills-registry.server";
 import { allowSkillIds } from "./skills-allowlist.server";
+import { mapWithConcurrency } from "./concurrency";
 import type { SkillLibraryEntry } from "./skills.functions";
 
 /**
@@ -29,9 +30,14 @@ const TOPICS = [
   "database",
 ] as const;
 
-const MAX_ENTRIES = 60;
+const MAX_ENTRIES = 24;
+const DOC_CONCURRENCY = 8;
+const CACHE_TTL_MS = 5 * 60 * 1000;
 
-export async function listSkillLibrary(): Promise<SkillLibraryEntry[]> {
+let cached: { entries: SkillLibraryEntry[]; expiresAt: number } | null = null;
+let inFlight: Promise<SkillLibraryEntry[]> | null = null;
+
+async function loadLibrary(): Promise<SkillLibraryEntry[]> {
   const batches = await Promise.all(
     TOPICS.map((topic) => searchRegistry(topic, 12).catch(() => [] as RegistrySkill[])),
   );
@@ -47,8 +53,10 @@ export async function listSkillLibrary(): Promise<SkillLibraryEntry[]> {
     .sort((a, b) => b.installs - a.installs)
     .slice(0, MAX_ENTRIES);
 
-  const entries = await Promise.all(
-    candidates.map(async (skill): Promise<SkillLibraryEntry> => {
+  const entries = await mapWithConcurrency(
+    candidates,
+    DOC_CONCURRENCY,
+    async (skill): Promise<SkillLibraryEntry> => {
       const doc = await fetchSkillDocument(skill);
       return {
         id: skill.id,
@@ -60,10 +68,35 @@ export async function listSkillLibrary(): Promise<SkillLibraryEntry[]> {
         htmlUrl: doc?.htmlUrl ?? null,
         hasMarkdown: Boolean(doc),
       };
-    }),
+    },
   );
 
   const visible = entries.filter((entry) => entry.hasMarkdown);
   allowSkillIds(visible.map((entry) => entry.id));
   return visible;
+}
+
+/**
+ * Serves the catalogue from a short-lived cache and collapses concurrent
+ * requests onto one load, so only the first visitor in a window pays for the
+ * registry and GitHub round trips.
+ */
+export async function listSkillLibrary(): Promise<SkillLibraryEntry[]> {
+  if (cached && cached.expiresAt > Date.now()) {
+    allowSkillIds(cached.entries.map((entry) => entry.id));
+    return cached.entries;
+  }
+
+  if (!inFlight) {
+    inFlight = loadLibrary()
+      .then((entries) => {
+        cached = { entries, expiresAt: Date.now() + CACHE_TTL_MS };
+        return entries;
+      })
+      .finally(() => {
+        inFlight = null;
+      });
+  }
+
+  return inFlight;
 }
