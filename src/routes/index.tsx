@@ -231,6 +231,9 @@ function SkillFinderPage() {
               </Tooltip>
             </TooltipProvider>
           </div>
+          {enhanceHint ? (
+            <p className="text-xs text-muted-foreground">{enhanceHint}</p>
+          ) : null}
           {sitekeyQuery.data ? (
             <HCaptcha
               ref={captchaRef}
