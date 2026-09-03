@@ -20,19 +20,15 @@ const TOPICS = [
   "documentation",
   "design",
   "data analysis",
-  "devops",
   "security",
   "writing",
+  "devops",
   "pdf",
-  "api",
-  "git",
-  "agent",
-  "database",
 ] as const;
 
 const MAX_ENTRIES = 24;
 const DOC_CONCURRENCY = 8;
-const CACHE_TTL_MS = 5 * 60 * 1000;
+const CACHE_TTL_MS = 30 * 60 * 1000;
 
 let cached: { entries: SkillLibraryEntry[]; expiresAt: number } | null = null;
 let inFlight: Promise<SkillLibraryEntry[]> | null = null;

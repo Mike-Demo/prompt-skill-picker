@@ -64,7 +64,11 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      check_rate_limit: {
+        Args: { _action: string; _ip_hash: string; _windows: Json }
+        Returns: Json
+      }
+      record_captcha_failure: { Args: { _ip_hash: string }; Returns: undefined }
     }
     Enums: {
       [_ in never]: never

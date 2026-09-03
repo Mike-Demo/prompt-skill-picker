@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const RETRY_PATTERN = /in (\d+)s/;
 
@@ -18,20 +18,32 @@ export function parseRetryAfterSeconds(error: unknown): number | null {
 
 /**
  * Counts down from the delay advertised by the latest rate-limit error so the
- * UI can disable the action until the caller is allowed to retry.
+ * UI can disable the action until the caller is allowed to retry. When the
+ * countdown reaches zero, `onExpire` fires once so the caller can retry the
+ * action automatically instead of leaving a dead button behind.
  */
-export function useCooldown(error: unknown): number {
+export function useCooldown(error: unknown, onExpire?: () => void): number {
   const [remaining, setRemaining] = useState(0);
   const seconds = parseRetryAfterSeconds(error);
+  const expireRef = useRef(onExpire);
+  expireRef.current = onExpire;
+  const armedRef = useRef(false);
 
   useEffect(() => {
     if (seconds === null) return;
+    armedRef.current = true;
     setRemaining(seconds);
     const timer = setInterval(() => {
       setRemaining((value) => (value <= 1 ? 0 : value - 1));
     }, 1000);
     return () => clearInterval(timer);
   }, [seconds, error]);
+
+  useEffect(() => {
+    if (remaining > 0 || !armedRef.current) return;
+    armedRef.current = false;
+    expireRef.current?.();
+  }, [remaining]);
 
   return remaining;
 }

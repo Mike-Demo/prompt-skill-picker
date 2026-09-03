@@ -88,9 +88,20 @@ function SkillFinderPage() {
 
   const results: SkillSuggestion[] = search.data ?? [];
 
-  const searchCooldown = useCooldown(search.error);
-  const enhanceCooldown = useCooldown(enhance.error);
-  const downloadCooldown = useCooldown(download.error);
+  // A rate-limited attempt retries itself once the cooldown ends, but only when
+  // a captcha token is still available: hCaptcha tokens are single-use and the
+  // widget resets after each attempt, so usually the user must confirm again.
+  const searchCooldown = useCooldown(search.error, () => {
+    const trimmed = prompt.trim();
+    if (trimmed.length >= 3 && captchaToken) search.mutate({ prompt: trimmed, captchaToken });
+  });
+  const enhanceCooldown = useCooldown(enhance.error, () => {
+    const trimmed = prompt.trim();
+    if (trimmed.length >= 3 && captchaToken) enhance.mutate({ prompt: trimmed, captchaToken });
+  });
+  const downloadCooldown = useCooldown(download.error, () => {
+    if (selected.size > 0) download.mutate([...selected]);
+  });
   const cooldown = Math.max(searchCooldown, enhanceCooldown);
   const busy = search.isPending || enhance.isPending || cooldown > 0;
 
@@ -213,9 +224,14 @@ function SkillFinderPage() {
         ) : null}
 
         {search.isError ? (
-          <p className="mt-6 rounded-md border border-destructive/40 bg-destructive/10 p-4 text-sm text-destructive">
-            {search.error instanceof Error ? search.error.message : "Search failed."}
-          </p>
+          <div className="mt-6 rounded-md border border-destructive/40 bg-destructive/10 p-4 text-sm text-destructive">
+            <p>{search.error instanceof Error ? search.error.message : "Search failed."}</p>
+            {cooldown === 0 && !captchaToken ? (
+              <p className="mt-1 text-destructive/80">
+                Confirm the captcha above and we&rsquo;ll try again.
+              </p>
+            ) : null}
+          </div>
         ) : null}
 
         {search.isPending ? (
