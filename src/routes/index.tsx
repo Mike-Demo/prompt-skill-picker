@@ -62,7 +62,11 @@ function SkillFinderPage() {
   const search = useMutation({
     mutationFn: (value: { prompt: string; captchaToken: string }) =>
       runSearch({ data: value }),
-    onSuccess: () => setSelected(new Set()),
+    onSuccess: (response, value) => {
+      setSelected(new Set());
+      setShareToken(response.token);
+      if (response.token) setRecent(addRecentSearch(value.prompt, response.token));
+    },
     onSettled: () => {
       // hCaptcha tokens are single-use; force a fresh challenge each search.
       captchaRef.current?.resetCaptcha();
