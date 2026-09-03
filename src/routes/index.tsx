@@ -161,7 +161,9 @@ function SkillFinderPage() {
           <div className="flex flex-wrap items-center gap-2">
             <Button
               type="submit"
-              disabled={prompt.trim().length < 3 || search.isPending || !captchaToken}
+              disabled={
+                prompt.trim().length < 3 || search.isPending || enhance.isPending || !captchaToken
+              }
             >
               {search.isPending ? (
                 <Loader2 className="size-4 animate-spin" />
@@ -169,6 +171,21 @@ function SkillFinderPage() {
                 <Search className="size-4" />
               )}
               Find skills
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              disabled={
+                prompt.trim().length < 3 || search.isPending || enhance.isPending || !captchaToken
+              }
+              onClick={runEnhanceClick}
+            >
+              {enhance.isPending ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : (
+                <Sparkles className="size-4" />
+              )}
+              Enhance
             </Button>
             {EXAMPLES.map((example) => (
               <button
