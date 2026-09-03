@@ -6,6 +6,7 @@ import {
   type RegistrySkill,
 } from "./skills-registry.server";
 import { allowSkillIds } from "./skills-allowlist.server";
+import { mapWithConcurrency } from "./concurrency";
 import type { SkillLibraryEntry } from "./skills.functions";
 
 /**
