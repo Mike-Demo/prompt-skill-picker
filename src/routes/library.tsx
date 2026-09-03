@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { downloadSkillsZip } from "@/lib/zip";
 import { fetchSkillFiles, listSkills, type SkillLibraryEntry } from "@/lib/skills.functions";
-import { useCooldown } from "@/hooks/use-cooldown";
+import { isRateLimitMessage, useCooldown } from "@/hooks/use-cooldown";
 import { formatInstalls } from "@/lib/format";
 
 const TITLE = "Skill library — browse every downloadable agent skill";
