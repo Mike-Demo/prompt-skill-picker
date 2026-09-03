@@ -19,6 +19,7 @@ import {
   type SkillSuggestion,
 } from "@/lib/skills.functions";
 import { formatInstalls } from "@/lib/format";
+import { useCooldown } from "@/hooks/use-cooldown";
 
 const TITLE = "Skill Finder — discover and bundle agent skills";
 const DESCRIPTION =
