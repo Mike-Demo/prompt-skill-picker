@@ -50,7 +50,13 @@ function SkillFinderPage() {
   const [prompt, setPrompt] = useState("");
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [shareToken, setShareToken] = useState<string | null>(null);
+  const [shareCopied, setShareCopied] = useState(false);
+  const [recent, setRecent] = useState<RecentSearch[]>([]);
   const captchaRef = useRef<HCaptcha | null>(null);
+
+  // Local storage is browser-only, so hydrate the list after mount.
+  useEffect(() => setRecent(readRecentSearches()), []);
 
   const runSearch = useServerFn(searchSkills);
   const runFetch = useServerFn(fetchSkillFiles);
