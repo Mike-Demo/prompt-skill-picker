@@ -3,6 +3,11 @@ import { z } from "zod";
 
 import { AI_MODEL, createLovableAiGatewayProvider, getLovableApiKey } from "./ai-gateway.server";
 import {
+  allowSkillIds,
+  isSkillIdAllowed,
+  isWellFormedSkillId,
+} from "./skills-allowlist.server";
+import {
   fetchSkillDocument,
   parseDescription,
   searchRegistry,
