@@ -44,6 +44,8 @@ function SkillLibraryPage() {
     queryKey: ["skill-library"],
     queryFn: () => loadSkills(),
     staleTime: 5 * 60 * 1000,
+    // Retrying a rate-limit rejection only deepens the limit, so surface it instead.
+    retry: (attempt, error) => attempt < 2 && !isRateLimitMessage(error),
   });
 
   const download = useMutation({
