@@ -1,15 +1,21 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
-import { Download, ExternalLink, Library, Loader2, Search, Sparkles } from "lucide-react";
+import { Check, Library, Link2, Loader2, Search, Sparkles, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Badge } from "@/components/ui/badge";
+import { SelectionBar } from "@/components/selection-bar";
+import { SkillResultCard } from "@/components/skill-result-card";
+import {
+  addRecentSearch,
+  clearRecentSearches,
+  readRecentSearches,
+  type RecentSearch,
+} from "@/lib/recent-searches";
 import { downloadSkillsZip } from "@/lib/zip";
 import {
   enhancePrompt,
@@ -50,7 +56,13 @@ function SkillFinderPage() {
   const [prompt, setPrompt] = useState("");
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [shareToken, setShareToken] = useState<string | null>(null);
+  const [shareCopied, setShareCopied] = useState(false);
+  const [recent, setRecent] = useState<RecentSearch[]>([]);
   const captchaRef = useRef<HCaptcha | null>(null);
+
+  // Local storage is browser-only, so hydrate the list after mount.
+  useEffect(() => setRecent(readRecentSearches()), []);
 
   const runSearch = useServerFn(searchSkills);
   const runFetch = useServerFn(fetchSkillFiles);
@@ -62,7 +74,12 @@ function SkillFinderPage() {
   const search = useMutation({
     mutationFn: (value: { prompt: string; captchaToken: string }) =>
       runSearch({ data: value }),
-    onSuccess: () => setSelected(new Set()),
+    onMutate: () => setShareToken(null),
+    onSuccess: (response, value) => {
+      setSelected(new Set());
+      setShareToken(response.token);
+      if (response.token) setRecent(addRecentSearch(value.prompt, response.token));
+    },
     onSettled: () => {
       // hCaptcha tokens are single-use; force a fresh challenge each search.
       captchaRef.current?.resetCaptcha();
@@ -86,7 +103,14 @@ function SkillFinderPage() {
     },
   });
 
-  const results: SkillSuggestion[] = search.data ?? [];
+  const results: SkillSuggestion[] = search.data?.results ?? [];
+
+  const copyShareLink = async () => {
+    if (!shareToken) return;
+    await navigator.clipboard.writeText(`${window.location.origin}/s/${shareToken}`);
+    setShareCopied(true);
+    window.setTimeout(() => setShareCopied(false), 2000);
+  };
 
   // A rate-limited attempt retries itself once the cooldown ends, but only when
   // a captcha token is still available: hCaptcha tokens are single-use and the
@@ -253,88 +277,70 @@ function SkillFinderPage() {
         ) : null}
 
         {results.length > 0 ? (
-          <ul className="mt-8 space-y-3">
-            {results.map((skill) => {
-              const checked = selected.has(skill.id);
-              return (
-                <li
+          <>
+            {shareToken ? (
+              <div className="mt-8 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-border bg-muted/40 px-4 py-3 text-sm">
+                <span className="text-muted-foreground">
+                  These results are saved for 72 hours — share or revisit them with a link.
+                </span>
+                <Button type="button" variant="outline" size="sm" onClick={copyShareLink}>
+                  {shareCopied ? <Check className="size-4" /> : <Link2 className="size-4" />}
+                  {shareCopied ? "Copied" : "Copy share link"}
+                </Button>
+              </div>
+            ) : null}
+            <ul className="mt-4 space-y-3">
+              {results.map((skill) => (
+                <SkillResultCard
                   key={skill.id}
-                  className={`rounded-lg border p-4 transition-colors ${
-                    checked ? "border-primary bg-accent/40" : "border-border"
-                  }`}
-                >
-                  <div className="flex gap-3">
-                    <Checkbox
-                      id={skill.id}
-                      checked={checked}
-                      disabled={!skill.hasMarkdown}
-                      onCheckedChange={() => toggle(skill.id)}
-                      className="mt-1"
-                    />
-                    <div className="min-w-0 flex-1">
-                      <label
-                        htmlFor={skill.id}
-                        className="block cursor-pointer text-sm font-semibold text-foreground"
-                      >
-                        {skill.name}
-                      </label>
-                      <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-                        <span className="truncate">{skill.source}</span>
-                        <Badge variant="secondary">{formatInstalls(skill.installs)}</Badge>
-                        {!skill.hasMarkdown ? (
-                          <Badge variant="outline">no markdown available</Badge>
-                        ) : null}
-                      </div>
-                      {skill.description ? (
-                        <p className="mt-2 text-sm text-muted-foreground">{skill.description}</p>
-                      ) : null}
-                      {skill.reason ? (
-                        <p className="mt-2 text-sm text-foreground">{skill.reason}</p>
-                      ) : null}
-                      {skill.htmlUrl ? (
-                        <a
-                          href={skill.htmlUrl}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
-                        >
-                          View source <ExternalLink className="size-3" />
-                        </a>
-                      ) : null}
-                    </div>
-                  </div>
+                  skill={skill}
+                  checked={selected.has(skill.id)}
+                  onToggle={toggle}
+                />
+              ))}
+            </ul>
+          </>
+        ) : null}
+
+        {recent.length > 0 ? (
+          <section className="mt-12">
+            <div className="flex items-center justify-between gap-2">
+              <h2 className="text-sm font-semibold text-foreground">Recent searches</h2>
+              <button
+                type="button"
+                className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+                onClick={() => {
+                  clearRecentSearches();
+                  setRecent([]);
+                }}
+              >
+                <Trash2 className="size-3" /> Clear
+              </button>
+            </div>
+            <ul className="mt-2 space-y-1">
+              {recent.map((entry) => (
+                <li key={entry.token}>
+                  <Link
+                    to="/s/$token"
+                    params={{ token: entry.token }}
+                    className="block truncate rounded px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+                  >
+                    {entry.prompt}
+                  </Link>
                 </li>
-              );
-            })}
-          </ul>
+              ))}
+            </ul>
+          </section>
         ) : null}
       </div>
 
-      {selected.size > 0 ? (
-        <div className="fixed inset-x-0 bottom-0 border-t border-border bg-card/95 backdrop-blur">
-          <div className="mx-auto flex w-full max-w-3xl items-center justify-between gap-3 px-4 py-3">
-            <div className="text-sm text-muted-foreground">
-              {selected.size} selected
-              {download.isError ? (
-                <span className="block text-destructive">
-                  {download.error instanceof Error ? download.error.message : "Download failed."}
-                </span>
-              ) : null}
-            </div>
-            <Button
-              onClick={() => download.mutate([...selected])}
-              disabled={download.isPending || downloadCooldown > 0}
-            >
-              {download.isPending ? (
-                <Loader2 className="size-4 animate-spin" />
-              ) : (
-                <Download className="size-4" />
-              )}
-              {downloadCooldown > 0 ? `Retry in ${downloadCooldown}s` : "Download zip"}
-            </Button>
-          </div>
-        </div>
-      ) : null}
+      <SelectionBar
+        count={selected.size}
+        pending={download.isPending}
+        cooldown={downloadCooldown}
+        error={download.isError ? download.error : null}
+        onDownload={() => download.mutate([...selected])}
+      />
     </main>
   );
 }
