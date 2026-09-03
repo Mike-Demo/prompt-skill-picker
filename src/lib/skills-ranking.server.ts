@@ -13,9 +13,22 @@ import {
   searchRegistry,
   type RegistrySkill,
 } from "./skills-registry.server";
+import { mapWithConcurrency } from "./concurrency";
 import type { SkillFile, SkillSuggestion } from "./skills.functions";
 
 const MAX_CANDIDATES = 24;
+const DOC_CONCURRENCY = 8;
+
+/** Dedupes several registry result sets, keeping the most-installed first. */
+function mergeCandidates(batches: readonly RegistrySkill[][]): RegistrySkill[] {
+  const byId = new Map<string, RegistrySkill>();
+  for (const batch of batches) {
+    for (const skill of batch) {
+      if (!byId.has(skill.id)) byId.set(skill.id, skill);
+    }
+  }
+  return [...byId.values()].sort((a, b) => b.installs - a.installs).slice(0, MAX_CANDIDATES);
+}
 
 const querySchema = z.object({ queries: z.array(z.string()) });
 const rankingSchema = z.object({
