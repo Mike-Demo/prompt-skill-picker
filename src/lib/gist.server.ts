@@ -26,6 +26,9 @@ export async function createGist(
       Accept: "application/vnd.github+json",
       "X-GitHub-Api-Version": "2022-11-28",
       "Content-Type": "application/json",
+      // GitHub rejects API calls without a User-Agent with a bare 403; the
+      // edge runtime does not set one automatically.
+      "User-Agent": "skill-finder-app",
     },
     body: JSON.stringify({
       description: description.slice(0, 200),
@@ -35,7 +38,8 @@ export async function createGist(
   });
 
   if (!response.ok) {
-    throw new Error(`GitHub rejected the gist (status ${response.status}).`);
+    const detail = (await response.text()).slice(0, 300);
+    throw new Error(`GitHub rejected the gist (status ${response.status}): ${detail}`);
   }
 
   const body = (await response.json()) as { html_url?: unknown };
