@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRef, useState } from "react";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
 import { Download, ExternalLink, Library, Loader2, Search } from "lucide-react";
@@ -11,18 +11,17 @@ import { Textarea } from "@/components/ui/textarea";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { downloadSkillsZip } from "@/lib/zip";
-import { fetchSkillFiles, searchSkills, type SkillSuggestion } from "@/lib/skills.functions";
+import {
+  fetchSkillFiles,
+  getCaptchaSitekey,
+  searchSkills,
+  type SkillSuggestion,
+} from "@/lib/skills.functions";
 import { formatInstalls } from "@/lib/format";
 
 const TITLE = "Skill Finder — discover and bundle agent skills";
 const DESCRIPTION =
   "Describe what you want your AI agent to do, get ranked skill suggestions from the open skills registry, and download the ones you pick as a single zip.";
-
-// hCaptcha's official test sitekey (always passes). Set VITE_HCAPTCHA_SITEKEY
-// for production traffic.
-const HCAPTCHA_SITEKEY =
-  (import.meta.env["VITE_HCAPTCHA_SITEKEY"] as string | undefined) ??
-  "10000000-ffff-ffff-ffff-000000000001";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -53,6 +52,9 @@ function SkillFinderPage() {
 
   const runSearch = useServerFn(searchSkills);
   const runFetch = useServerFn(fetchSkillFiles);
+  const fetchSitekey = useServerFn(getCaptchaSitekey);
+
+  const sitekeyQuery = useQuery({ queryKey: ["captcha-sitekey"], queryFn: fetchSitekey });
 
   const search = useMutation({
     mutationFn: (value: { prompt: string; captchaToken: string }) =>
@@ -129,13 +131,17 @@ function SkillFinderPage() {
               }
             }}
           />
-          <HCaptcha
-            ref={captchaRef}
-            sitekey={HCAPTCHA_SITEKEY}
-            onVerify={(token) => setCaptchaToken(token)}
-            onExpire={() => setCaptchaToken(null)}
-            onError={() => setCaptchaToken(null)}
-          />
+          {sitekeyQuery.data ? (
+            <HCaptcha
+              ref={captchaRef}
+              sitekey={sitekeyQuery.data}
+              onVerify={(token) => setCaptchaToken(token)}
+              onExpire={() => setCaptchaToken(null)}
+              onError={() => setCaptchaToken(null)}
+            />
+          ) : (
+            <Skeleton className="h-[78px] w-[303px]" />
+          )}
           <div className="flex flex-wrap items-center gap-2">
             <Button
               type="submit"
