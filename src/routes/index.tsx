@@ -52,6 +52,9 @@ function SkillFinderPage() {
 
   const runSearch = useServerFn(searchSkills);
   const runFetch = useServerFn(fetchSkillFiles);
+  const fetchSitekey = useServerFn(getCaptchaSitekey);
+
+  const sitekeyQuery = useQuery({ queryKey: ["captcha-sitekey"], queryFn: fetchSitekey });
 
   const search = useMutation({
     mutationFn: (value: { prompt: string; captchaToken: string }) =>
