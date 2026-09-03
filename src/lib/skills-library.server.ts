@@ -22,6 +22,8 @@ const TOPICS = [
   "data analysis",
   "security",
   "writing",
+  "devops",
+  "pdf",
 ] as const;
 
 const MAX_ENTRIES = 24;
