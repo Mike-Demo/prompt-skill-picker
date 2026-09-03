@@ -1,3 +1,5 @@
+import type { Json } from "@/integrations/supabase/types";
+
 import type { SkillSuggestion } from "./skills.functions";
 
 /** Shared searches stay retrievable for three days, then expire. */
