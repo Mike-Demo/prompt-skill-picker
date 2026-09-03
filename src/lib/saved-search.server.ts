@@ -43,7 +43,12 @@ export async function saveSearch(
 
     const { error } = await db
       .from("saved_searches")
-      .insert({ token, prompt, results: [...results], expires_at: expiresAt });
+      .insert({
+        token,
+        prompt,
+        results: results as unknown as Json,
+        expires_at: expiresAt,
+      });
     if (error) return null;
 
     if (Math.random() < PRUNE_CHANCE) {
