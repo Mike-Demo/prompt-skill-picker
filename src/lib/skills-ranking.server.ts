@@ -132,6 +132,22 @@ export async function rankSkills(prompt: string): Promise<SkillSuggestion[]> {
   });
 }
 
+const MAX_ENHANCED_LENGTH = 2000;
+
+export async function enhancePrompt(prompt: string): Promise<string> {
+  const { text } = await generateText({
+    model: model(),
+    prompt: [
+      "You rewrite a user's rough goal into a sharp search brief for a registry of AI agent skills.",
+      "Keep the user's intent and voice. Make it specific: name the role or context, the tasks,",
+      "the inputs and outputs, and any constraints. One short paragraph, no preamble, no quotes.",
+      `Draft: ${prompt}`,
+    ].join("\n"),
+  });
+  const enhanced = text.trim().slice(0, MAX_ENHANCED_LENGTH);
+  return enhanced.length >= 3 ? enhanced : prompt;
+}
+
 export async function collectSkillFiles(ids: string[]): Promise<SkillFile[]> {
   const files: SkillFile[] = [];
   const used = new Set<string>();

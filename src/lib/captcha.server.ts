@@ -14,7 +14,31 @@ interface SiteverifyResponse {
   "error-codes"?: string[];
 }
 
+// hCaptcha tokens are single-use at siteverify. Remember a verified token
+// (hashed, never logged) for a short window so one captcha solve can cover
+// consecutive actions, e.g. "Enhance" followed by "Find skills".
+const VERIFIED_TOKEN_TTL_MS = 5 * 60 * 1000;
+const verifiedTokens = new Map<string, number>();
+
+async function tokenKey(token: string): Promise<string> {
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(token));
+  return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+function pruneVerifiedTokens(now: number): void {
+  for (const [key, expiry] of verifiedTokens) {
+    if (expiry <= now) verifiedTokens.delete(key);
+  }
+}
+
 export async function verifyCaptchaToken(token: string): Promise<void> {
+  const now = Date.now();
+  pruneVerifiedTokens(now);
+
+  const key = await tokenKey(token);
+  const cachedExpiry = verifiedTokens.get(key);
+  if (cachedExpiry && cachedExpiry > now) return;
+
   const secret = process.env["HCAPTCHA_SECRET_KEY"] ?? TEST_SECRET;
 
   const body = new URLSearchParams({ secret, response: token });
@@ -35,4 +59,6 @@ export async function verifyCaptchaToken(token: string): Promise<void> {
       codes ? `Captcha verification failed: ${codes}. Please retry the captcha.` : "Captcha verification failed. Please retry the captcha.",
     );
   }
+
+  verifiedTokens.set(key, now + VERIFIED_TOKEN_TTL_MS);
 }
