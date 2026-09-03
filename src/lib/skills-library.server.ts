@@ -62,5 +62,7 @@ export async function listSkillLibrary(): Promise<SkillLibraryEntry[]> {
     }),
   );
 
-  return entries.filter((entry) => entry.hasMarkdown);
+  const visible = entries.filter((entry) => entry.hasMarkdown);
+  allowSkillIds(visible.map((entry) => entry.id));
+  return visible;
 }
