@@ -12,7 +12,7 @@ Let search-engine crawlers and major AI indexers discover and index the public p
 
 ### 1. Rewrite `public/robots.txt`
 - Explicit `User-agent: <scraper>` / `Disallow: /` blocks for known content-scraping / SEO-aggregator bots that consume resources without aiding discovery: `AhrefsBot`, `SemrushBot`, `MJ12bot`, `DotBot`, `PetalBot`, `Bytespider`, `Sogou web spider`, `Baiduspider`, `BLEXBot`, `DataForSeoBot`, `ZoominfoBot`.
-- `User-agent: *` with empty `Disallow:` → allows everything else, which covers search engines (Googlebot, Bingbot, DuckDuckBot, YandexBot, Baiduspider-normal) **and** the major AI indexers (GPTBot, ClaudeBot, PerplexityBot, Google-Extended, Applebot-Extended, CCBot) by default.
+- `User-agent: *` with empty `Disallow:` → allows everything else, which covers search engines (Googlebot, Bingbot, DuckDuckBot, YandexBot, Baiduspider-normal) **and** the major AI indexers (GPTBot, ClaudeBot, PerplexityBot, Google-Extended, Applebot-Extended, CCBot, Automattic-External-Bot) by default.
 - Add `Sitemap: https://skills.mikedemo.dev/sitemap.xml`.
 
 ### 2. Remove `noindex, nofollow` meta from the public pages
