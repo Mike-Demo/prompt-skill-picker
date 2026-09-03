@@ -6,8 +6,8 @@ Note up front: this backend has no built-in rate-limiting primitive, so this is 
 
 | Action | Limit per IP |
 | --- | --- |
-| Find skills (AI search) | 1 per minute, 30 per day |
-| Enhance (AI rewrite) | 1 per minute, 30 per day |
+| Find skills (AI search) | 3 per minute, 30 per day |
+| Enhance (AI rewrite) | 3 per minute, 30 per day |
 | Download zip | 10 per minute |
 | Library listing | 20 per minute (already 5-min cached) |
 
@@ -46,4 +46,4 @@ Frontend:
 
 Rollback: the change is additive — reverting `rate-limit.server.ts`, the guard lines in the server functions, and the countdown UI restores current behaviour; the two tables can be left in place harmlessly.
 
-Risks: IP-based limits punish shared networks (offices, mobile carriers) — 1/minute is strict, and several people behind one NAT will collide. Say the word if you'd rather start at 3/minute.
+Risks: IP-based limits punish shared networks (offices, mobile carriers), so 3/minute is the starting point and is easy to tune later in one constant.
