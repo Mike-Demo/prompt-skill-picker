@@ -38,7 +38,8 @@ export async function createGist(
   });
 
   if (!response.ok) {
-    throw new Error(`GitHub rejected the gist (status ${response.status}).`);
+    const detail = (await response.text()).slice(0, 300);
+    throw new Error(`GitHub rejected the gist (status ${response.status}): ${detail}`);
   }
 
   const body = (await response.json()) as { html_url?: unknown };
