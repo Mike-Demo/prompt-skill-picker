@@ -72,6 +72,7 @@ export const getCaptchaSitekey = createServerFn({ method: "GET" }).handler(
 export const fetchSkillFiles = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => FetchInput.parse(input))
   .handler(async ({ data }): Promise<SkillFile[]> => {
+    await guard("download");
     const { collectSkillFiles } = await import("./skills-ranking.server");
     return collectSkillFiles(data.ids);
   });
