@@ -1,7 +1,13 @@
 // hCaptcha server-side verification.
-// Uses HCAPTCHA_SECRET_KEY when configured; falls back to hCaptcha's official
-// test secret (always passes) so local/preview development works without keys.
+// Uses HCAPTCHA_SECRET_KEY / HCAPTCHA_SITEKEY when configured; falls back to
+// hCaptcha's official test pair (always passes) so local development works
+// without keys.
 const TEST_SECRET = "0x0000000000000000000000000000000000000000";
+const TEST_SITEKEY = "10000000-ffff-ffff-ffff-000000000001";
+
+export function getCaptchaSitekey(): string {
+  return process.env["HCAPTCHA_SITEKEY"] ?? TEST_SITEKEY;
+}
 
 interface SiteverifyResponse {
   success: boolean;
