@@ -16,6 +16,16 @@ export const assetCredits: readonly LicenseEntry[] = [
   },
 ];
 
+export const typefaceCredits: readonly LicenseEntry[] = [
+  {
+    name: "Nebula Sans",
+    author: "Nebula Entertainment & Broadcasting LLC",
+    license: "SIL Open Font License 1.1",
+    url: "https://nebulasans.com/license/",
+    note: "The interface typeface, self-hosted via @fontsource/nebula-sans. Based on Source Sans by Paul D. Hunt for Adobe. Project site: https://nebulasans.com/",
+  },
+];
+
 export const libraryCredits: readonly LicenseEntry[] = [
   {
     name: "React",
