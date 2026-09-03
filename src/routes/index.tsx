@@ -131,13 +131,17 @@ function SkillFinderPage() {
               }
             }}
           />
-          <HCaptcha
-            ref={captchaRef}
-            sitekey={HCAPTCHA_SITEKEY}
-            onVerify={(token) => setCaptchaToken(token)}
-            onExpire={() => setCaptchaToken(null)}
-            onError={() => setCaptchaToken(null)}
-          />
+          {sitekeyQuery.data ? (
+            <HCaptcha
+              ref={captchaRef}
+              sitekey={sitekeyQuery.data}
+              onVerify={(token) => setCaptchaToken(token)}
+              onExpire={() => setCaptchaToken(null)}
+              onError={() => setCaptchaToken(null)}
+            />
+          ) : (
+            <Skeleton className="h-[78px] w-[303px]" />
+          )}
           <div className="flex flex-wrap items-center gap-2">
             <Button
               type="submit"
