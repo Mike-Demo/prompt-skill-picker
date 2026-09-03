@@ -1,15 +1,21 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
-import { Download, ExternalLink, Library, Loader2, Search, Sparkles } from "lucide-react";
+import { Check, Library, Link2, Loader2, Search, Sparkles, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Badge } from "@/components/ui/badge";
+import { SelectionBar } from "@/components/selection-bar";
+import { SkillResultCard } from "@/components/skill-result-card";
+import {
+  addRecentSearch,
+  clearRecentSearches,
+  readRecentSearches,
+  type RecentSearch,
+} from "@/lib/recent-searches";
 import { downloadSkillsZip } from "@/lib/zip";
 import {
   enhancePrompt,
