@@ -249,17 +249,19 @@ function SkillFinderPage() {
           {enhanceHint ? (
             <p className="text-xs text-muted-foreground">{enhanceHint}</p>
           ) : null}
-          {sitekeyQuery.data ? (
-            <HCaptcha
-              ref={captchaRef}
-              sitekey={sitekeyQuery.data}
-              onVerify={(token) => setCaptchaToken(token)}
-              onExpire={() => setCaptchaToken(null)}
-              onError={() => setCaptchaToken(null)}
-            />
-          ) : (
-            <Skeleton className="h-[78px] w-[303px]" />
-          )}
+          <div className="flex justify-center">
+            {sitekeyQuery.data ? (
+              <HCaptcha
+                ref={captchaRef}
+                sitekey={sitekeyQuery.data}
+                onVerify={(token) => setCaptchaToken(token)}
+                onExpire={() => setCaptchaToken(null)}
+                onError={() => setCaptchaToken(null)}
+              />
+            ) : (
+              <Skeleton className="h-[78px] w-[303px]" />
+            )}
+          </div>
           <div className="flex justify-center">
             <Button
               type="submit"
