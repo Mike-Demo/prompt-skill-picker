@@ -194,19 +194,43 @@ function SkillFinderPage() {
             submit(prompt);
           }}
         >
-          <Textarea
-            value={prompt}
-            onChange={(event) => setPrompt(event.target.value)}
-            placeholder="e.g. help me write better React components and review pull requests"
-            rows={3}
-            className="resize-none text-base"
-            onKeyDown={(event) => {
-              if (event.key === "Enter" && (event.metaKey || event.ctrlKey)) {
-                event.preventDefault();
-                submit(prompt);
-              }
-            }}
-          />
+          <div className="relative">
+            <Textarea
+              value={prompt}
+              onChange={(event) => setPrompt(event.target.value)}
+              placeholder="e.g. help me write better React components and review pull requests"
+              rows={3}
+              className="resize-none pr-12 text-base"
+              onKeyDown={(event) => {
+                if (event.key === "Enter" && (event.metaKey || event.ctrlKey)) {
+                  event.preventDefault();
+                  submit(prompt);
+                }
+              }}
+            />
+            <TooltipProvider delayDuration={200}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    type="button"
+                    aria-label="Enhance prompt with AI"
+                    onClick={runEnhanceClick}
+                    disabled={prompt.trim().length < 3 || busy}
+                    className="absolute bottom-2 right-2 inline-flex size-8 items-center justify-center rounded-md border border-border bg-background text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {enhance.isPending ? (
+                      <Loader2 className="size-4 animate-spin" />
+                    ) : (
+                      <Sparkles className="size-4" />
+                    )}
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="left">
+                  {enhance.isPending ? "Enhancing…" : "Enhance with AI for sharper matches"}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
           {sitekeyQuery.data ? (
             <HCaptcha
               ref={captchaRef}
