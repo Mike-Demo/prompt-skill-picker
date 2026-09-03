@@ -74,6 +74,7 @@ function SkillFinderPage() {
   const search = useMutation({
     mutationFn: (value: { prompt: string; captchaToken: string }) =>
       runSearch({ data: value }),
+    onMutate: () => setShareToken(null),
     onSuccess: (response, value) => {
       setSelected(new Set());
       setShareToken(response.token);
