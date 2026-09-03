@@ -16,8 +16,37 @@ import {
 import { mapWithConcurrency } from "./concurrency";
 import type { SkillFile, SkillSuggestion } from "./skills.functions";
 
-const MAX_CANDIDATES = 24;
+const MAX_CANDIDATES = 12;
+const MAX_RESULTS = 8;
 const DOC_CONCURRENCY = 8;
+
+// Keyword expansion is deterministic enough to reuse: caching it per prompt
+// removes one AI round trip (and its cost) from repeat searches.
+const QUERY_CACHE_TTL_MS = 30 * 60 * 1000;
+const QUERY_CACHE_MAX_ENTRIES = 500;
+const queryCache = new Map<string, { queries: string[]; expiresAt: number }>();
+
+function cacheKey(prompt: string): string {
+  return prompt.trim().toLowerCase().replace(/\s+/g, " ");
+}
+
+function readQueryCache(key: string): string[] | null {
+  const hit = queryCache.get(key);
+  if (!hit) return null;
+  if (hit.expiresAt <= Date.now()) {
+    queryCache.delete(key);
+    return null;
+  }
+  return hit.queries;
+}
+
+function writeQueryCache(key: string, queries: string[]): void {
+  if (queryCache.size >= QUERY_CACHE_MAX_ENTRIES) {
+    const oldest = queryCache.keys().next().value;
+    if (oldest !== undefined) queryCache.delete(oldest);
+  }
+  queryCache.set(key, { queries, expiresAt: Date.now() + QUERY_CACHE_TTL_MS });
+}
 
 /** Dedupes several registry result sets, keeping the most-installed first. */
 function mergeCandidates(batches: readonly RegistrySkill[][]): RegistrySkill[] {
@@ -38,6 +67,10 @@ const rankingSchema = z.object({
 const model = () => createLovableAiGatewayProvider(getLovableApiKey())(AI_MODEL);
 
 async function expandQueries(prompt: string): Promise<string[]> {
+  const key = cacheKey(prompt);
+  const cached = readQueryCache(key);
+  if (cached) return cached;
+
   try {
     const { output } = await generateText({
       model: model(),
@@ -49,7 +82,9 @@ async function expandQueries(prompt: string): Promise<string[]> {
       ].join("\n"),
     });
     const queries = output.queries.map((q) => q.trim()).filter(Boolean).slice(0, 6);
-    return queries.length > 0 ? queries : [prompt];
+    const resolved = queries.length > 0 ? queries : [prompt];
+    writeQueryCache(key, resolved);
+    return resolved;
   } catch (error) {
     if (NoObjectGeneratedError.isInstance(error)) return [prompt];
     throw error;
@@ -105,7 +140,7 @@ export async function rankSkills(prompt: string): Promise<SkillSuggestion[]> {
   const catalog = enriched
     .map(
       (e) =>
-        `- id: ${e.skill.id}\n  name: ${e.skill.name}\n  installs: ${e.skill.installs}\n  description: ${e.description || "(none)"}`,
+        `- id: ${e.skill.id}\n  name: ${e.skill.name}\n  description: ${e.description || "(none)"}`,
     )
     .join("\n");
 
@@ -118,7 +153,7 @@ export async function rankSkills(prompt: string): Promise<SkillSuggestion[]> {
         "Rank agent skills by how well they serve the user's goal.",
         "Only use ids from the catalog. Drop clearly irrelevant skills.",
         "score is 0-100. reason is one sentence, at most 140 characters, addressed to the user.",
-        "Return at most 12 results, best first.",
+        `Return at most ${MAX_RESULTS} results, best first.`,
         `\nUser goal: ${prompt}`,
         `\nCatalog:\n${catalog}`,
       ].join("\n"),
@@ -132,9 +167,9 @@ export async function rankSkills(prompt: string): Promise<SkillSuggestion[]> {
   const ordered = ranked
     .filter((r) => byId.has(r.id))
     .sort((a, b) => b.score - a.score)
-    .slice(0, 12);
+    .slice(0, MAX_RESULTS);
 
-  const source = ordered.length > 0 ? ordered : enriched.slice(0, 12).map((e) => ({ id: e.skill.id, score: 0, reason: "" }));
+  const source = ordered.length > 0 ? ordered : enriched.slice(0, MAX_RESULTS).map((e) => ({ id: e.skill.id, score: 0, reason: "" }));
 
   const suggestions = source.flatMap((r) => {
     const entry = byId.get(r.id);
