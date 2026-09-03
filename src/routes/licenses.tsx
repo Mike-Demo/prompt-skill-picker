@@ -1,7 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 
-import { assetCredits, dataCredits, libraryCredits, type LicenseEntry } from "@/lib/licenses";
+import {
+  assetCredits,
+  dataCredits,
+  libraryCredits,
+  typefaceCredits,
+  type LicenseEntry,
+} from "@/lib/licenses";
 
 const TITLE = "Open source licenses & credits — Skill Finder";
 const DESCRIPTION =
@@ -71,6 +77,11 @@ function LicensesPage() {
             depends on is credited below.
           </p>
         </header>
+
+        <section className="mt-10">
+          <h2 className="text-lg font-semibold text-foreground">Typeface</h2>
+          <CreditList entries={typefaceCredits} />
+        </section>
 
         <section className="mt-10">
           <h2 className="text-lg font-semibold text-foreground">Artwork</h2>
