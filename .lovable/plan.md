@@ -6,8 +6,8 @@ Note up front: this backend has no built-in rate-limiting primitive, so this is 
 
 | Action | Limit per IP |
 | --- | --- |
-| Find skills (AI search) | 1 per minute, 30 per day |
-| Enhance (AI rewrite) | 1 per minute, 30 per day |
+| Find skills (AI search) | 3 per minute, 30 per day |
+| Enhance (AI rewrite) | 3 per minute, 30 per day |
 | Download zip | 10 per minute |
 | Library listing | 20 per minute (already 5-min cached) |
 
