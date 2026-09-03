@@ -8,6 +8,12 @@ import { Check, Library, Link2, Loader2, Search, Sparkles, Trash2 } from "lucide
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { SelectionBar } from "@/components/selection-bar";
 import { SkillResultCard } from "@/components/skill-result-card";
 import {
@@ -59,7 +65,9 @@ function SkillFinderPage() {
   const [shareToken, setShareToken] = useState<string | null>(null);
   const [shareCopied, setShareCopied] = useState(false);
   const [recent, setRecent] = useState<RecentSearch[]>([]);
+  const [enhanceHint, setEnhanceHint] = useState<string | null>(null);
   const captchaRef = useRef<HCaptcha | null>(null);
+  const enhanceHintTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Local storage is browser-only, so hydrate the list after mount.
   useEffect(() => setRecent(readRecentSearches()), []);
@@ -144,9 +152,19 @@ function SkillFinderPage() {
     search.mutate({ prompt: trimmed, captchaToken });
   };
 
+  const showEnhanceHint = (message: string) => {
+    if (enhanceHintTimer.current) clearTimeout(enhanceHintTimer.current);
+    setEnhanceHint(message);
+    enhanceHintTimer.current = setTimeout(() => setEnhanceHint(null), 4000);
+  };
+
   const runEnhanceClick = () => {
     const trimmed = prompt.trim();
-    if (trimmed.length < 3 || busy || !captchaToken) return;
+    if (trimmed.length < 3 || busy) return;
+    if (!captchaToken) {
+      showEnhanceHint("Complete the CAPTCHA first to use Enhance.");
+      return;
+    }
     enhance.mutate({ prompt: trimmed, captchaToken });
   };
 
@@ -176,19 +194,43 @@ function SkillFinderPage() {
             submit(prompt);
           }}
         >
-          <Textarea
-            value={prompt}
-            onChange={(event) => setPrompt(event.target.value)}
-            placeholder="e.g. help me write better React components and review pull requests"
-            rows={3}
-            className="resize-none text-base"
-            onKeyDown={(event) => {
-              if (event.key === "Enter" && (event.metaKey || event.ctrlKey)) {
-                event.preventDefault();
-                submit(prompt);
-              }
-            }}
-          />
+          <div className="relative">
+            <Textarea
+              value={prompt}
+              onChange={(event) => setPrompt(event.target.value)}
+              placeholder="e.g. help me write better React components and review pull requests"
+              rows={3}
+              className="resize-none pr-12 text-base"
+              onKeyDown={(event) => {
+                if (event.key === "Enter" && (event.metaKey || event.ctrlKey)) {
+                  event.preventDefault();
+                  submit(prompt);
+                }
+              }}
+            />
+            <TooltipProvider delayDuration={200}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    type="button"
+                    aria-label="Enhance prompt with AI"
+                    onClick={runEnhanceClick}
+                    disabled={prompt.trim().length < 3 || busy}
+                    className="absolute bottom-2 right-2 inline-flex size-8 items-center justify-center rounded-md border border-border bg-background text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {enhance.isPending ? (
+                      <Loader2 className="size-4 animate-spin" />
+                    ) : (
+                      <Sparkles className="size-4" />
+                    )}
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="left">
+                  {enhance.isPending ? "Enhancing…" : "Enhance with AI for sharper matches"}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
           {sitekeyQuery.data ? (
             <HCaptcha
               ref={captchaRef}
