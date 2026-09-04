@@ -3,11 +3,11 @@ import { createFileRoute } from "@tanstack/react-router";
 import { AgentSkillsPage } from "@/components/agent-skills-page";
 import { AGENT_PAGES } from "@/lib/agents";
 
-const AGENT = AGENT_PAGES["claude"];
+const AGENT = AGENT_PAGES["chatgpt"];
 const SHARE_IMAGE = "https://skills.mikedemo.dev/og-skill-finder.jpg";
-const CANONICAL = "https://skills.mikedemo.dev/claude-skills";
+const CANONICAL = "https://skills.mikedemo.dev/chatgpt-skills";
 
-export const Route = createFileRoute("/claude-skills")({
+export const Route = createFileRoute("/chatgpt-skills")({
   head: () => ({
     meta: [
       { title: AGENT.title },

@@ -16,6 +16,8 @@ import {
 } from "@/components/ui/tooltip";
 import { SelectionBar } from "@/components/selection-bar";
 import { SkillResultCard } from "@/components/skill-result-card";
+import { AgentNav } from "@/components/agent-nav";
+
 import {
   addRecentSearch,
   clearRecentSearches,
@@ -207,7 +209,9 @@ function SkillFinderPage() {
               <Sparkles className="size-4" /> Claude Code skills
             </Link>
           </div>
+          <AgentNav />
         </header>
+
 
         <form
           className="mt-8 space-y-3"

@@ -8,6 +8,7 @@ import {
 import { allowSkillIds } from "./skills-allowlist.server";
 import { mapWithConcurrency } from "./concurrency";
 import type { SkillLibraryEntry } from "./skills.functions";
+import type { AgentKey } from "./agents";
 
 /**
  * Broad topic queries used to assemble a browsable catalogue from the
@@ -27,20 +28,69 @@ const TOPICS = [
 ] as const;
 
 /**
- * Topic queries used for the curated Claude Code collection. The registry has
- * no per-agent filter, so these are the tasks Claude Code users most often
- * reach for; every skill is a plain SKILL.md and works in Claude Code.
+ * Topic queries per agent. The registry has no per-agent filter, so each list
+ * is the set of tasks that agent's users most often reach for; every skill is
+ * a plain SKILL.md and works with any agent that reads markdown instructions.
  */
-const CLAUDE_TOPICS = [
-  "claude",
-  "claude code",
-  "code review",
-  "refactoring",
-  "debugging",
-  "testing",
-  "documentation",
-  "git commit",
-] as const;
+const AGENT_TOPICS: Readonly<Record<AgentKey, readonly string[]>> = {
+  claude: [
+    "claude",
+    "claude code",
+    "code review",
+    "refactoring",
+    "debugging",
+    "testing",
+    "documentation",
+    "git commit",
+  ],
+  "microsoft-copilot": [
+    "microsoft copilot",
+    "mcp",
+    "excel",
+    "powerpoint",
+    "word document",
+    "meeting notes",
+    "email",
+    "data analysis",
+  ],
+  "superhuman-go": [
+    "email",
+    "inbox triage",
+    "meeting notes",
+    "follow up",
+    "scheduling",
+    "writing",
+    "summarize",
+  ],
+  chatgpt: [
+    "chatgpt",
+    "prompt engineering",
+    "writing",
+    "summarize",
+    "data analysis",
+    "research",
+    "pdf",
+  ],
+  grok: ["research", "data analysis", "coding", "summarize", "social media", "writing"],
+  perplexity: [
+    "research",
+    "citations",
+    "competitive analysis",
+    "market research",
+    "summarize",
+    "writing",
+  ],
+  "github-copilot": [
+    "github copilot",
+    "code review",
+    "pull request",
+    "testing",
+    "refactoring",
+    "git commit",
+    "documentation",
+  ],
+};
+
 
 const MAX_ENTRIES = 24;
 const DOC_CONCURRENCY = 8;
@@ -118,9 +168,14 @@ async function listCached(
   if (!slot.inFlight) {
     slot.inFlight = loadLibrary(topics)
       .then((entries) => {
-        slot.cached = { entries, expiresAt: Date.now() + CACHE_TTL_MS };
+        // An empty result means the registry or GitHub call failed; caching it
+        // would keep the page blank for the whole TTL.
+        if (entries.length > 0) {
+          slot.cached = { entries, expiresAt: Date.now() + CACHE_TTL_MS };
+        }
         return entries;
       })
+
       .finally(() => {
         slot.inFlight = null;
       });
@@ -133,7 +188,7 @@ export async function listSkillLibrary(): Promise<SkillLibraryEntry[]> {
   return listCached("library", TOPICS);
 }
 
-/** Curated Claude Code collection, ranked by installs. */
-export async function listClaudeSkillLibrary(): Promise<SkillLibraryEntry[]> {
-  return listCached("claude", CLAUDE_TOPICS);
+/** Curated per-agent collection, ranked by installs. */
+export async function listAgentSkillLibrary(agent: AgentKey): Promise<SkillLibraryEntry[]> {
+  return listCached(`agent:${agent}`, AGENT_TOPICS[agent]);
 }
