@@ -2,10 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { ArrowLeft, ExternalLink, Library } from "lucide-react";
-
-import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
+import { WaBadge, WaCheckbox, WaIcon } from "@/design-system/font-awsome-web-awesome-171158";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SelectionBar } from "@/components/selection-bar";
 import { AgentNav } from "@/components/agent-nav";
