@@ -36,6 +36,7 @@ import { useCooldown } from "@/hooks/use-cooldown";
 const TITLE = "Skill Finder — discover and bundle agent skills";
 const DESCRIPTION =
   "Describe what you want your AI agent to do, get ranked skill suggestions from the open skills registry, and download the ones you pick as a single zip.";
+const SHARE_IMAGE = "https://skills.mikedemo.dev/og-skill-finder.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -45,8 +46,12 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: TITLE },
       { property: "og:description", content: DESCRIPTION },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://skills.mikedemo.dev/" },
+      { property: "og:image", content: SHARE_IMAGE },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:image", content: SHARE_IMAGE },
     ],
+    links: [{ rel: "canonical", href: "https://skills.mikedemo.dev/" }],
   }),
   component: SkillFinderPage,
 });
@@ -188,12 +193,20 @@ function SkillFinderPage() {
             Describe what you want your agent to do. We search the open skills registry, rank the
             matches with AI, and bundle the ones you pick into a zip of markdown files.
           </p>
-          <Link
-            to="/library"
-            className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
-          >
-            <Library className="size-4" /> Browse the full skill library
-          </Link>
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+            <Link
+              to="/library"
+              className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
+            >
+              <Library className="size-4" /> Browse the full skill library
+            </Link>
+            <Link
+              to="/claude-skills"
+              className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
+            >
+              <Sparkles className="size-4" /> Claude Code skills
+            </Link>
+          </div>
         </header>
 
         <form

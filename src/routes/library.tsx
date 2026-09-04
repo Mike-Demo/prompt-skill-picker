@@ -32,8 +32,11 @@ export const Route = createFileRoute("/library")({
   component: SkillLibraryPage,
 });
 
+type SortMode = "popular" | "alpha";
+
 function SkillLibraryPage() {
   const [filter, setFilter] = useState("");
+  const [sort, setSort] = useState<SortMode>("popular");
   const [selected, setSelected] = useState<Set<string>>(new Set());
 
   const loadSkills = useServerFn(listSkills);
@@ -69,11 +72,21 @@ function SkillLibraryPage() {
 
   const visible = useMemo(() => {
     const needle = filter.trim().toLowerCase();
-    if (needle.length === 0) return entries;
-    return entries.filter((entry) =>
-      `${entry.name} ${entry.source} ${entry.description}`.toLowerCase().includes(needle),
+    const matched =
+      needle.length === 0
+        ? entries
+        : entries.filter((entry) =>
+            `${entry.name} ${entry.source} ${entry.description}`.toLowerCase().includes(needle),
+          );
+
+    // Popularity uses the registry's install count, with the name as a stable
+    // tie-breaker so equally-used skills keep a predictable order.
+    return [...matched].sort((a, b) =>
+      sort === "popular"
+        ? b.installs - a.installs || a.name.localeCompare(b.name)
+        : a.name.localeCompare(b.name),
     );
-  }, [entries, filter]);
+  }, [entries, filter, sort]);
 
   const toggle = (id: string) => {
     setSelected((prev) => {
@@ -112,6 +125,33 @@ function SkillLibraryPage() {
             placeholder="Filter by name, repo or description"
             className="max-w-sm"
           />
+
+          <div
+            role="group"
+            aria-label="Sort skills"
+            className="inline-flex overflow-hidden rounded-md border border-border"
+          >
+            {(
+              [
+                { value: "popular", label: "Most used" },
+                { value: "alpha", label: "A–Z" },
+              ] as const
+            ).map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                aria-pressed={sort === option.value}
+                onClick={() => setSort(option.value)}
+                className={`px-3 py-1.5 text-xs font-medium transition-colors ${
+                  sort === option.value
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-background text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                }`}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
 
           {library.isSuccess ? (
             <span className="text-xs text-muted-foreground">

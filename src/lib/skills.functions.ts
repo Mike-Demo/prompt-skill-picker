@@ -137,6 +137,8 @@ export const fetchSkillFiles = createServerFn({ method: "POST" })
 
 export interface SkillLibraryEntry {
   id: string;
+  /** Registry slug, used to build the `npx skills use` install command. */
+  skillId: string;
   name: string;
   source: string;
   installs: number;
@@ -151,5 +153,13 @@ export const listSkills = createServerFn({ method: "GET" }).handler(
     await guard("library");
     const { listSkillLibrary } = await import("./skills-library.server");
     return listSkillLibrary();
+  },
+);
+
+export const listClaudeSkills = createServerFn({ method: "GET" }).handler(
+  async (): Promise<SkillLibraryEntry[]> => {
+    await guard("library");
+    const { listClaudeSkillLibrary } = await import("./skills-library.server");
+    return listClaudeSkillLibrary();
   },
 );

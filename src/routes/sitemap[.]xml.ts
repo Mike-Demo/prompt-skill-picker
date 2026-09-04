@@ -11,6 +11,7 @@ interface SitemapEntry {
 const STATIC_ENTRIES: readonly SitemapEntry[] = [
   { path: "/", changefreq: "weekly", priority: "1.0" },
   { path: "/library", changefreq: "weekly", priority: "0.8" },
+  { path: "/claude-skills", changefreq: "weekly", priority: "0.8" },
   { path: "/licenses", changefreq: "monthly", priority: "0.5" },
 ];
 

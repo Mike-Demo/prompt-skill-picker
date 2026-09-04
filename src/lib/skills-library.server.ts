@@ -26,17 +26,38 @@ const TOPICS = [
   "pdf",
 ] as const;
 
+/**
+ * Topic queries used for the curated Claude Code collection. The registry has
+ * no per-agent filter, so these are the tasks Claude Code users most often
+ * reach for; every skill is a plain SKILL.md and works in Claude Code.
+ */
+const CLAUDE_TOPICS = [
+  "claude",
+  "claude code",
+  "code review",
+  "refactoring",
+  "debugging",
+  "testing",
+  "documentation",
+  "git commit",
+] as const;
+
 const MAX_ENTRIES = 24;
 const DOC_CONCURRENCY = 8;
 const CACHE_TTL_MS = 30 * 60 * 1000;
 
-let cached: { entries: SkillLibraryEntry[]; expiresAt: number } | null = null;
-let inFlight: Promise<SkillLibraryEntry[]> | null = null;
+interface CacheSlot {
+  cached: { entries: SkillLibraryEntry[]; expiresAt: number } | null;
+  inFlight: Promise<SkillLibraryEntry[]> | null;
+}
 
-async function loadLibrary(): Promise<SkillLibraryEntry[]> {
+const slots = new Map<string, CacheSlot>();
+
+async function loadLibrary(topics: readonly string[]): Promise<SkillLibraryEntry[]> {
   const batches = await Promise.all(
-    TOPICS.map((topic) => searchRegistry(topic, 12).catch(() => [] as RegistrySkill[])),
+    topics.map((topic) => searchRegistry(topic, 12).catch(() => [] as RegistrySkill[])),
   );
+
 
   const byId = new Map<string, RegistrySkill>();
   for (const batch of batches) {
@@ -56,6 +77,7 @@ async function loadLibrary(): Promise<SkillLibraryEntry[]> {
       const doc = await fetchSkillDocument(skill);
       return {
         id: skill.id,
+        skillId: skill.skillId,
         name: skill.name,
         source: skill.source,
         installs: skill.installs,
@@ -67,32 +89,51 @@ async function loadLibrary(): Promise<SkillLibraryEntry[]> {
     },
   );
 
-  const visible = entries.filter((entry) => entry.hasMarkdown);
+  // Most-installed first: the registry's install count is the only usage
+  // signal available, and the doc fetch above preserves candidate order.
+  const visible = entries
+    .filter((entry) => entry.hasMarkdown)
+    .sort((a, b) => b.installs - a.installs || a.name.localeCompare(b.name));
   allowSkillIds(visible.map((entry) => entry.id));
   return visible;
 }
 
 /**
- * Serves the catalogue from a short-lived cache and collapses concurrent
+ * Serves a catalogue from a short-lived cache and collapses concurrent
  * requests onto one load, so only the first visitor in a window pays for the
  * registry and GitHub round trips.
  */
-export async function listSkillLibrary(): Promise<SkillLibraryEntry[]> {
-  if (cached && cached.expiresAt > Date.now()) {
-    allowSkillIds(cached.entries.map((entry) => entry.id));
-    return cached.entries;
+async function listCached(
+  key: string,
+  topics: readonly string[],
+): Promise<SkillLibraryEntry[]> {
+  const slot: CacheSlot = slots.get(key) ?? { cached: null, inFlight: null };
+  slots.set(key, slot);
+
+  if (slot.cached && slot.cached.expiresAt > Date.now()) {
+    allowSkillIds(slot.cached.entries.map((entry) => entry.id));
+    return slot.cached.entries;
   }
 
-  if (!inFlight) {
-    inFlight = loadLibrary()
+  if (!slot.inFlight) {
+    slot.inFlight = loadLibrary(topics)
       .then((entries) => {
-        cached = { entries, expiresAt: Date.now() + CACHE_TTL_MS };
+        slot.cached = { entries, expiresAt: Date.now() + CACHE_TTL_MS };
         return entries;
       })
       .finally(() => {
-        inFlight = null;
+        slot.inFlight = null;
       });
   }
 
-  return inFlight;
+  return slot.inFlight;
+}
+
+export async function listSkillLibrary(): Promise<SkillLibraryEntry[]> {
+  return listCached("library", TOPICS);
+}
+
+/** Curated Claude Code collection, ranked by installs. */
+export async function listClaudeSkillLibrary(): Promise<SkillLibraryEntry[]> {
+  return listCached("claude", CLAUDE_TOPICS);
 }
