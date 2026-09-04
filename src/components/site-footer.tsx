@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 
+import { WaIcon } from "@/design-system/font-awsome-web-awesome-171158";
 import { cn } from "@/lib/utils";
 
 const linkedInUrl = "https://www.linkedin.com/in/mikedemopoulos";
@@ -25,7 +26,7 @@ export function SiteFooter({ className }: { className?: string }) {
       </div>
       <nav aria-label="Legal links" className="flex flex-wrap items-center justify-center gap-4">
         <Link to="/licenses" className={linkClass}>
-          <i className="fa-solid fa-code h-4 w-4 text-[14px]" aria-hidden="true" />
+          <WaIcon name="code" />
           Open Source
         </Link>
       </nav>
@@ -37,10 +38,7 @@ export function SiteFooter({ className }: { className?: string }) {
           aria-label="MikeDemo on LinkedIn (opens in new tab)"
           className={linkClass}
         >
-          <i
-            className="fa-brands fa-linkedin h-4 w-4 text-[14px] transition-colors duration-200 hover:text-[#0A66C2]"
-            aria-hidden="true"
-          />
+          <WaIcon name="linkedin" family="brands" />
           LinkedIn
         </a>
         <a
@@ -50,10 +48,7 @@ export function SiteFooter({ className }: { className?: string }) {
           aria-label="MikeDemo on X (opens in new tab)"
           className={linkClass}
         >
-          <i
-            className="fa-brands fa-x-twitter h-4 w-4 text-[14px] transition-colors duration-200"
-            aria-hidden="true"
-          />
+          <WaIcon name="x-twitter" family="brands" />
           X
         </a>
         <a
@@ -63,10 +58,7 @@ export function SiteFooter({ className }: { className?: string }) {
           aria-label="MikeDemo on Threads (opens in new tab)"
           className={linkClass}
         >
-          <i
-            className="fa-brands fa-threads h-4 w-4 text-[14px] transition-colors duration-200"
-            aria-hidden="true"
-          />
+          <WaIcon name="threads" family="brands" />
           Threads
         </a>
       </nav>
