@@ -10,11 +10,16 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ChatgptSkillsRouteImport } from './routes/chatgpt-skills'
 import { Route as ClaudeSkillsRouteImport } from './routes/claude-skills'
+import { Route as GithubCopilotSkillsRouteImport } from './routes/github-copilot-skills'
+import { Route as GrokSkillsRouteImport } from './routes/grok-skills'
 import { Route as LibraryRouteImport } from './routes/library'
 import { Route as LicensesRouteImport } from './routes/licenses'
 import { Route as McpSkillsRouteImport } from './routes/mcp-skills'
+import { Route as PerplexitySkillsRouteImport } from './routes/perplexity-skills'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as SuperhumanGoSkillsRouteImport } from './routes/superhuman-go-skills'
 import { Route as STokenRouteImport } from './routes/s.$token'
 
 const IndexRoute = IndexRouteImport.update({
@@ -22,9 +27,24 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ChatgptSkillsRoute = ChatgptSkillsRouteImport.update({
+  id: '/chatgpt-skills',
+  path: '/chatgpt-skills',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ClaudeSkillsRoute = ClaudeSkillsRouteImport.update({
   id: '/claude-skills',
   path: '/claude-skills',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GithubCopilotSkillsRoute = GithubCopilotSkillsRouteImport.update({
+  id: '/github-copilot-skills',
+  path: '/github-copilot-skills',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GrokSkillsRoute = GrokSkillsRouteImport.update({
+  id: '/grok-skills',
+  path: '/grok-skills',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LibraryRoute = LibraryRouteImport.update({
@@ -42,9 +62,19 @@ const McpSkillsRoute = McpSkillsRouteImport.update({
   path: '/mcp-skills',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PerplexitySkillsRoute = PerplexitySkillsRouteImport.update({
+  id: '/perplexity-skills',
+  path: '/perplexity-skills',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SuperhumanGoSkillsRoute = SuperhumanGoSkillsRouteImport.update({
+  id: '/superhuman-go-skills',
+  path: '/superhuman-go-skills',
   getParentRoute: () => rootRouteImport,
 } as any)
 const STokenRoute = STokenRouteImport.update({
@@ -55,69 +85,104 @@ const STokenRoute = STokenRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/chatgpt-skills': typeof ChatgptSkillsRoute
   '/claude-skills': typeof ClaudeSkillsRoute
+  '/github-copilot-skills': typeof GithubCopilotSkillsRoute
+  '/grok-skills': typeof GrokSkillsRoute
   '/library': typeof LibraryRoute
   '/licenses': typeof LicensesRoute
   '/mcp-skills': typeof McpSkillsRoute
+  '/perplexity-skills': typeof PerplexitySkillsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/superhuman-go-skills': typeof SuperhumanGoSkillsRoute
   '/s/$token': typeof STokenRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/chatgpt-skills': typeof ChatgptSkillsRoute
   '/claude-skills': typeof ClaudeSkillsRoute
+  '/github-copilot-skills': typeof GithubCopilotSkillsRoute
+  '/grok-skills': typeof GrokSkillsRoute
   '/library': typeof LibraryRoute
   '/licenses': typeof LicensesRoute
   '/mcp-skills': typeof McpSkillsRoute
+  '/perplexity-skills': typeof PerplexitySkillsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/superhuman-go-skills': typeof SuperhumanGoSkillsRoute
   '/s/$token': typeof STokenRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/chatgpt-skills': typeof ChatgptSkillsRoute
   '/claude-skills': typeof ClaudeSkillsRoute
+  '/github-copilot-skills': typeof GithubCopilotSkillsRoute
+  '/grok-skills': typeof GrokSkillsRoute
   '/library': typeof LibraryRoute
   '/licenses': typeof LicensesRoute
   '/mcp-skills': typeof McpSkillsRoute
+  '/perplexity-skills': typeof PerplexitySkillsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/superhuman-go-skills': typeof SuperhumanGoSkillsRoute
   '/s/$token': typeof STokenRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/chatgpt-skills'
     | '/claude-skills'
+    | '/github-copilot-skills'
+    | '/grok-skills'
     | '/library'
     | '/licenses'
     | '/mcp-skills'
+    | '/perplexity-skills'
     | '/sitemap.xml'
+    | '/superhuman-go-skills'
     | '/s/$token'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/chatgpt-skills'
     | '/claude-skills'
+    | '/github-copilot-skills'
+    | '/grok-skills'
     | '/library'
     | '/licenses'
     | '/mcp-skills'
+    | '/perplexity-skills'
     | '/sitemap.xml'
+    | '/superhuman-go-skills'
     | '/s/$token'
   id:
     | '__root__'
     | '/'
+    | '/chatgpt-skills'
     | '/claude-skills'
+    | '/github-copilot-skills'
+    | '/grok-skills'
     | '/library'
     | '/licenses'
     | '/mcp-skills'
+    | '/perplexity-skills'
     | '/sitemap.xml'
+    | '/superhuman-go-skills'
     | '/s/$token'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ChatgptSkillsRoute: typeof ChatgptSkillsRoute
   ClaudeSkillsRoute: typeof ClaudeSkillsRoute
+  GithubCopilotSkillsRoute: typeof GithubCopilotSkillsRoute
+  GrokSkillsRoute: typeof GrokSkillsRoute
   LibraryRoute: typeof LibraryRoute
   LicensesRoute: typeof LicensesRoute
   McpSkillsRoute: typeof McpSkillsRoute
+  PerplexitySkillsRoute: typeof PerplexitySkillsRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  SuperhumanGoSkillsRoute: typeof SuperhumanGoSkillsRoute
   STokenRoute: typeof STokenRoute
 }
 
@@ -130,11 +195,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/chatgpt-skills': {
+      id: '/chatgpt-skills'
+      path: '/chatgpt-skills'
+      fullPath: '/chatgpt-skills'
+      preLoaderRoute: typeof ChatgptSkillsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/claude-skills': {
       id: '/claude-skills'
       path: '/claude-skills'
       fullPath: '/claude-skills'
       preLoaderRoute: typeof ClaudeSkillsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/github-copilot-skills': {
+      id: '/github-copilot-skills'
+      path: '/github-copilot-skills'
+      fullPath: '/github-copilot-skills'
+      preLoaderRoute: typeof GithubCopilotSkillsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/grok-skills': {
+      id: '/grok-skills'
+      path: '/grok-skills'
+      fullPath: '/grok-skills'
+      preLoaderRoute: typeof GrokSkillsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/library': {
@@ -158,11 +244,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof McpSkillsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/perplexity-skills': {
+      id: '/perplexity-skills'
+      path: '/perplexity-skills'
+      fullPath: '/perplexity-skills'
+      preLoaderRoute: typeof PerplexitySkillsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sitemap.xml': {
       id: '/sitemap.xml'
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/superhuman-go-skills': {
+      id: '/superhuman-go-skills'
+      path: '/superhuman-go-skills'
+      fullPath: '/superhuman-go-skills'
+      preLoaderRoute: typeof SuperhumanGoSkillsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/s/$token': {
@@ -177,11 +277,16 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ChatgptSkillsRoute: ChatgptSkillsRoute,
   ClaudeSkillsRoute: ClaudeSkillsRoute,
+  GithubCopilotSkillsRoute: GithubCopilotSkillsRoute,
+  GrokSkillsRoute: GrokSkillsRoute,
   LibraryRoute: LibraryRoute,
   LicensesRoute: LicensesRoute,
   McpSkillsRoute: McpSkillsRoute,
+  PerplexitySkillsRoute: PerplexitySkillsRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  SuperhumanGoSkillsRoute: SuperhumanGoSkillsRoute,
   STokenRoute: STokenRoute,
 }
 export const routeTree = rootRouteImport

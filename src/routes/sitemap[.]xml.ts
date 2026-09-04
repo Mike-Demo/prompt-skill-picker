@@ -12,8 +12,15 @@ const STATIC_ENTRIES: readonly SitemapEntry[] = [
   { path: "/", changefreq: "weekly", priority: "1.0" },
   { path: "/library", changefreq: "weekly", priority: "0.8" },
   { path: "/claude-skills", changefreq: "weekly", priority: "0.8" },
+  { path: "/mcp-skills", changefreq: "weekly", priority: "0.8" },
+  { path: "/chatgpt-skills", changefreq: "weekly", priority: "0.8" },
+  { path: "/github-copilot-skills", changefreq: "weekly", priority: "0.8" },
+  { path: "/grok-skills", changefreq: "weekly", priority: "0.8" },
+  { path: "/perplexity-skills", changefreq: "weekly", priority: "0.8" },
+  { path: "/superhuman-go-skills", changefreq: "weekly", priority: "0.8" },
   { path: "/licenses", changefreq: "monthly", priority: "0.5" },
 ];
+
 
 export const Route = createFileRoute("/sitemap.xml")({
   server: {
