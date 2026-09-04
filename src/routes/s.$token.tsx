@@ -4,7 +4,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { SelectionBar } from "@/components/selection-bar";
 import { SkillResultCard } from "@/components/skill-result-card";
-import { WaIcon, WaSkeleton } from "@/design-system/font-awsome-web-awesome-171158";
+import { WaCallout, WaIcon, WaSkeleton } from "@/design-system/font-awsome-web-awesome-171158";
 import { useCooldown } from "@/hooks/use-cooldown";
 import { downloadSkillsZip } from "@/lib/zip";
 import { fetchSkillFiles, getSavedSearch } from "@/lib/skills.functions";
