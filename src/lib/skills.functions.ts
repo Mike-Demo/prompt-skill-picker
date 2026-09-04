@@ -1,6 +1,9 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
+import { AGENT_KEYS } from "./agents";
+
+
 export interface SkillSuggestion {
   id: string;
   name: string;
