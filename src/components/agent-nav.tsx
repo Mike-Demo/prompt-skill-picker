@@ -17,7 +17,17 @@ const LINKS: ReadonlyArray<{
     key: "microsoft-copilot",
     label: "Microsoft Copilot",
     to: "/mcp-skills",
-    icon: <i className="fa-brands fa-microsoft" aria-hidden="true" />,
+    icon: (
+      <img
+        src={copilotIcon}
+        alt=""
+        style={{
+          blockSize: "var(--wa-font-size-2xs)",
+          inlineSize: "var(--wa-font-size-2xs)",
+        }}
+        aria-hidden="true"
+      />
+    ),
   },
   {
     key: "superhuman-go",
