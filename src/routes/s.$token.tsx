@@ -101,7 +101,7 @@ function SharedSearchPage() {
 
         {saved.data ? (
           <>
-            <p className="mt-4 rounded-lg border border-border bg-muted/40 p-4 text-sm text-foreground">
+            <p className="mt-4 rounded-lg border border-border bg-muted p-4 text-sm text-foreground">
               {saved.data.prompt}
             </p>
             <p className="mt-2 text-xs text-muted-foreground">

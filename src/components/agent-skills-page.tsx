@@ -101,7 +101,7 @@ export function AgentSkillsPage({ agent }: AgentSkillsPageProps) {
 
         <AgentNav className="mt-6" current={agent.key} />
 
-        <section className="mt-8 rounded-lg border border-border bg-muted/40 p-4">
+        <section className="mt-8 rounded-lg border border-border bg-muted p-4">
           <h2 className="text-sm font-semibold text-foreground">How to install a skill</h2>
           <ol className="mt-3 space-y-3 text-sm text-muted-foreground">
             <li>
@@ -165,7 +165,7 @@ export function AgentSkillsPage({ agent }: AgentSkillsPageProps) {
                   <li
                     key={entry.id}
                     className={`rounded-lg border p-4 transition-colors ${
-                      checked ? "border-primary bg-accent/40" : "border-border"
+                      checked ? "border-primary bg-accent" : "border-border"
                     }`}
                   >
                     <div className="flex gap-3">

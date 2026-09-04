@@ -14,7 +14,7 @@ export function SkillResultCard({ skill, checked, onToggle }: SkillResultCardPro
   return (
     <li
       className={`rounded-lg border p-4 transition-colors ${
-        checked ? "border-primary bg-accent/40" : "border-border"
+        checked ? "border-primary bg-accent" : "border-border"
       }`}
     >
       <div className="flex gap-3">

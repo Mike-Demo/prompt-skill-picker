@@ -195,7 +195,7 @@ function SkillLibraryPage() {
               <li
                 key={entry.id}
                 className={`rounded-lg border p-4 transition-colors ${
-                  checked ? "border-primary bg-accent/40" : "border-border"
+                  checked ? "border-primary bg-accent" : "border-border"
                 }`}
               >
                 <div className="flex gap-3">
@@ -250,7 +250,7 @@ function SkillLibraryPage() {
       </div>
 
       {selected.size > 0 ? (
-        <div className="fixed inset-x-0 bottom-0 border-t border-border bg-card/95 backdrop-blur">
+        <div className="fixed inset-x-0 bottom-0 border-t border-border bg-card">
           <div className="mx-auto flex w-full max-w-3xl items-center justify-between gap-3 px-4 py-3">
             <div className="text-sm text-muted-foreground">
               {selected.size} selected
