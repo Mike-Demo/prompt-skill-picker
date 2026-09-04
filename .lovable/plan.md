@@ -16,7 +16,7 @@ Font Awesome Free 7.3.1 is already loaded sitewide, and its brands family (free)
 | Microsoft Copilot | `fa-brands fa-microsoft` |
 | Grok | `fa-brands fa-x-twitter` (Grok is xAI / X's model; no standalone "grok" glyph) |
 | Perplexity | user-uploaded SVG (you'll provide the file) |
-| Superhuman Go | no brand icon — use a solid fallback (`fa-envelope`) |
+| Superhuman Go | user-uploaded SVG (you'll provide the file) |
 
 Superhuman has no Font Awesome brand glyph at any tier, so it gets a neutral solid icon rather than a hand-drawn logo substitute. Perplexity will use your uploaded SVG instead. If you would rather Superhuman carry a real logo, that needs its official SVG mark supplied separately.
 
