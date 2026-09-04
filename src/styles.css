@@ -1,12 +1,12 @@
 @import "tailwindcss" source(none);
-@source "../src";
 @import "tw-animate-css";
 @import "@fontsource/nebula-sans/400.css";
 @import "@fontsource/nebula-sans/500.css";
 @import "@fontsource/nebula-sans/600.css";
 @import "@fontsource/nebula-sans/700.css";
+@source "../src";
 
-@custom-variant dark (&:is(.dark *));
+@custom-variant dark (&:is(.dark, .wa-dark) *);
 
 /*
  * Design system definition.
