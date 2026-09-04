@@ -126,6 +126,33 @@ function SkillLibraryPage() {
             className="max-w-sm"
           />
 
+          <div
+            role="group"
+            aria-label="Sort skills"
+            className="inline-flex overflow-hidden rounded-md border border-border"
+          >
+            {(
+              [
+                { value: "popular", label: "Most used" },
+                { value: "alpha", label: "A–Z" },
+              ] as const
+            ).map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                aria-pressed={sort === option.value}
+                onClick={() => setSort(option.value)}
+                className={`px-3 py-1.5 text-xs font-medium transition-colors ${
+                  sort === option.value
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-background text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                }`}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
+
           {library.isSuccess ? (
             <span className="text-xs text-muted-foreground">
               {visible.length} of {entries.length} skills
