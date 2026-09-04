@@ -22,7 +22,17 @@ const LINKS: ReadonlyArray<{
     key: "superhuman-go",
     label: "Superhuman Go",
     to: "/superhuman-go-skills",
-    icon: <i className="fa-solid fa-envelope" aria-hidden="true" />,
+    icon: (
+      <img
+        src={superhumanGoIcon}
+        alt=""
+        style={{
+          blockSize: "var(--wa-font-size-2xs)",
+          inlineSize: "var(--wa-font-size-2xs)",
+        }}
+        aria-hidden="true"
+      />
+    ),
   },
   {
     key: "chatgpt",
