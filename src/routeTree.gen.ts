@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ClaudeSkillsRouteImport } from './routes/claude-skills'
 import { Route as LibraryRouteImport } from './routes/library'
 import { Route as LicensesRouteImport } from './routes/licenses'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
@@ -18,6 +19,11 @@ import { Route as STokenRouteImport } from './routes/s.$token'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ClaudeSkillsRoute = ClaudeSkillsRouteImport.update({
+  id: '/claude-skills',
+  path: '/claude-skills',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LibraryRoute = LibraryRouteImport.update({
@@ -43,6 +49,7 @@ const STokenRoute = STokenRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/claude-skills': typeof ClaudeSkillsRoute
   '/library': typeof LibraryRoute
   '/licenses': typeof LicensesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -50,6 +57,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/claude-skills': typeof ClaudeSkillsRoute
   '/library': typeof LibraryRoute
   '/licenses': typeof LicensesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -58,6 +66,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/claude-skills': typeof ClaudeSkillsRoute
   '/library': typeof LibraryRoute
   '/licenses': typeof LicensesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -65,14 +74,34 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/library' | '/licenses' | '/sitemap.xml' | '/s/$token'
+  fullPaths:
+    | '/'
+    | '/claude-skills'
+    | '/library'
+    | '/licenses'
+    | '/sitemap.xml'
+    | '/s/$token'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/library' | '/licenses' | '/sitemap.xml' | '/s/$token'
-  id: '__root__' | '/' | '/library' | '/licenses' | '/sitemap.xml' | '/s/$token'
+  to:
+    | '/'
+    | '/claude-skills'
+    | '/library'
+    | '/licenses'
+    | '/sitemap.xml'
+    | '/s/$token'
+  id:
+    | '__root__'
+    | '/'
+    | '/claude-skills'
+    | '/library'
+    | '/licenses'
+    | '/sitemap.xml'
+    | '/s/$token'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ClaudeSkillsRoute: typeof ClaudeSkillsRoute
   LibraryRoute: typeof LibraryRoute
   LicensesRoute: typeof LicensesRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
@@ -86,6 +115,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/claude-skills': {
+      id: '/claude-skills'
+      path: '/claude-skills'
+      fullPath: '/claude-skills'
+      preLoaderRoute: typeof ClaudeSkillsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/library': {
@@ -121,6 +157,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ClaudeSkillsRoute: ClaudeSkillsRoute,
   LibraryRoute: LibraryRoute,
   LicensesRoute: LicensesRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,

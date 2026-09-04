@@ -32,8 +32,11 @@ export const Route = createFileRoute("/library")({
   component: SkillLibraryPage,
 });
 
+type SortMode = "popular" | "alpha";
+
 function SkillLibraryPage() {
   const [filter, setFilter] = useState("");
+  const [sort, setSort] = useState<SortMode>("popular");
   const [selected, setSelected] = useState<Set<string>>(new Set());
 
   const loadSkills = useServerFn(listSkills);
