@@ -19,6 +19,24 @@ const isClientAbort = (error: unknown): boolean => {
   );
 };
 
+/**
+ * Socket-level aborts are emitted by Node's HTTP server itself (srvx adapter),
+ * before/outside request middleware, so they cannot be caught with try/catch.
+ * Swallow only those so a navigation-away never surfaces as a runtime error.
+ */
+declare const process: { on?: (event: string, listener: (error: unknown) => void) => void } | undefined;
+
+if (typeof process !== "undefined" && typeof process?.on === "function") {
+  const ignoreClientAbort = (error: unknown): void => {
+    if (!isClientAbort(error)) {
+      console.error(error);
+    }
+  };
+  process.on("uncaughtException", ignoreClientAbort);
+  process.on("unhandledRejection", ignoreClientAbort);
+}
+
+
 const errorMiddleware = createMiddleware().server(async ({ next }) => {
   try {
     return await next();
