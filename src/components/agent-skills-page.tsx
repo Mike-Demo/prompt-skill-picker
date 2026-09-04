@@ -4,7 +4,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { WaBadge, WaCallout, WaCheckbox, WaIcon, WaSkeleton } from "@/design-system/font-awsome-web-awesome-171158";
 import { SelectionBar } from "@/components/selection-bar";
-import { AgentNav } from "@/components/agent-nav";
+import { AgentIcon, AgentNav } from "@/components/agent-nav";
 import { downloadSkillsZip } from "@/lib/zip";
 import {
   fetchSkillFiles,
