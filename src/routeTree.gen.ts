@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ClaudeSkillsRouteImport } from './routes/claude-skills'
 import { Route as LibraryRouteImport } from './routes/library'
 import { Route as LicensesRouteImport } from './routes/licenses'
+import { Route as McpSkillsRouteImport } from './routes/mcp-skills'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as STokenRouteImport } from './routes/s.$token'
 
@@ -36,6 +37,11 @@ const LicensesRoute = LicensesRouteImport.update({
   path: '/licenses',
   getParentRoute: () => rootRouteImport,
 } as any)
+const McpSkillsRoute = McpSkillsRouteImport.update({
+  id: '/mcp-skills',
+  path: '/mcp-skills',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
@@ -52,6 +58,7 @@ export interface FileRoutesByFullPath {
   '/claude-skills': typeof ClaudeSkillsRoute
   '/library': typeof LibraryRoute
   '/licenses': typeof LicensesRoute
+  '/mcp-skills': typeof McpSkillsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/s/$token': typeof STokenRoute
 }
@@ -60,6 +67,7 @@ export interface FileRoutesByTo {
   '/claude-skills': typeof ClaudeSkillsRoute
   '/library': typeof LibraryRoute
   '/licenses': typeof LicensesRoute
+  '/mcp-skills': typeof McpSkillsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/s/$token': typeof STokenRoute
 }
@@ -69,6 +77,7 @@ export interface FileRoutesById {
   '/claude-skills': typeof ClaudeSkillsRoute
   '/library': typeof LibraryRoute
   '/licenses': typeof LicensesRoute
+  '/mcp-skills': typeof McpSkillsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/s/$token': typeof STokenRoute
 }
@@ -79,6 +88,7 @@ export interface FileRouteTypes {
     | '/claude-skills'
     | '/library'
     | '/licenses'
+    | '/mcp-skills'
     | '/sitemap.xml'
     | '/s/$token'
   fileRoutesByTo: FileRoutesByTo
@@ -87,6 +97,7 @@ export interface FileRouteTypes {
     | '/claude-skills'
     | '/library'
     | '/licenses'
+    | '/mcp-skills'
     | '/sitemap.xml'
     | '/s/$token'
   id:
@@ -95,6 +106,7 @@ export interface FileRouteTypes {
     | '/claude-skills'
     | '/library'
     | '/licenses'
+    | '/mcp-skills'
     | '/sitemap.xml'
     | '/s/$token'
   fileRoutesById: FileRoutesById
@@ -104,6 +116,7 @@ export interface RootRouteChildren {
   ClaudeSkillsRoute: typeof ClaudeSkillsRoute
   LibraryRoute: typeof LibraryRoute
   LicensesRoute: typeof LicensesRoute
+  McpSkillsRoute: typeof McpSkillsRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   STokenRoute: typeof STokenRoute
 }
@@ -138,6 +151,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LicensesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/mcp-skills': {
+      id: '/mcp-skills'
+      path: '/mcp-skills'
+      fullPath: '/mcp-skills'
+      preLoaderRoute: typeof McpSkillsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sitemap.xml': {
       id: '/sitemap.xml'
       path: '/sitemap.xml'
@@ -160,6 +180,7 @@ const rootRouteChildren: RootRouteChildren = {
   ClaudeSkillsRoute: ClaudeSkillsRoute,
   LibraryRoute: LibraryRoute,
   LicensesRoute: LicensesRoute,
+  McpSkillsRoute: McpSkillsRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   STokenRoute: STokenRoute,
 }

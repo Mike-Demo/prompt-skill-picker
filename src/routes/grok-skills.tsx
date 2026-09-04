@@ -3,11 +3,11 @@ import { createFileRoute } from "@tanstack/react-router";
 import { AgentSkillsPage } from "@/components/agent-skills-page";
 import { AGENT_PAGES } from "@/lib/agents";
 
-const AGENT = AGENT_PAGES["microsoft-copilot"];
+const AGENT = AGENT_PAGES["grok"];
 const SHARE_IMAGE = "https://skills.mikedemo.dev/og-skill-finder.jpg";
-const CANONICAL = "https://skills.mikedemo.dev/mcp-skills";
+const CANONICAL = "https://skills.mikedemo.dev/grok-skills";
 
-export const Route = createFileRoute("/mcp-skills")({
+export const Route = createFileRoute("/grok-skills")({
   head: () => ({
     meta: [
       { title: AGENT.title },
