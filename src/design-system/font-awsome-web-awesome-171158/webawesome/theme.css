@@ -1,0 +1,32 @@
+/*
+ * Canonical theme entry — Web Awesome Design System.
+ *
+ * Importing this one file yields the complete system:
+ *   - Web Awesome 3.12.0 base styles, cascade layers, native element styles
+ *   - Default theme + default palette (all --wa-* design tokens)
+ *   - Layout & text utilities (wa-stack, wa-cluster, wa-grid, wa-gap-*, ...)
+ *   - Font Awesome Free 7.3.1 (fa-* utility classes and webfonts)
+ *
+ * Both stylesheets load from a version-pinned CDN, so no npm install is
+ * required to use this design system. To self-host instead, copy the two
+ * dist folders into src/assets/ and repoint the @import URLs below.
+ *
+ * Pair with theme classes on the root element:
+ *   <html class="wa-theme-default wa-palette-default wa-light">
+ * (exported as WEB_AWESOME_HTML_CLASSES from ./setup)
+ */
+
+/*
+ * Brand overrides — the ONLY place raw color values may appear.
+ * Override tokens inside the wa-theme layer so themes stay swappable:
+ *
+ * @layer wa-theme {
+ *   :root,
+ *   .wa-theme-default {
+ *     --wa-color-brand-fill-loud: oklch(55% 0.2 260);
+ *   }
+ * }
+ *
+ * No brand overrides are defined yet; the system ships the stock
+ * Web Awesome default theme until brand colors are chosen.
+ */
