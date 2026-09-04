@@ -14,11 +14,11 @@ Font Awesome Free 7.3.1 is already loaded sitewide, and its brands family (free)
 | ChatGPT | `fa-brands fa-openai` |
 | GitHub Copilot | `fa-brands fa-copilot` (or `fa-github`) |
 | Microsoft Copilot | `fa-brands fa-microsoft` |
-| Grok | no brand icon — use a solid fallback (`fa-bolt`) |
+| Grok | `fa-brands fa-x-twitter` (Grok is xAI / X's model; no standalone "grok" glyph) |
 | Perplexity | no brand icon — use a solid fallback (`fa-magnifying-glass`) |
 | Superhuman Go | no brand icon — use a solid fallback (`fa-envelope`) |
 
-Grok, Perplexity and Superhuman have no Font Awesome brand glyph at any tier, so they get neutral solid icons rather than a hand-drawn logo substitute. If you would rather they carry real logos, that needs their official SVG marks supplied separately.
+Perplexity and Superhuman have no Font Awesome brand glyph at any tier, so they get neutral solid icons rather than a hand-drawn logo substitute. If you would rather they carry real logos, that needs their official SVG marks supplied separately.
 
 Icons render at the same size and inherit the button's text color, so the buttons keep their current look — just with a mark in front of the label.
 
