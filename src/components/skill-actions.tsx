@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Codepen, ExternalLink, Github, Loader2 } from "lucide-react";
 
+import { WaIcon } from "@/design-system/font-awsome-web-awesome-171158";
 import { createSkillGist, fetchSkillFiles } from "@/lib/skills.functions";
 import { openInCodePen } from "@/lib/codepen";
 
@@ -43,7 +43,7 @@ export function SkillActions({ id, name, htmlUrl, canOpen }: SkillActionsProps) 
       <div className="flex flex-wrap items-center gap-3">
         {htmlUrl ? (
           <a href={htmlUrl} target="_blank" rel="noreferrer" className={linkClass}>
-            View source <ExternalLink className="size-3" />
+            View source <WaIcon name="arrow-up-right-from-square" />
           </a>
         ) : null}
         <button
@@ -53,9 +53,9 @@ export function SkillActions({ id, name, htmlUrl, canOpen }: SkillActionsProps) 
           onClick={() => codepen.mutate()}
         >
           {codepen.isPending ? (
-            <Loader2 className="size-3 animate-spin" />
+            <WaIcon name="spinner" animation="spin" />
           ) : (
-            <Codepen className="size-3" />
+            <WaIcon name="codepen" family="brands" />
           )}
           Open in CodePen
         </button>
@@ -66,9 +66,9 @@ export function SkillActions({ id, name, htmlUrl, canOpen }: SkillActionsProps) 
           onClick={() => gist.mutate()}
         >
           {gist.isPending ? (
-            <Loader2 className="size-3 animate-spin" />
+            <WaIcon name="spinner" animation="spin" />
           ) : (
-            <Github className="size-3" />
+            <WaIcon name="github" family="brands" />
           )}
           Open in Gist
         </button>

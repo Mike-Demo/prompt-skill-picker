@@ -1,5 +1,4 @@
-import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
+import { WaBadge, WaCheckbox } from "@/design-system/font-awsome-web-awesome-171158";
 import { SkillActions } from "@/components/skill-actions";
 import { formatInstalls } from "@/lib/format";
 import type { SkillSuggestion } from "@/lib/skills.functions";
@@ -19,11 +18,11 @@ export function SkillResultCard({ skill, checked, onToggle }: SkillResultCardPro
       }`}
     >
       <div className="flex gap-3">
-        <Checkbox
+        <WaCheckbox
           id={skill.id}
           checked={checked}
           disabled={!skill.hasMarkdown}
-          onCheckedChange={() => onToggle(skill.id)}
+          onClick={() => onToggle(skill.id)}
           className="mt-1"
         />
         <div className="min-w-0 flex-1">
@@ -35,8 +34,14 @@ export function SkillResultCard({ skill, checked, onToggle }: SkillResultCardPro
           </label>
           <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
             <span className="truncate">{skill.source}</span>
-            <Badge variant="secondary">{formatInstalls(skill.installs)}</Badge>
-            {!skill.hasMarkdown ? <Badge variant="outline">no markdown available</Badge> : null}
+            <WaBadge variant="neutral" appearance="filled">
+              {formatInstalls(skill.installs)}
+            </WaBadge>
+            {!skill.hasMarkdown ? (
+              <WaBadge variant="neutral" appearance="outlined">
+                no markdown available
+              </WaBadge>
+            ) : null}
           </div>
           {skill.description ? (
             <p className="mt-2 text-sm text-muted-foreground">{skill.description}</p>
