@@ -166,9 +166,9 @@ function SkillLibraryPage() {
         </div>
 
         {library.isError ? (
-          <p className="mt-6 rounded-md border border-destructive/40 bg-destructive/10 p-4 text-sm text-destructive">
+          <WaCallout variant="danger" className="mt-6">
             {library.error instanceof Error ? library.error.message : "Could not load the library."}
-          </p>
+          </WaCallout>
         ) : null}
 
         {library.isPending ? (

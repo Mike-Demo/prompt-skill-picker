@@ -85,9 +85,9 @@ function SharedSearchPage() {
         ) : null}
 
         {saved.isError ? (
-          <p className="mt-8 rounded-md border border-destructive/40 bg-destructive/10 p-4 text-sm text-destructive">
+          <WaCallout variant="danger" className="mt-8">
             {saved.error instanceof Error ? saved.error.message : "This link could not be loaded."}
-          </p>
+          </WaCallout>
         ) : null}
 
         {saved.isSuccess && saved.data === null ? (

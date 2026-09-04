@@ -128,11 +128,11 @@ export function AgentSkillsPage({ agent }: AgentSkillsPageProps) {
         </section>
 
         {skills.isError ? (
-          <p className="mt-6 rounded-md border border-destructive/40 bg-destructive/10 p-4 text-sm text-destructive">
+          <WaCallout variant="danger" className="mt-6">
             {skills.error instanceof Error
               ? skills.error.message
               : "Could not load this skill list."}
-          </p>
+          </WaCallout>
         ) : null}
 
         {skills.isPending ? (
