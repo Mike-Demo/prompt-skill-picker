@@ -168,9 +168,14 @@ async function listCached(
   if (!slot.inFlight) {
     slot.inFlight = loadLibrary(topics)
       .then((entries) => {
-        slot.cached = { entries, expiresAt: Date.now() + CACHE_TTL_MS };
+        // An empty result means the registry or GitHub call failed; caching it
+        // would keep the page blank for the whole TTL.
+        if (entries.length > 0) {
+          slot.cached = { entries, expiresAt: Date.now() + CACHE_TTL_MS };
+        }
         return entries;
       })
+
       .finally(() => {
         slot.inFlight = null;
       });
