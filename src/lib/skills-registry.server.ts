@@ -61,9 +61,12 @@ async function fetchWithTimeout(
       return res;
     } catch (error) {
       lastError = error;
+      // A timeout means the upstream is hanging; retrying only doubles the wait.
+      if (error instanceof Error && error.name === "AbortError") break;
     } finally {
       clearTimeout(timer);
     }
+
   }
 
   throw lastError instanceof Error ? lastError : new Error("Request failed.");

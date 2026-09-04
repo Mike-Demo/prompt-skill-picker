@@ -9,6 +9,8 @@ import { SkillResultCard } from "@/components/skill-result-card";
 import { AgentNav } from "@/components/agent-nav";
 import {
   WaButton,
+  WaCallout,
+
   WaIcon,
   WaSkeleton,
   WaTextarea,
@@ -297,21 +299,20 @@ function SkillFinderPage() {
         </form>
 
         {enhance.isError ? (
-          <p className="mt-6 rounded-md border border-destructive/40 bg-destructive/10 p-4 text-sm text-destructive">
+          <WaCallout variant="danger" className="mt-6">
             {enhance.error instanceof Error ? enhance.error.message : "Enhance failed."}
-          </p>
+          </WaCallout>
         ) : null}
 
         {search.isError ? (
-          <div className="mt-6 rounded-md border border-destructive/40 bg-destructive/10 p-4 text-sm text-destructive">
+          <WaCallout variant="danger" className="mt-6">
             <p>{search.error instanceof Error ? search.error.message : "Search failed."}</p>
             {cooldown === 0 && !captchaToken ? (
-              <p className="mt-1 text-destructive/80">
-                Confirm the captcha above and we&rsquo;ll try again.
-              </p>
+              <p className="mt-1">Confirm the captcha above and we&rsquo;ll try again.</p>
             ) : null}
-          </div>
+          </WaCallout>
         ) : null}
+
 
         {search.isPending ? (
           <ul className="mt-8 space-y-3">

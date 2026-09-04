@@ -2,7 +2,15 @@ import { Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { WaBadge, WaCallout, WaCheckbox, WaIcon, WaSkeleton } from "@/design-system/font-awsome-web-awesome-171158";
+import {
+  WaBadge,
+  WaButton,
+  WaCallout,
+  WaCheckbox,
+  WaIcon,
+  WaSkeleton,
+} from "@/design-system/font-awsome-web-awesome-171158";
+
 import { SelectionBar } from "@/components/selection-bar";
 import { AgentIcon, AgentNav } from "@/components/agent-nav";
 import { downloadSkillsZip } from "@/lib/zip";
