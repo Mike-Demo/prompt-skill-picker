@@ -7,6 +7,43 @@ import copilotIcon from "@/assets/copilot.svg";
 import perplexityIcon from "@/assets/perplexity.svg";
 import superhumanGoIcon from "@/assets/superhuman-go.svg";
 
+const IMAGE_ICONS: Partial<Record<AgentKey, string>> = {
+  "microsoft-copilot": copilotIcon,
+  "superhuman-go": superhumanGoIcon,
+  perplexity: perplexityIcon,
+};
+
+const FONT_AWESOME_ICONS: Partial<Record<AgentKey, string>> = {
+  chatgpt: "openai",
+  grok: "x-twitter",
+  claude: "claude",
+  "github-copilot": "copilot",
+};
+
+/** Brand mark for an agent, sized with a design-system font-size token. */
+export function AgentIcon({
+  agent,
+  size = "var(--wa-font-size-2xs)",
+}: {
+  readonly agent: AgentKey;
+  readonly size?: string;
+}) {
+  const image = IMAGE_ICONS[agent];
+  if (image) {
+    return (
+      <img
+        src={image}
+        alt=""
+        style={{ blockSize: size, inlineSize: size }}
+        aria-hidden="true"
+      />
+    );
+  }
+  const name = FONT_AWESOME_ICONS[agent];
+  if (!name) return null;
+  return <WaIcon name={name} family="brands" style={{ fontSize: size }} />;
+}
+
 /** Route literals kept inline so TanStack can type-check every destination. */
 const LINKS: ReadonlyArray<{
   key: AgentKey;
