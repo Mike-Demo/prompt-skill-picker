@@ -8,6 +8,7 @@ import {
 import { allowSkillIds } from "./skills-allowlist.server";
 import { mapWithConcurrency } from "./concurrency";
 import type { SkillLibraryEntry } from "./skills.functions";
+import type { AgentKey } from "./agents";
 
 /**
  * Broad topic queries used to assemble a browsable catalogue from the
@@ -182,7 +183,7 @@ export async function listSkillLibrary(): Promise<SkillLibraryEntry[]> {
   return listCached("library", TOPICS);
 }
 
-/** Curated Claude Code collection, ranked by installs. */
-export async function listClaudeSkillLibrary(): Promise<SkillLibraryEntry[]> {
-  return listCached("claude", CLAUDE_TOPICS);
+/** Curated per-agent collection, ranked by installs. */
+export async function listAgentSkillLibrary(agent: AgentKey): Promise<SkillLibraryEntry[]> {
+  return listCached(`agent:${agent}`, AGENT_TOPICS[agent]);
 }
