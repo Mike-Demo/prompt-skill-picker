@@ -9,6 +9,7 @@ import {
   WaCheckbox,
   WaIcon,
   WaInput,
+  WaSkeleton,
 } from "@/design-system/font-awsome-web-awesome-171158";
 import { downloadSkillsZip } from "@/lib/zip";
 import { fetchSkillFiles, listSkills, type SkillLibraryEntry } from "@/lib/skills.functions";
