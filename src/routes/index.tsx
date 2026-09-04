@@ -220,7 +220,7 @@ function SkillFinderPage() {
               resize="none"
               placeholder="e.g. help me write better React components and review pull requests"
               aria-label="Describe what you want your agent to do"
-              className="w-full text-base"
+              className="w-full"
               onInput={(event: React.FormEvent<HTMLElement>) => {
                 setPrompt((event.currentTarget as TextareaHost).value);
               }}
