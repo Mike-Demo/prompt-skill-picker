@@ -127,14 +127,14 @@ async function enrich(candidates: RegistrySkill[]): Promise<EnrichedSkill[]> {
 
 export async function rankSkills(prompt: string): Promise<SkillSuggestion[]> {
   // The literal prompt search runs alongside the keyword-expansion model call,
-  // so the expansion round trip is off the critical path.
-  const [direct, queries] = await Promise.all([
-    searchRegistry(prompt).catch(() => [] as RegistrySkill[]),
-    expandQueries(prompt),
-  ]);
+  // so the expansion round trip is off the critical path. A registry outage is
+  // allowed to surface here: showing "no results" for an unreachable registry
+  // reads as a broken app.
+  const [direct, queries] = await Promise.all([searchRegistry(prompt), expandQueries(prompt)]);
   const expanded = await gatherCandidates(queries);
   const candidates = mergeCandidates([direct, expanded]);
   if (candidates.length === 0) return [];
+
 
   const enriched = await enrich(candidates);
   const catalog = enriched

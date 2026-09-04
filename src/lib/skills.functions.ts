@@ -151,8 +151,16 @@ export interface SkillLibraryEntry {
   hasMarkdown: boolean;
 }
 
+export interface SkillLibraryResponse {
+  entries: SkillLibraryEntry[];
+  /** The registry could not be reached and there was nothing cached to show. */
+  unavailable: boolean;
+  /** Some results came from the cache because the registry was unreachable. */
+  stale: boolean;
+}
+
 export const listSkills = createServerFn({ method: "GET" }).handler(
-  async (): Promise<SkillLibraryEntry[]> => {
+  async (): Promise<SkillLibraryResponse> => {
     await guard("library");
     const { listSkillLibrary } = await import("./skills-library.server");
     return listSkillLibrary();
@@ -163,9 +171,10 @@ const AgentInput = z.object({ agent: z.enum(AGENT_KEYS) });
 
 export const listAgentSkills = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => AgentInput.parse(input))
-  .handler(async ({ data }): Promise<SkillLibraryEntry[]> => {
+  .handler(async ({ data }): Promise<SkillLibraryResponse> => {
     await guard("library");
     const { listAgentSkillLibrary } = await import("./skills-library.server");
     return listAgentSkillLibrary(data.agent);
   });
+
 

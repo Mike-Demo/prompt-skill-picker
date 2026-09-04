@@ -55,7 +55,10 @@ export function AgentSkillsPage({ agent }: AgentSkillsPageProps) {
     if (selected.size > 0) download.mutate([...selected]);
   });
 
-  const entries: SkillLibraryEntry[] = skills.data ?? [];
+  const entries: SkillLibraryEntry[] = skills.data?.entries ?? [];
+  const registryDown = skills.data?.unavailable === true;
+  const servedFromCache = skills.data?.stale === true;
+
 
   const toggle = (id: string) => {
     setSelected((prev) => {
@@ -123,9 +126,35 @@ export function AgentSkillsPage({ agent }: AgentSkillsPageProps) {
 
         {skills.isError ? (
           <WaCallout variant="danger" className="mt-6">
-            {skills.error instanceof Error
-              ? skills.error.message
-              : "Could not load this skill list."}
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <span>
+                {skills.error instanceof Error
+                  ? skills.error.message
+                  : "Could not load this skill list."}
+              </span>
+              <WaButton size="s" appearance="outlined" onClick={() => void skills.refetch()}>
+                <WaIcon name="rotate-right" /> Try again
+              </WaButton>
+            </div>
+          </WaCallout>
+        ) : null}
+
+        {registryDown ? (
+          <WaCallout variant="warning" className="mt-6">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <span>
+                The skills registry isn&rsquo;t responding right now. Try again in a minute.
+              </span>
+              <WaButton size="s" appearance="outlined" onClick={() => void skills.refetch()}>
+                <WaIcon name="rotate-right" /> Try again
+              </WaButton>
+            </div>
+          </WaCallout>
+        ) : null}
+
+        {servedFromCache ? (
+          <WaCallout variant="neutral" className="mt-6">
+            The registry is slow at the moment — showing recent results from our cache.
           </WaCallout>
         ) : null}
 
@@ -141,7 +170,7 @@ export function AgentSkillsPage({ agent }: AgentSkillsPageProps) {
           </ul>
         ) : null}
 
-        {skills.isSuccess && entries.length === 0 ? (
+        {skills.isSuccess && entries.length === 0 && !registryDown ? (
           <p className="mt-8 rounded-lg border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
             The registry returned no skills just now. Try again in a moment.
           </p>
@@ -150,8 +179,9 @@ export function AgentSkillsPage({ agent }: AgentSkillsPageProps) {
         {entries.length > 0 ? (
           <>
             <h2 className="mt-10 text-sm font-semibold text-foreground">
-              Curated skills — most installed first
+              Curated skills — most installed first ({entries.length})
             </h2>
+
             <ul className="mt-3 space-y-3">
               {entries.map((entry) => {
                 const checked = selected.has(entry.id);
