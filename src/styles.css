@@ -75,6 +75,8 @@
  * for the full token list. No raw hex/oklch values here — only token refs.
  */
 :root {
+  --wa-font-family-body: var(--font-sans);
+  --wa-font-family-heading: var(--font-sans);
   --radius: var(--wa-border-radius-m);
   --background: var(--wa-color-surface-default);
   --foreground: var(--wa-color-text-normal);
@@ -110,6 +112,7 @@
   --sidebar-ring: var(--wa-color-focus);
 }
 
+.wa-dark,
 .dark {
   --background: var(--wa-color-surface-default);
   --foreground: var(--wa-color-text-normal);
@@ -153,5 +156,6 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    font-family: var(--font-sans);
   }
 }
