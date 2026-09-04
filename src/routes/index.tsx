@@ -202,12 +202,6 @@ function SkillFinderPage() {
             >
               <Library className="size-4" /> Browse the full skill library
             </Link>
-            <Link
-              to="/claude-skills"
-              className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
-            >
-              <Sparkles className="size-4" /> Claude Code skills
-            </Link>
           </div>
           <AgentNav />
         </header>
