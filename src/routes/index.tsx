@@ -4,13 +4,13 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
 
-import { Skeleton } from "@/components/ui/skeleton";
 import { SelectionBar } from "@/components/selection-bar";
 import { SkillResultCard } from "@/components/skill-result-card";
 import { AgentNav } from "@/components/agent-nav";
 import {
   WaButton,
   WaIcon,
+  WaSkeleton,
   WaTextarea,
   WaTooltip,
 } from "@/design-system/font-awsome-web-awesome-171158";

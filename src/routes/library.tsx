@@ -10,7 +10,6 @@ import {
   WaIcon,
   WaInput,
 } from "@/design-system/font-awsome-web-awesome-171158";
-import { Skeleton } from "@/components/ui/skeleton";
 import { downloadSkillsZip } from "@/lib/zip";
 import { fetchSkillFiles, listSkills, type SkillLibraryEntry } from "@/lib/skills.functions";
 import { isRateLimitMessage, useCooldown } from "@/hooks/use-cooldown";
