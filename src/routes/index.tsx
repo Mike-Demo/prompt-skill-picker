@@ -193,12 +193,20 @@ function SkillFinderPage() {
             Describe what you want your agent to do. We search the open skills registry, rank the
             matches with AI, and bundle the ones you pick into a zip of markdown files.
           </p>
-          <Link
-            to="/library"
-            className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
-          >
-            <Library className="size-4" /> Browse the full skill library
-          </Link>
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+            <Link
+              to="/library"
+              className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
+            >
+              <Library className="size-4" /> Browse the full skill library
+            </Link>
+            <Link
+              to="/claude-skills"
+              className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
+            >
+              <Sparkles className="size-4" /> Claude Code skills
+            </Link>
+          </div>
         </header>
 
         <form
