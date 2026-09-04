@@ -72,11 +72,21 @@ function SkillLibraryPage() {
 
   const visible = useMemo(() => {
     const needle = filter.trim().toLowerCase();
-    if (needle.length === 0) return entries;
-    return entries.filter((entry) =>
-      `${entry.name} ${entry.source} ${entry.description}`.toLowerCase().includes(needle),
+    const matched =
+      needle.length === 0
+        ? entries
+        : entries.filter((entry) =>
+            `${entry.name} ${entry.source} ${entry.description}`.toLowerCase().includes(needle),
+          );
+
+    // Popularity uses the registry's install count, with the name as a stable
+    // tie-breaker so equally-used skills keep a predictable order.
+    return [...matched].sort((a, b) =>
+      sort === "popular"
+        ? b.installs - a.installs || a.name.localeCompare(b.name)
+        : a.name.localeCompare(b.name),
     );
-  }, [entries, filter]);
+  }, [entries, filter, sort]);
 
   const toggle = (id: string) => {
     setSelected((prev) => {
