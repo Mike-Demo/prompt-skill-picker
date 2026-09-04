@@ -1,48 +1,15 @@
 import { createStart, createCsrfMiddleware, createMiddleware } from "@tanstack/react-start";
 
 import { renderErrorPage } from "./lib/error-page";
+import { clientAbortResponse, isClientAbort } from "./lib/client-abort";
 import { attachSupabaseAuth } from "@/integrations/supabase/auth-attacher";
-
-/**
- * A browser that navigates away or reloads mid-request closes the socket, which
- * surfaces as `Error: aborted` / `AbortError`. Nothing is wrong with the app and
- * no response can be written, so these are re-thrown untouched instead of being
- * logged or replaced with the 500 error page.
- */
-const isClientAbort = (error: unknown): boolean => {
-  if (error == null || typeof error !== "object") return false;
-  const { name, message } = error as { name?: unknown; message?: unknown };
-  return (
-    name === "AbortError" ||
-    message === "aborted" ||
-    (typeof message === "string" && message.includes("Error: aborted"))
-  );
-};
-
-/**
- * Socket-level aborts are emitted by Node's HTTP server itself (srvx adapter),
- * before/outside request middleware, so they cannot be caught with try/catch.
- * Swallow only those so a navigation-away never surfaces as a runtime error.
- */
-declare const process: { on?: (event: string, listener: (error: unknown) => void) => void } | undefined;
-
-if (typeof process !== "undefined" && typeof process?.on === "function") {
-  const ignoreClientAbort = (error: unknown): void => {
-    if (!isClientAbort(error)) {
-      console.error(error);
-    }
-  };
-  process.on("uncaughtException", ignoreClientAbort);
-  process.on("unhandledRejection", ignoreClientAbort);
-}
-
 
 const errorMiddleware = createMiddleware().server(async ({ next }) => {
   try {
     return await next();
   } catch (error) {
     if (isClientAbort(error)) {
-      throw error;
+      return clientAbortResponse();
     }
     if (error != null && typeof error === "object" && "statusCode" in error) {
       throw error;
