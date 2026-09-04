@@ -55,7 +55,10 @@ export function AgentSkillsPage({ agent }: AgentSkillsPageProps) {
     if (selected.size > 0) download.mutate([...selected]);
   });
 
-  const entries: SkillLibraryEntry[] = skills.data ?? [];
+  const entries: SkillLibraryEntry[] = skills.data?.entries ?? [];
+  const registryDown = skills.data?.unavailable === true;
+  const servedFromCache = skills.data?.stale === true;
+
 
   const toggle = (id: string) => {
     setSelected((prev) => {
