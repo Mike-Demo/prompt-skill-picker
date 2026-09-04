@@ -74,7 +74,7 @@ export function AgentSkillsPage({ agent }: AgentSkillsPageProps) {
           to="/"
           className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground"
         >
-          <ArrowLeft className="size-3" /> Back to search
+          <WaIcon name="arrow-left" /> Back to search
         </Link>
 
         <header className="mt-4 space-y-3">
@@ -96,7 +96,7 @@ export function AgentSkillsPage({ agent }: AgentSkillsPageProps) {
             to="/library"
             className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
           >
-            <Library className="size-4" /> Browse the full skill library
+            <WaIcon name="book-open" /> Browse the full skill library
           </Link>
         </header>
 
@@ -170,10 +170,10 @@ export function AgentSkillsPage({ agent }: AgentSkillsPageProps) {
                     }`}
                   >
                     <div className="flex gap-3">
-                      <Checkbox
+                      <WaCheckbox
                         id={`${agent.key}-${entry.id}`}
                         checked={checked}
-                        onCheckedChange={() => toggle(entry.id)}
+                        onClick={() => toggle(entry.id)}
                         className="mt-1"
                       />
                       <div className="min-w-0 flex-1">
@@ -185,7 +185,9 @@ export function AgentSkillsPage({ agent }: AgentSkillsPageProps) {
                         </label>
                         <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
                           <span className="truncate">{entry.source}</span>
-                          <Badge variant="secondary">{formatInstalls(entry.installs)}</Badge>
+                          <WaBadge variant="neutral" appearance="filled">
+                            {formatInstalls(entry.installs)}
+                          </WaBadge>
                         </div>
                         {entry.description ? (
                           <p className="mt-2 text-sm text-muted-foreground">{entry.description}</p>
@@ -203,7 +205,7 @@ export function AgentSkillsPage({ agent }: AgentSkillsPageProps) {
                             rel="noreferrer"
                             className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
                           >
-                            View source <ExternalLink className="size-3" />
+                            View source <WaIcon name="arrow-up-right-from-square" />
                           </a>
                         ) : null}
                       </div>
