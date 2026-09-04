@@ -164,6 +164,10 @@ async function getRepoTree(source: string): Promise<RepoTreeEntry[]> {
     return [];
   })();
 
+  treeCache.set(source, load);
+  return load;
+}
+
 
 export interface SkillDocument {
   id: string;
