@@ -1,6 +1,4 @@
-import { Download, Loader2 } from "lucide-react";
-
-import { Button } from "@/components/ui/button";
+import { WaButton, WaIcon } from "@/design-system/font-awsome-web-awesome-171158";
 
 interface SelectionBarProps {
   readonly count: number;
@@ -15,7 +13,7 @@ export function SelectionBar({ count, pending, cooldown, error, onDownload }: Se
   if (count === 0) return null;
 
   return (
-    <div className="fixed inset-x-0 bottom-0 border-t border-border bg-card/95 backdrop-blur">
+    <div className="fixed inset-x-0 bottom-0 border-t border-border bg-card">
       <div className="mx-auto flex w-full max-w-3xl items-center justify-between gap-3 px-4 py-3">
         <div className="text-sm text-muted-foreground">
           {count} selected
@@ -25,10 +23,13 @@ export function SelectionBar({ count, pending, cooldown, error, onDownload }: Se
             </span>
           ) : null}
         </div>
-        <Button onClick={onDownload} disabled={pending || cooldown > 0}>
-          {pending ? <Loader2 className="size-4 animate-spin" /> : <Download className="size-4" />}
+        <WaButton variant="brand" disabled={pending || cooldown > 0} onClick={onDownload}>
+          <WaIcon
+            name={pending ? "spinner" : "download"}
+            animation={pending ? "spin" : undefined}
+          />
           {cooldown > 0 ? `Retry in ${cooldown}s` : "Download zip"}
-        </Button>
+        </WaButton>
       </div>
     </div>
   );

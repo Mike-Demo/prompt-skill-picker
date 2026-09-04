@@ -3,20 +3,17 @@ import { useServerFn } from "@tanstack/react-start";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
-import { Check, Library, Link2, Loader2, Search, Sparkles, Trash2 } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { SelectionBar } from "@/components/selection-bar";
 import { SkillResultCard } from "@/components/skill-result-card";
 import { AgentNav } from "@/components/agent-nav";
+import {
+  WaButton,
+  WaIcon,
+  WaSkeleton,
+  WaTextarea,
+  WaTooltip,
+} from "@/design-system/font-awsome-web-awesome-171158";
 
 import {
   addRecentSearch,
@@ -63,6 +60,8 @@ const EXAMPLES = [
   "Design polished landing pages",
   "Process PDFs and spreadsheets",
 ];
+
+type TextareaHost = HTMLElement & { value: string };
 
 function SkillFinderPage() {
   const [prompt, setPrompt] = useState("");
@@ -200,7 +199,7 @@ function SkillFinderPage() {
               to="/library"
               className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
             >
-              <Library className="size-4" /> Browse the full skill library
+              <WaIcon name="book-open" label="Library" /> Browse the full skill library
             </Link>
           </div>
           <AgentNav />
@@ -215,43 +214,43 @@ function SkillFinderPage() {
           }}
         >
           <div className="relative">
-            <Textarea
+            <WaTextarea
               value={prompt}
-              onChange={(event) => setPrompt(event.target.value)}
-              aria-label="Describe what you want your agent to do"
-              placeholder="e.g. help me write better React components and review pull requests"
               rows={3}
-              className="resize-none pr-12 text-base"
-
-              onKeyDown={(event) => {
+              resize="none"
+              placeholder="e.g. help me write better React components and review pull requests"
+              aria-label="Describe what you want your agent to do"
+              className="w-full text-base"
+              onInput={(event: React.FormEvent<HTMLElement>) => {
+                setPrompt((event.currentTarget as TextareaHost).value);
+              }}
+              onKeyDown={(event: React.KeyboardEvent<HTMLElement>) => {
                 if (event.key === "Enter" && (event.metaKey || event.ctrlKey)) {
                   event.preventDefault();
                   submit(prompt);
                 }
               }}
             />
-            <TooltipProvider delayDuration={200}>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    type="button"
-                    aria-label="Enhance prompt with AI"
-                    onClick={runEnhanceClick}
-                    disabled={prompt.trim().length < 3 || busy}
-                    className="absolute bottom-2 right-2 inline-flex size-8 items-center justify-center rounded-md border border-border bg-background text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground disabled:cursor-not-allowed disabled:opacity-50"
-                  >
-                    {enhance.isPending ? (
-                      <Loader2 className="size-4 animate-spin" />
-                    ) : (
-                      <Sparkles className="size-4" />
-                    )}
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent side="left">
-                  {enhance.isPending ? "Enhancing…" : "Enhance with AI for sharper matches"}
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <WaButton
+              id="enhance-btn"
+              type="button"
+              appearance="plain"
+              size="xs"
+              pill
+              disabled={prompt.trim().length < 3 || busy}
+              onClick={runEnhanceClick}
+              className="absolute bottom-2 right-2"
+              aria-label="Enhance prompt with AI"
+            >
+              <WaIcon
+                name={enhance.isPending ? "spinner" : "wand-magic-sparkles"}
+                animation={enhance.isPending ? "spin" : undefined}
+                label="Enhance"
+              />
+            </WaButton>
+            <WaTooltip for="enhance-btn" placement="left">
+              {enhance.isPending ? "Enhancing…" : "Enhance with AI for sharper matches"}
+            </WaTooltip>
           </div>
           <div className="flex flex-wrap justify-center gap-2 pt-1">
             {EXAMPLES.map((example) => (
@@ -281,21 +280,19 @@ function SkillFinderPage() {
                 onError={() => setCaptchaToken(null)}
               />
             ) : (
-              <Skeleton className="h-[78px] w-[303px]" />
+              <WaSkeleton className="h-[78px] w-[303px]" />
             )}
           </div>
           <div className="flex justify-center">
-            <Button
+            <WaButton
               type="submit"
+              variant="brand"
+              loading={search.isPending}
               disabled={prompt.trim().length < 3 || busy || !captchaToken}
             >
-              {search.isPending ? (
-                <Loader2 className="size-4 animate-spin" />
-              ) : (
-                <Search className="size-4" />
-              )}
+              <WaIcon name="magnifying-glass" />
               {cooldown > 0 ? `Find skills in ${cooldown}s` : "Find skills"}
-            </Button>
+            </WaButton>
           </div>
         </form>
 
@@ -320,9 +317,9 @@ function SkillFinderPage() {
           <ul className="mt-8 space-y-3">
             {[0, 1, 2, 3].map((key) => (
               <li key={key} className="rounded-lg border border-border p-4">
-                <Skeleton className="h-5 w-1/2" />
-                <Skeleton className="mt-3 h-4 w-full" />
-                <Skeleton className="mt-2 h-4 w-2/3" />
+                <WaSkeleton className="h-5 w-1/2" />
+                <WaSkeleton className="mt-3 h-4 w-full" />
+                <WaSkeleton className="mt-2 h-4 w-2/3" />
               </li>
             ))}
           </ul>
@@ -341,10 +338,16 @@ function SkillFinderPage() {
                 <span className="text-muted-foreground">
                   These results are saved for 72 hours — share or revisit them with a link.
                 </span>
-                <Button type="button" variant="outline" size="sm" onClick={copyShareLink}>
-                  {shareCopied ? <Check className="size-4" /> : <Link2 className="size-4" />}
+                <WaButton
+                  type="button"
+                  variant="neutral"
+                  appearance="outlined"
+                  size="s"
+                  onClick={copyShareLink}
+                >
+                  <WaIcon name={shareCopied ? "check" : "link"} />
                   {shareCopied ? "Copied" : "Copy share link"}
-                </Button>
+                </WaButton>
               </div>
             ) : null}
             <ul className="mt-4 space-y-3">
@@ -364,16 +367,18 @@ function SkillFinderPage() {
           <section className="mt-12">
             <div className="flex items-center justify-between gap-2">
               <h2 className="text-sm font-semibold text-foreground">Recent searches</h2>
-              <button
+              <WaButton
                 type="button"
-                className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+                appearance="plain"
+                size="xs"
                 onClick={() => {
                   clearRecentSearches();
                   setRecent([]);
                 }}
               >
-                <Trash2 className="size-3" /> Clear
-              </button>
+                <WaIcon name="trash" />
+                Clear
+              </WaButton>
             </div>
             <ul className="mt-2 space-y-1">
               {recent.map((entry) => (

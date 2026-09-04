@@ -2,11 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { ArrowLeft, ExternalLink, Library } from "lucide-react";
-
-import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Skeleton } from "@/components/ui/skeleton";
+import { WaBadge, WaCallout, WaCheckbox, WaIcon, WaSkeleton } from "@/design-system/font-awsome-web-awesome-171158";
 import { SelectionBar } from "@/components/selection-bar";
 import { AgentNav } from "@/components/agent-nav";
 import { downloadSkillsZip } from "@/lib/zip";
@@ -77,7 +73,7 @@ export function AgentSkillsPage({ agent }: AgentSkillsPageProps) {
           to="/"
           className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground"
         >
-          <ArrowLeft className="size-3" /> Back to search
+          <WaIcon name="arrow-left" /> Back to search
         </Link>
 
         <header className="mt-4 space-y-3">
@@ -99,13 +95,13 @@ export function AgentSkillsPage({ agent }: AgentSkillsPageProps) {
             to="/library"
             className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
           >
-            <Library className="size-4" /> Browse the full skill library
+            <WaIcon name="book-open" /> Browse the full skill library
           </Link>
         </header>
 
         <AgentNav className="mt-6" current={agent.key} />
 
-        <section className="mt-8 rounded-lg border border-border bg-muted/40 p-4">
+        <section className="mt-8 rounded-lg border border-border bg-muted p-4">
           <h2 className="text-sm font-semibold text-foreground">How to install a skill</h2>
           <ol className="mt-3 space-y-3 text-sm text-muted-foreground">
             <li>
@@ -132,20 +128,20 @@ export function AgentSkillsPage({ agent }: AgentSkillsPageProps) {
         </section>
 
         {skills.isError ? (
-          <p className="mt-6 rounded-md border border-destructive/40 bg-destructive/10 p-4 text-sm text-destructive">
+          <WaCallout variant="danger" className="mt-6">
             {skills.error instanceof Error
               ? skills.error.message
               : "Could not load this skill list."}
-          </p>
+          </WaCallout>
         ) : null}
 
         {skills.isPending ? (
           <ul className="mt-8 space-y-3">
             {[0, 1, 2, 3, 4].map((key) => (
               <li key={key} className="rounded-lg border border-border p-4">
-                <Skeleton className="h-5 w-1/2" />
-                <Skeleton className="mt-3 h-4 w-full" />
-                <Skeleton className="mt-2 h-10 w-full" />
+                <WaSkeleton className="h-5 w-1/2" />
+                <WaSkeleton className="mt-3 h-4 w-full" />
+                <WaSkeleton className="mt-2 h-10 w-full" />
               </li>
             ))}
           </ul>
@@ -169,14 +165,14 @@ export function AgentSkillsPage({ agent }: AgentSkillsPageProps) {
                   <li
                     key={entry.id}
                     className={`rounded-lg border p-4 transition-colors ${
-                      checked ? "border-primary bg-accent/40" : "border-border"
+                      checked ? "border-primary bg-accent" : "border-border"
                     }`}
                   >
                     <div className="flex gap-3">
-                      <Checkbox
+                      <WaCheckbox
                         id={`${agent.key}-${entry.id}`}
                         checked={checked}
-                        onCheckedChange={() => toggle(entry.id)}
+                        onClick={() => toggle(entry.id)}
                         className="mt-1"
                       />
                       <div className="min-w-0 flex-1">
@@ -188,7 +184,9 @@ export function AgentSkillsPage({ agent }: AgentSkillsPageProps) {
                         </label>
                         <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
                           <span className="truncate">{entry.source}</span>
-                          <Badge variant="secondary">{formatInstalls(entry.installs)}</Badge>
+                          <WaBadge variant="neutral" appearance="filled">
+                            {formatInstalls(entry.installs)}
+                          </WaBadge>
                         </div>
                         {entry.description ? (
                           <p className="mt-2 text-sm text-muted-foreground">{entry.description}</p>
@@ -206,7 +204,7 @@ export function AgentSkillsPage({ agent }: AgentSkillsPageProps) {
                             rel="noreferrer"
                             className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
                           >
-                            View source <ExternalLink className="size-3" />
+                            View source <WaIcon name="arrow-up-right-from-square" />
                           </a>
                         ) : null}
                       </div>

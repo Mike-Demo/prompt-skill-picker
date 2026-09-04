@@ -2,11 +2,9 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { ArrowLeft, Loader2 } from "lucide-react";
-
 import { SelectionBar } from "@/components/selection-bar";
 import { SkillResultCard } from "@/components/skill-result-card";
-import { Skeleton } from "@/components/ui/skeleton";
+import { WaCallout, WaIcon, WaSkeleton } from "@/design-system/font-awsome-web-awesome-171158";
 import { useCooldown } from "@/hooks/use-cooldown";
 import { downloadSkillsZip } from "@/lib/zip";
 import { fetchSkillFiles, getSavedSearch } from "@/lib/skills.functions";
@@ -71,7 +69,7 @@ function SharedSearchPage() {
           to="/"
           className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
         >
-          <ArrowLeft className="size-4" /> New search
+          <WaIcon name="arrow-left" /> New search
         </Link>
 
         <h1 className="mt-4 text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
@@ -80,16 +78,16 @@ function SharedSearchPage() {
 
         {saved.isPending ? (
           <div className="mt-8 space-y-3">
-            <Skeleton className="h-5 w-2/3" />
-            <Skeleton className="h-24 w-full" />
-            <Skeleton className="h-24 w-full" />
+            <WaSkeleton className="h-5 w-2/3" />
+            <WaSkeleton className="h-24 w-full" />
+            <WaSkeleton className="h-24 w-full" />
           </div>
         ) : null}
 
         {saved.isError ? (
-          <p className="mt-8 rounded-md border border-destructive/40 bg-destructive/10 p-4 text-sm text-destructive">
+          <WaCallout variant="danger" className="mt-8">
             {saved.error instanceof Error ? saved.error.message : "This link could not be loaded."}
-          </p>
+          </WaCallout>
         ) : null}
 
         {saved.isSuccess && saved.data === null ? (
@@ -103,7 +101,7 @@ function SharedSearchPage() {
 
         {saved.data ? (
           <>
-            <p className="mt-4 rounded-lg border border-border bg-muted/40 p-4 text-sm text-foreground">
+            <p className="mt-4 rounded-lg border border-border bg-muted p-4 text-sm text-foreground">
               {saved.data.prompt}
             </p>
             <p className="mt-2 text-xs text-muted-foreground">
@@ -131,7 +129,7 @@ function SharedSearchPage() {
 
         {download.isPending ? (
           <p className="mt-4 inline-flex items-center gap-2 text-sm text-muted-foreground">
-            <Loader2 className="size-4 animate-spin" /> Preparing your zip…
+            <WaIcon name="spinner" animation="spin" /> Preparing your zip…
           </p>
         ) : null}
       </div>

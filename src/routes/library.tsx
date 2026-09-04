@@ -2,13 +2,16 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { ArrowLeft, Download, ExternalLink, Loader2 } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
-import { Skeleton } from "@/components/ui/skeleton";
+import {
+  WaBadge,
+  WaButton,
+  WaCallout,
+  WaCheckbox,
+  WaIcon,
+  WaInput,
+  WaSkeleton,
+} from "@/design-system/font-awsome-web-awesome-171158";
 import { downloadSkillsZip } from "@/lib/zip";
 import { fetchSkillFiles, listSkills, type SkillLibraryEntry } from "@/lib/skills.functions";
 import { isRateLimitMessage, useCooldown } from "@/hooks/use-cooldown";
@@ -104,7 +107,7 @@ function SkillLibraryPage() {
           to="/"
           className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground"
         >
-          <ArrowLeft className="size-3" /> Back to search
+          <WaIcon name="arrow-left" /> Back to search
         </Link>
 
         <header className="mt-4 space-y-3">
@@ -118,9 +121,11 @@ function SkillLibraryPage() {
         </header>
 
         <div className="mt-6 flex flex-wrap items-center gap-3">
-          <Input
+          <WaInput
             value={filter}
-            onChange={(event) => setFilter(event.target.value)}
+            onInput={(event: React.FormEvent<HTMLElement>) =>
+              setFilter((event.currentTarget as HTMLInputElement).value)
+            }
             aria-label="Filter skills by name, repo or description"
             placeholder="Filter by name, repo or description"
             className="max-w-sm"
@@ -161,18 +166,18 @@ function SkillLibraryPage() {
         </div>
 
         {library.isError ? (
-          <p className="mt-6 rounded-md border border-destructive/40 bg-destructive/10 p-4 text-sm text-destructive">
+          <WaCallout variant="danger" className="mt-6">
             {library.error instanceof Error ? library.error.message : "Could not load the library."}
-          </p>
+          </WaCallout>
         ) : null}
 
         {library.isPending ? (
           <ul className="mt-8 space-y-3">
             {[0, 1, 2, 3, 4].map((key) => (
               <li key={key} className="rounded-lg border border-border p-4">
-                <Skeleton className="h-5 w-1/2" />
-                <Skeleton className="mt-3 h-4 w-full" />
-                <Skeleton className="mt-2 h-20 w-full" />
+                <WaSkeleton className="h-5 w-1/2" />
+                <WaSkeleton className="mt-3 h-4 w-full" />
+                <WaSkeleton className="mt-2 h-20 w-full" />
               </li>
             ))}
           </ul>
@@ -191,14 +196,14 @@ function SkillLibraryPage() {
               <li
                 key={entry.id}
                 className={`rounded-lg border p-4 transition-colors ${
-                  checked ? "border-primary bg-accent/40" : "border-border"
+                  checked ? "border-primary bg-accent" : "border-border"
                 }`}
               >
                 <div className="flex gap-3">
-                  <Checkbox
+                  <WaCheckbox
                     id={`lib-${entry.id}`}
                     checked={checked}
-                    onCheckedChange={() => toggle(entry.id)}
+                    onClick={() => toggle(entry.id)}
                     className="mt-1"
                   />
                   <div className="min-w-0 flex-1">
@@ -210,7 +215,9 @@ function SkillLibraryPage() {
                     </label>
                     <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
                       <span className="truncate">{entry.source}</span>
-                      <Badge variant="secondary">{formatInstalls(entry.installs)}</Badge>
+                      <WaBadge variant="neutral" appearance="filled">
+                        {formatInstalls(entry.installs)}
+                      </WaBadge>
                     </div>
                     {entry.description ? (
                       <p className="mt-2 text-sm text-muted-foreground">{entry.description}</p>
@@ -232,7 +239,7 @@ function SkillLibraryPage() {
                         rel="noreferrer"
                         className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
                       >
-                        View source <ExternalLink className="size-3" />
+                        View source <WaIcon name="arrow-up-right-from-square" />
                       </a>
                     ) : null}
                   </div>
@@ -244,7 +251,7 @@ function SkillLibraryPage() {
       </div>
 
       {selected.size > 0 ? (
-        <div className="fixed inset-x-0 bottom-0 border-t border-border bg-card/95 backdrop-blur">
+        <div className="fixed inset-x-0 bottom-0 border-t border-border bg-card">
           <div className="mx-auto flex w-full max-w-3xl items-center justify-between gap-3 px-4 py-3">
             <div className="text-sm text-muted-foreground">
               {selected.size} selected
@@ -254,17 +261,17 @@ function SkillLibraryPage() {
                 </span>
               ) : null}
             </div>
-            <Button
+            <WaButton
+              variant="brand"
               onClick={() => download.mutate([...selected])}
               disabled={download.isPending || downloadCooldown > 0}
             >
-              {download.isPending ? (
-                <Loader2 className="size-4 animate-spin" />
-              ) : (
-                <Download className="size-4" />
-              )}
+              <WaIcon
+                name={download.isPending ? "spinner" : "download"}
+                animation={download.isPending ? "spin" : undefined}
+              />
               {downloadCooldown > 0 ? `Retry in ${downloadCooldown}s` : "Download zip"}
-            </Button>
+            </WaButton>
           </div>
         </div>
       ) : null}
