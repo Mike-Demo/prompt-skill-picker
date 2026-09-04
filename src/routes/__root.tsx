@@ -10,7 +10,6 @@ import {
 import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
-import themeCss from "@/design-system/font-awsome-web-awesome-171158/webawesome/theme.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SiteFooter } from "@/components/site-footer";
 import {
@@ -87,10 +86,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
-      // Web Awesome theme: base styles, default theme + palette (all --wa-*
-      // design tokens), layout/text utilities, and Font Awesome Free, all from
-      // a version-pinned CDN. Loaded before appCss so app styles win on conflict.
-      { rel: "stylesheet", href: themeCss },
+      // Web Awesome base styles + utilities (CDN, version-pinned).
+      { rel: "stylesheet", href: "https://cdn.jsdelivr.net/npm/@awesome.me/webawesome@3.12.0/dist/styles/webawesome.css" },
+      // Default theme + default palette: defines every --wa-* design token
+      // scoped to the wa-theme-default / wa-light classes on <html>.
+      { rel: "stylesheet", href: "https://cdn.jsdelivr.net/npm/@awesome.me/webawesome@3.12.0/dist/styles/themes/default.css" },
+      // Font Awesome Free icon set (wa-icon resolves SVGs from this).
+      { rel: "stylesheet", href: "https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css" },
       {
         rel: "stylesheet",
         href: appCss,
