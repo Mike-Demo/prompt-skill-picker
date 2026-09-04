@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 
+import { WaIcon } from "@/design-system/font-awsome-web-awesome-171158";
 import type { AgentKey } from "@/lib/agents";
 import copilotIcon from "@/assets/copilot.svg";
 import perplexityIcon from "@/assets/perplexity.svg";
@@ -49,13 +50,13 @@ const LINKS: ReadonlyArray<{
     key: "chatgpt",
     label: "ChatGPT",
     to: "/chatgpt-skills",
-    icon: <i className="fa-brands fa-openai" aria-hidden="true" />,
+    icon: <WaIcon name="openai" family="brands" />,
   },
   {
     key: "grok",
     label: "Grok",
     to: "/grok-skills",
-    icon: <i className="fa-brands fa-x-twitter" aria-hidden="true" />,
+    icon: <WaIcon name="x-twitter" family="brands" />,
   },
   {
     key: "perplexity",
@@ -77,13 +78,13 @@ const LINKS: ReadonlyArray<{
     key: "claude",
     label: "Claude",
     to: "/claude-skills",
-    icon: <i className="fa-brands fa-claude" aria-hidden="true" />,
+    icon: <WaIcon name="claude" family="brands" />,
   },
   {
     key: "github-copilot",
     label: "GitHub Copilot",
     to: "/github-copilot-skills",
-    icon: <i className="fa-brands fa-copilot" aria-hidden="true" />,
+    icon: <WaIcon name="copilot" family="brands" />,
   },
 ];
 
