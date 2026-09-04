@@ -122,6 +122,9 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  useChunkLoadRecovery();
+
+
 
   return (
     <QueryClientProvider client={queryClient}>
