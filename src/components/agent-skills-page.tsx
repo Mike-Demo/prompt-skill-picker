@@ -4,7 +4,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { WaBadge, WaCallout, WaCheckbox, WaIcon, WaSkeleton } from "@/design-system/font-awsome-web-awesome-171158";
 import { SelectionBar } from "@/components/selection-bar";
-import { AgentNav } from "@/components/agent-nav";
+import { AgentIcon, AgentNav } from "@/components/agent-nav";
 import { downloadSkillsZip } from "@/lib/zip";
 import {
   fetchSkillFiles,
@@ -78,14 +78,8 @@ export function AgentSkillsPage({ agent }: AgentSkillsPageProps) {
 
         <header className="mt-4 space-y-3">
           <div className="flex items-center gap-3">
-            <img
-              src="/favicon.svg"
-              alt=""
-              aria-hidden="true"
-              width={56}
-              height={56}
-              className="size-14 shrink-0"
-            />
+            <AgentIcon agent={agent.key} size="var(--wa-font-size-3xl)" />
+
             <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
               {agent.heading}
             </h1>

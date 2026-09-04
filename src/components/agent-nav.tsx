@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+
 import { Link } from "@tanstack/react-router";
 
 import { WaIcon } from "@/design-system/font-awsome-web-awesome-171158";
@@ -7,86 +7,58 @@ import copilotIcon from "@/assets/copilot.svg";
 import perplexityIcon from "@/assets/perplexity.svg";
 import superhumanGoIcon from "@/assets/superhuman-go.svg";
 
+const IMAGE_ICONS: Partial<Record<AgentKey, string>> = {
+  "microsoft-copilot": copilotIcon,
+  "superhuman-go": superhumanGoIcon,
+  perplexity: perplexityIcon,
+};
+
+const FONT_AWESOME_ICONS: Partial<Record<AgentKey, string>> = {
+  chatgpt: "openai",
+  grok: "x-twitter",
+  claude: "claude",
+  "github-copilot": "copilot",
+};
+
+/** Brand mark for an agent, sized with a design-system font-size token. */
+export function AgentIcon({
+  agent,
+  size = "var(--wa-font-size-2xs)",
+}: {
+  readonly agent: AgentKey;
+  readonly size?: string;
+}) {
+  const image = IMAGE_ICONS[agent];
+  if (image) {
+    return (
+      <img
+        src={image}
+        alt=""
+        style={{ blockSize: size, inlineSize: size }}
+        aria-hidden="true"
+      />
+    );
+  }
+  const name = FONT_AWESOME_ICONS[agent];
+  if (!name) return null;
+  return <WaIcon name={name} family="brands" style={{ fontSize: size }} />;
+}
+
 /** Route literals kept inline so TanStack can type-check every destination. */
 const LINKS: ReadonlyArray<{
   key: AgentKey;
   label: string;
   to: string;
-  icon: ReactNode;
 }> = [
-  {
-    key: "microsoft-copilot",
-    label: "Microsoft Copilot",
-    to: "/mcp-skills",
-    icon: (
-      <img
-        src={copilotIcon}
-        alt=""
-        style={{
-          blockSize: "var(--wa-font-size-2xs)",
-          inlineSize: "var(--wa-font-size-2xs)",
-        }}
-        aria-hidden="true"
-      />
-    ),
-  },
-  {
-    key: "superhuman-go",
-    label: "Superhuman Go",
-    to: "/superhuman-go-skills",
-    icon: (
-      <img
-        src={superhumanGoIcon}
-        alt=""
-        style={{
-          blockSize: "var(--wa-font-size-2xs)",
-          inlineSize: "var(--wa-font-size-2xs)",
-        }}
-        aria-hidden="true"
-      />
-    ),
-  },
-  {
-    key: "chatgpt",
-    label: "ChatGPT",
-    to: "/chatgpt-skills",
-    icon: <WaIcon name="openai" family="brands" />,
-  },
-  {
-    key: "grok",
-    label: "Grok",
-    to: "/grok-skills",
-    icon: <WaIcon name="x-twitter" family="brands" />,
-  },
-  {
-    key: "perplexity",
-    label: "Perplexity",
-    to: "/perplexity-skills",
-    icon: (
-      <img
-        src={perplexityIcon}
-        alt=""
-        style={{
-          blockSize: "var(--wa-font-size-2xs)",
-          inlineSize: "var(--wa-font-size-2xs)",
-        }}
-        aria-hidden="true"
-      />
-    ),
-  },
-  {
-    key: "claude",
-    label: "Claude",
-    to: "/claude-skills",
-    icon: <WaIcon name="claude" family="brands" />,
-  },
-  {
-    key: "github-copilot",
-    label: "GitHub Copilot",
-    to: "/github-copilot-skills",
-    icon: <WaIcon name="copilot" family="brands" />,
-  },
+  { key: "microsoft-copilot", label: "Microsoft Copilot", to: "/mcp-skills" },
+  { key: "superhuman-go", label: "Superhuman Go", to: "/superhuman-go-skills" },
+  { key: "chatgpt", label: "ChatGPT", to: "/chatgpt-skills" },
+  { key: "grok", label: "Grok", to: "/grok-skills" },
+  { key: "perplexity", label: "Perplexity", to: "/perplexity-skills" },
+  { key: "claude", label: "Claude", to: "/claude-skills" },
+  { key: "github-copilot", label: "GitHub Copilot", to: "/github-copilot-skills" },
 ];
+
 
 interface AgentNavProps {
   /** Agent whose page is currently open, rendered as a non-link chip. */
@@ -141,7 +113,7 @@ export function AgentNav({ current, className }: AgentNavProps) {
                   background: "var(--wa-color-blue-95)",
                 }}
               >
-                {link.icon}
+                <AgentIcon agent={link.key} />
                 {link.label}
               </span>
             </li>
@@ -166,7 +138,7 @@ export function AgentNav({ current, className }: AgentNavProps) {
                   transition: "var(--wa-transition-fast)",
                 }}
               >
-                {link.icon}
+                <AgentIcon agent={link.key} />
                 {link.label}
               </Link>
             </li>
