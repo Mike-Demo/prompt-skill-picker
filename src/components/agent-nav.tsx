@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+
 import { Link } from "@tanstack/react-router";
 
 import { WaIcon } from "@/design-system/font-awsome-web-awesome-171158";
@@ -113,7 +113,7 @@ export function AgentNav({ current, className }: AgentNavProps) {
                   background: "var(--wa-color-blue-95)",
                 }}
               >
-                {link.icon}
+                <AgentIcon agent={link.key} />
                 {link.label}
               </span>
             </li>
@@ -138,7 +138,7 @@ export function AgentNav({ current, className }: AgentNavProps) {
                   transition: "var(--wa-transition-fast)",
                 }}
               >
-                {link.icon}
+                <AgentIcon agent={link.key} />
                 {link.label}
               </Link>
             </li>
