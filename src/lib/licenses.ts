@@ -14,6 +14,27 @@ export const assetCredits: readonly LicenseEntry[] = [
     url: "https://www.svgrepo.com/collection/human-resources-4/",
     note: "Source of the site favicon. Collection: https://www.svgrepo.com/collection/human-resources-4/ — License: https://www.svgrepo.com/page/licensing/#CC0 — Uploader: https://www.svgrepo.com/",
   },
+  {
+    name: "Microsoft Copilot icon (microsoft-cloud-icons)",
+    author: "DamoBird365",
+    license: "See repository trademark notice",
+    url: "https://github.com/DamoBird365/microsoft-cloud-icons/tree/master#trademark-notice",
+    note: "Microsoft Copilot brand mark used in the agent navigation and page header. Microsoft, Microsoft Copilot, and the Microsoft cloud icons are trademarks of Microsoft Corporation; this project uses the icons as a navigational reference only and is not affiliated with or endorsed by Microsoft. See the repository's trademark notice for details.",
+  },
+  {
+    name: "Perplexity icon",
+    author: "Reicon",
+    license: "MIT License",
+    url: "https://reicon.dev/license",
+    note: "Perplexity brand mark from Reicon (https://github.com/dqev/reicon), used in the agent navigation and page header. Perplexity and the Perplexity logo are trademarks of Perplexity AI, Inc.; this project uses the icon as a navigational reference only and is not affiliated with or endorsed by Perplexity.",
+  },
+  {
+    name: "Grammarly icon",
+    author: "Reicon",
+    license: "MIT License",
+    url: "https://reicon.dev/license",
+    note: "Grammarly brand mark from Reicon (https://github.com/dqev/reicon), used for the Superhuman Go navigation entry and page header. Grammarly and the Grammarly logo are trademarks of Grammarly, Inc.; this project uses the icon as a navigational reference only and is not affiliated with or endorsed by Grammarly.",
+  },
 ];
 
 export const typefaceCredits: readonly LicenseEntry[] = [
