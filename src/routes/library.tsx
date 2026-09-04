@@ -2,12 +2,14 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { ArrowLeft, Download, ExternalLink, Loader2 } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
+import {
+  WaBadge,
+  WaButton,
+  WaCheckbox,
+  WaIcon,
+  WaInput,
+} from "@/design-system/font-awsome-web-awesome-171158";
 import { Skeleton } from "@/components/ui/skeleton";
 import { downloadSkillsZip } from "@/lib/zip";
 import { fetchSkillFiles, listSkills, type SkillLibraryEntry } from "@/lib/skills.functions";
@@ -104,7 +106,7 @@ function SkillLibraryPage() {
           to="/"
           className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground"
         >
-          <ArrowLeft className="size-3" /> Back to search
+          <WaIcon name="arrow-left" /> Back to search
         </Link>
 
         <header className="mt-4 space-y-3">
@@ -118,9 +120,11 @@ function SkillLibraryPage() {
         </header>
 
         <div className="mt-6 flex flex-wrap items-center gap-3">
-          <Input
+          <WaInput
             value={filter}
-            onChange={(event) => setFilter(event.target.value)}
+            onInput={(event: React.FormEvent<HTMLElement>) =>
+              setFilter((event.currentTarget as HTMLInputElement).value)
+            }
             aria-label="Filter skills by name, repo or description"
             placeholder="Filter by name, repo or description"
             className="max-w-sm"
@@ -195,10 +199,10 @@ function SkillLibraryPage() {
                 }`}
               >
                 <div className="flex gap-3">
-                  <Checkbox
+                  <WaCheckbox
                     id={`lib-${entry.id}`}
                     checked={checked}
-                    onCheckedChange={() => toggle(entry.id)}
+                    onClick={() => toggle(entry.id)}
                     className="mt-1"
                   />
                   <div className="min-w-0 flex-1">
@@ -210,7 +214,9 @@ function SkillLibraryPage() {
                     </label>
                     <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
                       <span className="truncate">{entry.source}</span>
-                      <Badge variant="secondary">{formatInstalls(entry.installs)}</Badge>
+                      <WaBadge variant="neutral" appearance="filled">
+                        {formatInstalls(entry.installs)}
+                      </WaBadge>
                     </div>
                     {entry.description ? (
                       <p className="mt-2 text-sm text-muted-foreground">{entry.description}</p>
@@ -232,7 +238,7 @@ function SkillLibraryPage() {
                         rel="noreferrer"
                         className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
                       >
-                        View source <ExternalLink className="size-3" />
+                        View source <WaIcon name="arrow-up-right-from-square" />
                       </a>
                     ) : null}
                   </div>
@@ -254,17 +260,17 @@ function SkillLibraryPage() {
                 </span>
               ) : null}
             </div>
-            <Button
+            <WaButton
+              variant="brand"
               onClick={() => download.mutate([...selected])}
               disabled={download.isPending || downloadCooldown > 0}
             >
-              {download.isPending ? (
-                <Loader2 className="size-4 animate-spin" />
-              ) : (
-                <Download className="size-4" />
-              )}
+              <WaIcon
+                name={download.isPending ? "spinner" : "download"}
+                animation={download.isPending ? "spin" : undefined}
+              />
               {downloadCooldown > 0 ? `Retry in ${downloadCooldown}s` : "Download zip"}
-            </Button>
+            </WaButton>
           </div>
         </div>
       ) : null}

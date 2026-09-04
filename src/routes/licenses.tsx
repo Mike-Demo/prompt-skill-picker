@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, ExternalLink } from "lucide-react";
+import { WaIcon } from "@/design-system/font-awsome-web-awesome-171158";
 
 import {
   assetCredits,

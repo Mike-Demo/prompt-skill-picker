@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { WaIcon } from "@/design-system/font-awsome-web-awesome-171158";
 
 import { SelectionBar } from "@/components/selection-bar";
 import { SkillResultCard } from "@/components/skill-result-card";
