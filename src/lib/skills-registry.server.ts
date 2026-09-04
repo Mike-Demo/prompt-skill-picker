@@ -198,7 +198,10 @@ async function fetchRaw(
   path: string,
   branch: string,
 ): Promise<SkillDocument["markdown"] | null> {
-  const res = await fetch(`https://raw.githubusercontent.com/${source}/${branch}/${path}`);
+  const res = await fetchWithTimeout(
+    `https://raw.githubusercontent.com/${source}/${branch}/${path}`,
+    { headers: { "User-Agent": "skill-finder-app" } },
+  );
   if (!res.ok) return null;
   return res.text();
 }
@@ -225,10 +228,18 @@ async function firstHit(source: string, attempts: readonly Attempt[]) {
  * Candidate raw URLs are probed concurrently (raw.githubusercontent.com has no
  * REST rate limit), so resolution costs one round trip instead of up to eight
  * sequential ones. When every convention misses, the repo tree — cached once
- * per repository — locates the file exactly.
+ * per repository — locates the file exactly. Successful resolutions are stored
+ * durably, so a GitHub hiccup no longer silently drops skills from the library.
  */
 export async function fetchSkillDocument(skill: RegistrySkill): Promise<SkillDocument | null> {
   if (docCache.has(skill.id)) return docCache.get(skill.id) ?? null;
+
+  const cacheKey = `doc:${skill.id}`;
+  const stored = await readRegistryCache<SkillDocument>(cacheKey, DOC_CACHE_FRESH_MS);
+  if (stored && !stored.stale && stored.payload?.markdown) {
+    docCache.set(skill.id, stored.payload);
+    return stored.payload;
+  }
 
   const build = (branch: string, path: string, markdown: string): SkillDocument => ({
     id: skill.id,
@@ -262,8 +273,14 @@ export async function fetchSkillDocument(skill: RegistrySkill): Promise<SkillDoc
     result = null;
   }
 
+  // A failed live resolve falls back to whatever was stored before, so upstream
+  // trouble degrades to older markdown rather than a missing skill.
+  if (!result && stored?.payload?.markdown) result = stored.payload;
+  else if (result) await writeRegistryCache(cacheKey, result);
+
   docCache.set(skill.id, result);
   return result;
+
 }
 
 /** Extracts the `description` value from YAML frontmatter, when present. */
