@@ -208,6 +208,21 @@ export async function enhancePrompt(prompt: string): Promise<string> {
   return enhanced.length >= 3 ? enhanced : prompt;
 }
 
+/**
+ * Ids are authorised from the in-memory allowlist first; on a miss (expired
+ * TTL, or a request served by another server instance) we fall back to the
+ * stored shared searches, which is durable proof the app surfaced the id.
+ */
+async function isAuthorisedSkillId(id: string): Promise<boolean> {
+  if (!isWellFormedSkillId(id)) return false;
+  if (isSkillIdAllowed(id)) return true;
+
+  const { isSkillIdInSavedSearch } = await import("./saved-search.server");
+  if (!(await isSkillIdInSavedSearch(id))) return false;
+  allowSkillIds([id]);
+  return true;
+}
+
 export async function collectSkillFiles(ids: string[]): Promise<SkillFile[]> {
   const files: SkillFile[] = [];
   const used = new Set<string>();
@@ -215,7 +230,8 @@ export async function collectSkillFiles(ids: string[]): Promise<SkillFile[]> {
   for (const id of ids) {
     // Only ids this server previously surfaced through search or the library
     // may be resolved, so the endpoint cannot fetch arbitrary repo paths.
-    if (!isWellFormedSkillId(id) || !isSkillIdAllowed(id)) continue;
+    if (!(await isAuthorisedSkillId(id))) continue;
+
 
     const parts = id.split("/");
     const skillId = parts[parts.length - 1] ?? id;

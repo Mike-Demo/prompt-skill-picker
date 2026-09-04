@@ -79,3 +79,23 @@ export async function loadSavedSearch(token: string): Promise<SavedSearch | null
   const results = Array.isArray(data.results) ? (data.results as unknown as SkillSuggestion[]) : [];
   return { prompt: data.prompt, results, expiresAt: data.expires_at };
 }
+
+/**
+ * True when a skill id appears in any unexpired shared search. Search results
+ * live longer than the in-memory allowlist (and are not tied to one server
+ * instance), so this is the durable proof that the app itself surfaced the id.
+ */
+export async function isSkillIdInSavedSearch(id: string): Promise<boolean> {
+  try {
+    const db = await admin();
+    const { data, error } = await db
+      .from("saved_searches")
+      .select("token")
+      .contains("results", [{ id }])
+      .gt("expires_at", new Date().toISOString())
+      .limit(1);
+    return !error && (data?.length ?? 0) > 0;
+  } catch {
+    return false;
+  }
+}
