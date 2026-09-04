@@ -14,7 +14,7 @@ Font Awesome Free 7.3.1 is already loaded sitewide, and its brands family (free)
 | ChatGPT | `fa-brands fa-openai` |
 | GitHub Copilot | `fa-brands fa-copilot` (or `fa-github`) |
 | Microsoft Copilot | `fa-brands fa-microsoft` |
-| Grok | no brand icon — use a solid fallback (`fa-bolt`) |
+| Grok | `fa-brands fa-x-twitter` (Grok is xAI / X's model; no standalone "grok" glyph) |
 | Perplexity | no brand icon — use a solid fallback (`fa-magnifying-glass`) |
 | Superhuman Go | no brand icon — use a solid fallback (`fa-envelope`) |
 
