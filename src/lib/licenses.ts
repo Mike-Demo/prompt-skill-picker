@@ -99,6 +99,13 @@ export const libraryCredits: readonly LicenseEntry[] = [
     note: "Used for the footer icons.",
   },
   {
+    name: "Web Awesome",
+    author: "Font Awesome (Fonticons, Inc.) and contributors",
+    license: "MIT",
+    url: "https://github.com/fontawesome/web-awesome/blob/main/LICENSE",
+    note: "The open-source web component library this app's design system is built on. Component source is copied into this project under src/design-system/ and adapted.",
+  },
+  {
     name: "JSZip",
     author: "Stuart Knightley and contributors",
     license: "MIT or GPLv3",
