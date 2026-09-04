@@ -207,7 +207,9 @@ function SkillFinderPage() {
               <Sparkles className="size-4" /> Claude Code skills
             </Link>
           </div>
+          <AgentNav />
         </header>
+
 
         <form
           className="mt-8 space-y-3"
