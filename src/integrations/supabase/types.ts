@@ -59,6 +59,24 @@ export type Database = {
         }
         Relationships: []
       }
+      registry_cache: {
+        Row: {
+          cache_key: string
+          fetched_at: string
+          payload: Json
+        }
+        Insert: {
+          cache_key: string
+          fetched_at?: string
+          payload: Json
+        }
+        Update: {
+          cache_key?: string
+          fetched_at?: string
+          payload?: Json
+        }
+        Relationships: []
+      }
       saved_searches: {
         Row: {
           created_at: string
