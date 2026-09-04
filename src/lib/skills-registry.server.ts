@@ -153,20 +153,17 @@ async function getRepoTree(source: string): Promise<RepoTreeEntry[]> {
 
   const load = (async () => {
     for (const branch of ["main", "master"]) {
-      const res = await fetch(
+      const res = await fetchWithTimeout(
         `https://api.github.com/repos/${source}/git/trees/${branch}?recursive=1`,
-        { headers: { Accept: "application/vnd.github+json" } },
-      );
-      if (!res.ok) continue;
+        { headers: { Accept: "application/vnd.github+json", "User-Agent": "skill-finder-app" } },
+      ).catch(() => null);
+      if (!res?.ok) continue;
       const body = (await res.json()) as { tree?: RepoTreeEntry[] };
       if (Array.isArray(body.tree)) return body.tree;
     }
     return [];
   })();
 
-  treeCache.set(source, load);
-  return load;
-}
 
 export interface SkillDocument {
   id: string;
