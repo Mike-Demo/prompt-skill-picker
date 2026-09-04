@@ -39,7 +39,17 @@ const LINKS: ReadonlyArray<{
     key: "perplexity",
     label: "Perplexity",
     to: "/perplexity-skills",
-    icon: <img src={perplexityIcon} alt="" className="h-3 w-3" aria-hidden="true" />,
+    icon: (
+      <img
+        src={perplexityIcon}
+        alt=""
+        style={{
+          blockSize: "var(--wa-font-size-2xs)",
+          inlineSize: "var(--wa-font-size-2xs)",
+        }}
+        aria-hidden="true"
+      />
+    ),
   },
   {
     key: "claude",
@@ -65,16 +75,48 @@ interface AgentNavProps {
 export function AgentNav({ current, className }: AgentNavProps) {
   return (
     <nav aria-label="Skills by agent" className={className}>
-      <h2 className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+      <h2
+        className="agent-nav__heading"
+        style={{
+          fontSize: "var(--wa-font-size-2xs)",
+          fontWeight: "var(--wa-font-weight-semibold)",
+          textTransform: "uppercase",
+          letterSpacing: "var(--wa-space-3xs)",
+          color: "var(--wa-color-gray-50)",
+        }}
+      >
         Skills by agent
       </h2>
-      <ul className="mt-2 flex flex-wrap gap-2">
+      <ul
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap: "var(--wa-space-2xs)",
+          marginBlockStart: "var(--wa-space-2xs)",
+          padding: 0,
+          listStyle: "none",
+        }}
+      >
         {LINKS.map((link) =>
           link.key === current ? (
             <li key={link.key}>
               <span
                 aria-current="page"
-                className="inline-flex items-center gap-1.5 rounded-full border border-primary bg-accent/40 px-3 py-1 text-xs font-medium text-foreground"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "var(--wa-space-2xs)",
+                  borderRadius: "var(--wa-border-radius-pill)",
+                  borderWidth: "var(--wa-border-width-s)",
+                  borderStyle: "var(--wa-border-style)",
+                  borderColor: "var(--wa-color-blue-50)",
+                  paddingBlock: "var(--wa-space-2xs)",
+                  paddingInline: "var(--wa-space-s)",
+                  fontSize: "var(--wa-font-size-2xs)",
+                  fontWeight: "var(--wa-font-weight-semibold)",
+                  color: "var(--wa-color-blue-70)",
+                  background: "var(--wa-color-blue-95)",
+                }}
               >
                 {link.icon}
                 {link.label}
@@ -84,7 +126,22 @@ export function AgentNav({ current, className }: AgentNavProps) {
             <li key={link.key}>
               <Link
                 to={link.to}
-                className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1 text-xs text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+                className="agent-nav__chip"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "var(--wa-space-2xs)",
+                  borderRadius: "var(--wa-border-radius-pill)",
+                  borderWidth: "var(--wa-border-width-s)",
+                  borderStyle: "var(--wa-border-style)",
+                  borderColor: "var(--wa-color-gray-20)",
+                  paddingBlock: "var(--wa-space-2xs)",
+                  paddingInline: "var(--wa-space-s)",
+                  fontSize: "var(--wa-font-size-2xs)",
+                  color: "var(--wa-color-gray-60)",
+                  textDecoration: "none",
+                  transition: "var(--wa-transition-fast)",
+                }}
               >
                 {link.icon}
                 {link.label}
@@ -93,6 +150,13 @@ export function AgentNav({ current, className }: AgentNavProps) {
           ),
         )}
       </ul>
+      <style>{`
+        .agent-nav__chip:hover {
+          background: var(--wa-color-surface-raised);
+          color: var(--wa-color-gray-90);
+          border-color: var(--wa-color-gray-40);
+        }
+      `}</style>
     </nav>
   );
 }
