@@ -27,20 +27,69 @@ const TOPICS = [
 ] as const;
 
 /**
- * Topic queries used for the curated Claude Code collection. The registry has
- * no per-agent filter, so these are the tasks Claude Code users most often
- * reach for; every skill is a plain SKILL.md and works in Claude Code.
+ * Topic queries per agent. The registry has no per-agent filter, so each list
+ * is the set of tasks that agent's users most often reach for; every skill is
+ * a plain SKILL.md and works with any agent that reads markdown instructions.
  */
-const CLAUDE_TOPICS = [
-  "claude",
-  "claude code",
-  "code review",
-  "refactoring",
-  "debugging",
-  "testing",
-  "documentation",
-  "git commit",
-] as const;
+const AGENT_TOPICS: Readonly<Record<AgentKey, readonly string[]>> = {
+  claude: [
+    "claude",
+    "claude code",
+    "code review",
+    "refactoring",
+    "debugging",
+    "testing",
+    "documentation",
+    "git commit",
+  ],
+  "microsoft-copilot": [
+    "microsoft copilot",
+    "mcp",
+    "excel",
+    "powerpoint",
+    "word document",
+    "meeting notes",
+    "email",
+    "data analysis",
+  ],
+  "superhuman-go": [
+    "email",
+    "inbox triage",
+    "meeting notes",
+    "follow up",
+    "scheduling",
+    "writing",
+    "summarize",
+  ],
+  chatgpt: [
+    "chatgpt",
+    "prompt engineering",
+    "writing",
+    "summarize",
+    "data analysis",
+    "research",
+    "pdf",
+  ],
+  grok: ["research", "data analysis", "coding", "summarize", "social media", "writing"],
+  perplexity: [
+    "research",
+    "citations",
+    "competitive analysis",
+    "market research",
+    "summarize",
+    "writing",
+  ],
+  "github-copilot": [
+    "github copilot",
+    "code review",
+    "pull request",
+    "testing",
+    "refactoring",
+    "git commit",
+    "documentation",
+  ],
+};
+
 
 const MAX_ENTRIES = 24;
 const DOC_CONCURRENCY = 8;
