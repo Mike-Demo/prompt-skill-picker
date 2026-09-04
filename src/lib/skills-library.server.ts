@@ -109,22 +109,35 @@ const AGENT_TOPICS: Readonly<Record<AgentKey, readonly string[]>> = {
 };
 
 
-const MAX_ENTRIES = 24;
+const MAX_ENTRIES = 80;
+const PER_TOPIC_LIMIT = 20;
 const DOC_CONCURRENCY = 8;
 const CACHE_TTL_MS = 30 * 60 * 1000;
 
 interface CacheSlot {
-  cached: { entries: SkillLibraryEntry[]; expiresAt: number } | null;
-  inFlight: Promise<SkillLibraryEntry[]> | null;
+  cached: { response: SkillLibraryResponse; expiresAt: number } | null;
+  inFlight: Promise<SkillLibraryResponse> | null;
 }
 
 const slots = new Map<string, CacheSlot>();
 
-async function loadLibrary(topics: readonly string[]): Promise<SkillLibraryEntry[]> {
-  const batches = await Promise.all(
-    topics.map((topic) => searchRegistry(topic, 12).catch(() => [] as RegistrySkill[])),
-  );
+async function loadLibrary(topics: readonly string[]): Promise<SkillLibraryResponse> {
+  let reachable = false;
+  let servedFromCache = false;
 
+  const batches = await Promise.all(
+    topics.map(async (topic) => {
+      try {
+        const result = await searchRegistryCached(topic, PER_TOPIC_LIMIT);
+        reachable = true;
+        if (result.stale) servedFromCache = true;
+        return result.skills;
+      } catch (error) {
+        if (!(error instanceof RegistryUnavailableError)) reachable = true;
+        return [] as RegistrySkill[];
+      }
+    }),
+  );
 
   const byId = new Map<string, RegistrySkill>();
   for (const batch of batches) {
@@ -162,7 +175,12 @@ async function loadLibrary(topics: readonly string[]): Promise<SkillLibraryEntry
     .filter((entry) => entry.hasMarkdown)
     .sort((a, b) => b.installs - a.installs || a.name.localeCompare(b.name));
   allowSkillIds(visible.map((entry) => entry.id));
-  return visible;
+
+  return {
+    entries: visible,
+    unavailable: !reachable && visible.length === 0,
+    stale: servedFromCache,
+  };
 }
 
 /**
@@ -173,24 +191,24 @@ async function loadLibrary(topics: readonly string[]): Promise<SkillLibraryEntry
 async function listCached(
   key: string,
   topics: readonly string[],
-): Promise<SkillLibraryEntry[]> {
+): Promise<SkillLibraryResponse> {
   const slot: CacheSlot = slots.get(key) ?? { cached: null, inFlight: null };
   slots.set(key, slot);
 
   if (slot.cached && slot.cached.expiresAt > Date.now()) {
-    allowSkillIds(slot.cached.entries.map((entry) => entry.id));
-    return slot.cached.entries;
+    allowSkillIds(slot.cached.response.entries.map((entry) => entry.id));
+    return slot.cached.response;
   }
 
   if (!slot.inFlight) {
     slot.inFlight = loadLibrary(topics)
-      .then((entries) => {
+      .then((response) => {
         // An empty result means the registry or GitHub call failed; caching it
         // would keep the page blank for the whole TTL.
-        if (entries.length > 0) {
-          slot.cached = { entries, expiresAt: Date.now() + CACHE_TTL_MS };
+        if (response.entries.length > 0) {
+          slot.cached = { response, expiresAt: Date.now() + CACHE_TTL_MS };
         }
-        return entries;
+        return response;
       })
 
       .finally(() => {
@@ -201,11 +219,13 @@ async function listCached(
   return slot.inFlight;
 }
 
-export async function listSkillLibrary(): Promise<SkillLibraryEntry[]> {
+export async function listSkillLibrary(): Promise<SkillLibraryResponse> {
   return listCached("library", TOPICS);
 }
 
 /** Curated per-agent collection, ranked by installs. */
-export async function listAgentSkillLibrary(agent: AgentKey): Promise<SkillLibraryEntry[]> {
+export async function listAgentSkillLibrary(agent: AgentKey): Promise<SkillLibraryResponse> {
   return listCached(`agent:${agent}`, AGENT_TOPICS[agent]);
+}
+
 }
