@@ -26,17 +26,38 @@ const TOPICS = [
   "pdf",
 ] as const;
 
+/**
+ * Topic queries used for the curated Claude Code collection. The registry has
+ * no per-agent filter, so these are the tasks Claude Code users most often
+ * reach for; every skill is a plain SKILL.md and works in Claude Code.
+ */
+const CLAUDE_TOPICS = [
+  "claude",
+  "claude code",
+  "code review",
+  "refactoring",
+  "debugging",
+  "testing",
+  "documentation",
+  "git commit",
+] as const;
+
 const MAX_ENTRIES = 24;
 const DOC_CONCURRENCY = 8;
 const CACHE_TTL_MS = 30 * 60 * 1000;
 
-let cached: { entries: SkillLibraryEntry[]; expiresAt: number } | null = null;
-let inFlight: Promise<SkillLibraryEntry[]> | null = null;
+interface CacheSlot {
+  cached: { entries: SkillLibraryEntry[]; expiresAt: number } | null;
+  inFlight: Promise<SkillLibraryEntry[]> | null;
+}
 
-async function loadLibrary(): Promise<SkillLibraryEntry[]> {
+const slots = new Map<string, CacheSlot>();
+
+async function loadLibrary(topics: readonly string[]): Promise<SkillLibraryEntry[]> {
   const batches = await Promise.all(
-    TOPICS.map((topic) => searchRegistry(topic, 12).catch(() => [] as RegistrySkill[])),
+    topics.map((topic) => searchRegistry(topic, 12).catch(() => [] as RegistrySkill[])),
   );
+
 
   const byId = new Map<string, RegistrySkill>();
   for (const batch of batches) {
