@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 
 import type { AgentKey } from "@/lib/agents";
 import perplexityIcon from "@/assets/perplexity.svg";
+import superhumanGoIcon from "@/assets/superhuman-go.svg";
 
 /** Route literals kept inline so TanStack can type-check every destination. */
 const LINKS: ReadonlyArray<{
