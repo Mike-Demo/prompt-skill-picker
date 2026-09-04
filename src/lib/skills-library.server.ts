@@ -77,6 +77,7 @@ async function loadLibrary(topics: readonly string[]): Promise<SkillLibraryEntry
       const doc = await fetchSkillDocument(skill);
       return {
         id: skill.id,
+        skillId: skill.skillId,
         name: skill.name,
         source: skill.source,
         installs: skill.installs,
@@ -88,32 +89,51 @@ async function loadLibrary(topics: readonly string[]): Promise<SkillLibraryEntry
     },
   );
 
-  const visible = entries.filter((entry) => entry.hasMarkdown);
+  // Most-installed first: the registry's install count is the only usage
+  // signal available, and the doc fetch above preserves candidate order.
+  const visible = entries
+    .filter((entry) => entry.hasMarkdown)
+    .sort((a, b) => b.installs - a.installs || a.name.localeCompare(b.name));
   allowSkillIds(visible.map((entry) => entry.id));
   return visible;
 }
 
 /**
- * Serves the catalogue from a short-lived cache and collapses concurrent
+ * Serves a catalogue from a short-lived cache and collapses concurrent
  * requests onto one load, so only the first visitor in a window pays for the
  * registry and GitHub round trips.
  */
-export async function listSkillLibrary(): Promise<SkillLibraryEntry[]> {
-  if (cached && cached.expiresAt > Date.now()) {
-    allowSkillIds(cached.entries.map((entry) => entry.id));
-    return cached.entries;
+async function listCached(
+  key: string,
+  topics: readonly string[],
+): Promise<SkillLibraryEntry[]> {
+  const slot: CacheSlot = slots.get(key) ?? { cached: null, inFlight: null };
+  slots.set(key, slot);
+
+  if (slot.cached && slot.cached.expiresAt > Date.now()) {
+    allowSkillIds(slot.cached.entries.map((entry) => entry.id));
+    return slot.cached.entries;
   }
 
-  if (!inFlight) {
-    inFlight = loadLibrary()
+  if (!slot.inFlight) {
+    slot.inFlight = loadLibrary(topics)
       .then((entries) => {
-        cached = { entries, expiresAt: Date.now() + CACHE_TTL_MS };
+        slot.cached = { entries, expiresAt: Date.now() + CACHE_TTL_MS };
         return entries;
       })
       .finally(() => {
-        inFlight = null;
+        slot.inFlight = null;
       });
   }
 
-  return inFlight;
+  return slot.inFlight;
+}
+
+export async function listSkillLibrary(): Promise<SkillLibraryEntry[]> {
+  return listCached("library", TOPICS);
+}
+
+/** Curated Claude Code collection, ranked by installs. */
+export async function listClaudeSkillLibrary(): Promise<SkillLibraryEntry[]> {
+  return listCached("claude", CLAUDE_TOPICS);
 }
