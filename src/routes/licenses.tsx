@@ -47,7 +47,7 @@ function CreditList({ entries }: { entries: readonly LicenseEntry[] }) {
             className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
           >
             License source
-            <ExternalLink className="size-3" aria-hidden="true" />
+            <WaIcon name="arrow-up-right-from-square" aria-hidden="true" />
           </a>
         </li>
       ))}
@@ -63,7 +63,7 @@ function LicensesPage() {
           to="/"
           className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
         >
-          <ArrowLeft className="size-4" aria-hidden="true" />
+          <WaIcon name="arrow-left" aria-hidden="true" />
           Back to search
         </Link>
 

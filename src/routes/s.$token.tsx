@@ -71,7 +71,7 @@ function SharedSearchPage() {
           to="/"
           className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
         >
-          <ArrowLeft className="size-4" /> New search
+          <WaIcon name="arrow-left" /> New search
         </Link>
 
         <h1 className="mt-4 text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
@@ -131,7 +131,7 @@ function SharedSearchPage() {
 
         {download.isPending ? (
           <p className="mt-4 inline-flex items-center gap-2 text-sm text-muted-foreground">
-            <Loader2 className="size-4 animate-spin" /> Preparing your zip…
+            <WaIcon name="spinner" animation="spin" /> Preparing your zip…
           </p>
         ) : null}
       </div>
