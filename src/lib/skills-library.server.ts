@@ -227,5 +227,3 @@ export async function listSkillLibrary(): Promise<SkillLibraryResponse> {
 export async function listAgentSkillLibrary(agent: AgentKey): Promise<SkillLibraryResponse> {
   return listCached(`agent:${agent}`, AGENT_TOPICS[agent]);
 }
-
-}
