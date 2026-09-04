@@ -1,17 +1,59 @@
+import type { ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 
 import type { AgentKey } from "@/lib/agents";
+import perplexityIcon from "@/assets/perplexity.svg";
 
 /** Route literals kept inline so TanStack can type-check every destination. */
-const LINKS = [
-  { key: "microsoft-copilot", label: "Microsoft Copilot", to: "/mcp-skills" },
-  { key: "superhuman-go", label: "Superhuman Go", to: "/superhuman-go-skills" },
-  { key: "chatgpt", label: "ChatGPT", to: "/chatgpt-skills" },
-  { key: "grok", label: "Grok", to: "/grok-skills" },
-  { key: "perplexity", label: "Perplexity", to: "/perplexity-skills" },
-  { key: "claude", label: "Claude", to: "/claude-skills" },
-  { key: "github-copilot", label: "GitHub Copilot", to: "/github-copilot-skills" },
-] as const;
+const LINKS: ReadonlyArray<{
+  key: AgentKey;
+  label: string;
+  to: string;
+  icon: ReactNode;
+}> = [
+  {
+    key: "microsoft-copilot",
+    label: "Microsoft Copilot",
+    to: "/mcp-skills",
+    icon: <i className="fa-brands fa-microsoft" aria-hidden="true" />,
+  },
+  {
+    key: "superhuman-go",
+    label: "Superhuman Go",
+    to: "/superhuman-go-skills",
+    icon: <i className="fa-solid fa-envelope" aria-hidden="true" />,
+  },
+  {
+    key: "chatgpt",
+    label: "ChatGPT",
+    to: "/chatgpt-skills",
+    icon: <i className="fa-brands fa-openai" aria-hidden="true" />,
+  },
+  {
+    key: "grok",
+    label: "Grok",
+    to: "/grok-skills",
+    icon: <i className="fa-brands fa-x-twitter" aria-hidden="true" />,
+  },
+  {
+    key: "perplexity",
+    label: "Perplexity",
+    to: "/perplexity-skills",
+    icon: <img src={perplexityIcon} alt="" className="h-3 w-3" aria-hidden="true" />,
+  },
+  {
+    key: "claude",
+    label: "Claude",
+    to: "/claude-skills",
+    icon: <i className="fa-brands fa-claude" aria-hidden="true" />,
+  },
+  {
+    key: "github-copilot",
+    label: "GitHub Copilot",
+    to: "/github-copilot-skills",
+    icon: <i className="fa-brands fa-copilot" aria-hidden="true" />,
+  },
+];
 
 interface AgentNavProps {
   /** Agent whose page is currently open, rendered as a non-link chip. */
@@ -32,8 +74,9 @@ export function AgentNav({ current, className }: AgentNavProps) {
             <li key={link.key}>
               <span
                 aria-current="page"
-                className="inline-flex rounded-full border border-primary bg-accent/40 px-3 py-1 text-xs font-medium text-foreground"
+                className="inline-flex items-center gap-1.5 rounded-full border border-primary bg-accent/40 px-3 py-1 text-xs font-medium text-foreground"
               >
+                {link.icon}
                 {link.label}
               </span>
             </li>
@@ -41,8 +84,9 @@ export function AgentNav({ current, className }: AgentNavProps) {
             <li key={link.key}>
               <Link
                 to={link.to}
-                className="inline-flex rounded-full border border-border px-3 py-1 text-xs text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+                className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1 text-xs text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
               >
+                {link.icon}
                 {link.label}
               </Link>
             </li>
