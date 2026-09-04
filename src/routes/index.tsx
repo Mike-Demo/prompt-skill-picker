@@ -207,9 +207,11 @@ function SkillFinderPage() {
             <Textarea
               value={prompt}
               onChange={(event) => setPrompt(event.target.value)}
+              aria-label="Describe what you want your agent to do"
               placeholder="e.g. help me write better React components and review pull requests"
               rows={3}
               className="resize-none pr-12 text-base"
+
               onKeyDown={(event) => {
                 if (event.key === "Enter" && (event.metaKey || event.ctrlKey)) {
                   event.preventDefault();

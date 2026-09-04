@@ -108,9 +108,11 @@ function SkillLibraryPage() {
           <Input
             value={filter}
             onChange={(event) => setFilter(event.target.value)}
+            aria-label="Filter skills by name, repo or description"
             placeholder="Filter by name, repo or description"
             className="max-w-sm"
           />
+
           {library.isSuccess ? (
             <span className="text-xs text-muted-foreground">
               {visible.length} of {entries.length} skills
