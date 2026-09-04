@@ -173,9 +173,9 @@ function SkillLibraryPage() {
           <ul className="mt-8 space-y-3">
             {[0, 1, 2, 3, 4].map((key) => (
               <li key={key} className="rounded-lg border border-border p-4">
-                <Skeleton className="h-5 w-1/2" />
-                <Skeleton className="mt-3 h-4 w-full" />
-                <Skeleton className="mt-2 h-20 w-full" />
+                <WaSkeleton className="h-5 w-1/2" />
+                <WaSkeleton className="mt-3 h-4 w-full" />
+                <WaSkeleton className="mt-2 h-20 w-full" />
               </li>
             ))}
           </ul>
