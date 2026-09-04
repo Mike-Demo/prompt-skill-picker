@@ -170,7 +170,36 @@ function SkillLibraryPage() {
 
         {library.isError ? (
           <WaCallout variant="danger" className="mt-6">
-            {library.error instanceof Error ? library.error.message : "Could not load the library."}
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <span>
+                {library.error instanceof Error
+                  ? library.error.message
+                  : "Could not load the library."}
+              </span>
+              <WaButton size="s" appearance="outlined" onClick={() => void library.refetch()}>
+                <WaIcon name="rotate-right" /> Try again
+              </WaButton>
+            </div>
+          </WaCallout>
+        ) : null}
+
+        {registryDown ? (
+          <WaCallout variant="warning" className="mt-6">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <span>
+                The skills registry isn&rsquo;t responding right now, so the library is empty. Try
+                again in a minute.
+              </span>
+              <WaButton size="s" appearance="outlined" onClick={() => void library.refetch()}>
+                <WaIcon name="rotate-right" /> Try again
+              </WaButton>
+            </div>
+          </WaCallout>
+        ) : null}
+
+        {servedFromCache ? (
+          <WaCallout variant="neutral" className="mt-6">
+            The registry is slow at the moment — showing recent results from our cache.
           </WaCallout>
         ) : null}
 
@@ -186,11 +215,12 @@ function SkillLibraryPage() {
           </ul>
         ) : null}
 
-        {library.isSuccess && visible.length === 0 ? (
+        {library.isSuccess && visible.length === 0 && !registryDown ? (
           <p className="mt-8 rounded-lg border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
             No skills match that filter.
           </p>
         ) : null}
+
 
         <ul className="mt-8 space-y-3">
           {visible.map((entry) => {
