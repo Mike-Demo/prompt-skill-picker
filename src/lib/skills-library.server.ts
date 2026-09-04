@@ -2,30 +2,47 @@ import {
   fetchSkillDocument,
   parseDescription,
   parseExample,
-  searchRegistry,
+  searchRegistryCached,
+  RegistryUnavailableError,
   type RegistrySkill,
 } from "./skills-registry.server";
 import { allowSkillIds } from "./skills-allowlist.server";
 import { mapWithConcurrency } from "./concurrency";
-import type { SkillLibraryEntry } from "./skills.functions";
+import type { SkillLibraryEntry, SkillLibraryResponse } from "./skills.functions";
 import type { AgentKey } from "./agents";
 
 /**
  * Broad topic queries used to assemble a browsable catalogue from the
- * registry's search endpoint (it has no "list all" route).
+ * registry's search endpoint (it has no "list all" route). The list is wide on
+ * purpose: coverage is what determines how many skills the library can show.
  */
 const TOPICS = [
   "code review",
   "react",
+  "typescript",
+  "python",
   "testing",
+  "debugging",
+  "refactoring",
   "documentation",
+  "git commit",
+  "pull request",
   "design",
+  "css",
+  "accessibility",
   "data analysis",
+  "sql",
   "security",
   "writing",
+  "summarize",
+  "research",
   "devops",
+  "docker",
+  "api",
   "pdf",
+  "spreadsheet",
 ] as const;
+
 
 /**
  * Topic queries per agent. The registry has no per-agent filter, so each list
