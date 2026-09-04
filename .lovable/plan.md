@@ -18,7 +18,7 @@ Font Awesome Free 7.3.1 is already loaded sitewide, and its brands family (free)
 | Perplexity | user-uploaded SVG (you'll provide the file) |
 | Superhuman Go | user-uploaded SVG (you'll provide the file) |
 
-Superhuman has no Font Awesome brand glyph at any tier, so it gets a neutral solid icon rather than a hand-drawn logo substitute. Perplexity will use your uploaded SVG instead. If you would rather Superhuman carry a real logo, that needs its official SVG mark supplied separately.
+Perplexity and Superhuman will use your uploaded SVGs instead. Place each under `src/assets/` (e.g. `src/assets/perplexity.svg`, `src/assets/superhuman.svg`) and import them so they inherit the button's text color.
 
 Icons render at the same size and inherit the button's text color, so the buttons keep their current look — just with a mark in front of the label.
 
