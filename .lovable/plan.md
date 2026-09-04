@@ -15,15 +15,15 @@ Font Awesome Free 7.3.1 is already loaded sitewide, and its brands family (free)
 | GitHub Copilot | `fa-brands fa-copilot` (or `fa-github`) |
 | Microsoft Copilot | `fa-brands fa-microsoft` |
 | Grok | `fa-brands fa-x-twitter` (Grok is xAI / X's model; no standalone "grok" glyph) |
-| Perplexity | no brand icon — use a solid fallback (`fa-magnifying-glass`) |
+| Perplexity | user-uploaded SVG (you'll provide the file) |
 | Superhuman Go | no brand icon — use a solid fallback (`fa-envelope`) |
 
-Perplexity and Superhuman have no Font Awesome brand glyph at any tier, so they get neutral solid icons rather than a hand-drawn logo substitute. If you would rather they carry real logos, that needs their official SVG marks supplied separately.
+Superhuman has no Font Awesome brand glyph at any tier, so it gets a neutral solid icon rather than a hand-drawn logo substitute. Perplexity will use your uploaded SVG instead. If you would rather Superhuman carry a real logo, that needs its official SVG mark supplied separately.
 
 Icons render at the same size and inherit the button's text color, so the buttons keep their current look — just with a mark in front of the label.
 
 ## Technical notes
 
 - `src/routes/index.tsx`: delete the `<Link to="/claude-skills">` block in the header and drop the now-unused `Sparkles` import only if the Enhance button no longer needs it (it does, so the import stays).
-- `src/components/agent-nav.tsx`: add an `icon` field to each entry in the `LINKS` array and render `<i className={icon} aria-hidden="true" />` before the label.
-- No changes to routes, data loading, or the sitemap.
+- `src/components/agent-nav.tsx`: add an `icon` field to each entry in the `LINKS` array (Font Awesome class string, or the imported Perplexity SVG component) and render it before the label. Perplexity's SVG is imported from the asset path you upload to and rendered as a small inline component sized to match the other icons.
+- Place the Perplexity SVG under `src/assets/` (e.g. `src/assets/perplexity.svg`) and import it as a React component or `<img src>` so it inherits the button's text color.
