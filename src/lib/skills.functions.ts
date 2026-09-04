@@ -156,10 +156,13 @@ export const listSkills = createServerFn({ method: "GET" }).handler(
   },
 );
 
-export const listClaudeSkills = createServerFn({ method: "GET" }).handler(
-  async (): Promise<SkillLibraryEntry[]> => {
+const AgentInput = z.object({ agent: z.enum(AGENT_KEYS) });
+
+export const listAgentSkills = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) => AgentInput.parse(input))
+  .handler(async ({ data }): Promise<SkillLibraryEntry[]> => {
     await guard("library");
-    const { listClaudeSkillLibrary } = await import("./skills-library.server");
-    return listClaudeSkillLibrary();
-  },
-);
+    const { listAgentSkillLibrary } = await import("./skills-library.server");
+    return listAgentSkillLibrary(data.agent);
+  });
+
