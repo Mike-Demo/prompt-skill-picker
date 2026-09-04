@@ -25,5 +25,5 @@ Icons render at the same size and inherit the button's text color, so the button
 ## Technical notes
 
 - `src/routes/index.tsx`: delete the `<Link to="/claude-skills">` block in the header and drop the now-unused `Sparkles` import only if the Enhance button no longer needs it (it does, so the import stays).
-- `src/components/agent-nav.tsx`: add an `icon` field to each entry in the `LINKS` array and render `<i className={icon} aria-hidden="true" />` before the label.
-- No changes to routes, data loading, or the sitemap.
+- `src/components/agent-nav.tsx`: add an `icon` field to each entry in the `LINKS` array (Font Awesome class string, or the imported Perplexity SVG component) and render it before the label. Perplexity's SVG is imported from the asset path you upload to and rendered as a small inline component sized to match the other icons.
+- Place the Perplexity SVG under `src/assets/` (e.g. `src/assets/perplexity.svg`) and import it as a React component or `<img src>` so it inherits the button's text color.
