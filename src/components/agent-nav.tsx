@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 
 import type { AgentKey } from "@/lib/agents";
+import copilotIcon from "@/assets/copilot.svg";
 import perplexityIcon from "@/assets/perplexity.svg";
 import superhumanGoIcon from "@/assets/superhuman-go.svg";
 
