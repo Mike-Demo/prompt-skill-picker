@@ -61,7 +61,10 @@ function SkillLibraryPage() {
     },
   });
 
-  const entries: SkillLibraryEntry[] = library.data ?? [];
+  const entries: SkillLibraryEntry[] = library.data?.entries ?? [];
+  const registryDown = library.data?.unavailable === true;
+  const servedFromCache = library.data?.stale === true;
+
 
   // A rate-limited load is not retried by React Query; instead the cooldown
   // expiring retries it once, so the page recovers without a click.
