@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
+  ClientOnly,
   Outlet,
   Link,
   createRootRouteWithContext,
@@ -14,6 +15,8 @@ import { useChunkLoadRecovery } from "@/hooks/use-chunk-load-recovery";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SiteFooter } from "@/components/site-footer";
+import { getRenderMode } from "@/lib/render-mode.functions";
+import { WaSkeleton } from "@/design-system/font-awsome-web-awesome-171158";
 import {
   WebAwesomeLoader,
   WEB_AWESOME_HTML_CLASSES,
@@ -107,6 +110,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
     ],
   }),
+  loader: () => getRenderMode(),
   shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,
@@ -127,17 +131,33 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+function PageSkeleton() {
+  return (
+    <div className="mx-auto w-full max-w-3xl px-4 py-10 sm:py-16">
+      <WaSkeleton className="h-10 w-2/3" />
+      <WaSkeleton className="mt-4 h-4 w-full" />
+      <WaSkeleton className="mt-2 h-4 w-5/6" />
+      <WaSkeleton className="mt-8 h-24 w-full" />
+    </div>
+  );
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const renderMode = Route.useLoaderData();
   useChunkLoadRecovery();
-
-
 
   return (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
-      <SiteFooter />
+      {renderMode === "off" ? (
+        <ClientOnly fallback={<PageSkeleton />}>
+          <Outlet />
+        </ClientOnly>
+      ) : (
+        <Outlet />
+      )}
+      <SiteFooter renderMode={renderMode} />
       {/* Registers all <wa-*> custom elements client-side, post-hydration. */}
       <WebAwesomeLoader />
     </QueryClientProvider>
