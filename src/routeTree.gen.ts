@@ -21,6 +21,7 @@ import { Route as McpSkillsRouteImport } from './routes/mcp-skills'
 import { Route as PerplexitySkillsRouteImport } from './routes/perplexity-skills'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SuperhumanGoSkillsRouteImport } from './routes/superhuman-go-skills'
+import { Route as WordpressSkillsRouteImport } from './routes/wordpress-skills'
 import { Route as STokenRouteImport } from './routes/s.$token'
 
 const IndexRoute = IndexRouteImport.update({
@@ -83,6 +84,11 @@ const SuperhumanGoSkillsRoute = SuperhumanGoSkillsRouteImport.update({
   path: '/superhuman-go-skills',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WordpressSkillsRoute = WordpressSkillsRouteImport.update({
+  id: '/wordpress-skills',
+  path: '/wordpress-skills',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const STokenRoute = STokenRouteImport.update({
   id: '/s/$token',
   path: '/s/$token',
@@ -102,6 +108,7 @@ export interface FileRoutesByFullPath {
   '/perplexity-skills': typeof PerplexitySkillsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/superhuman-go-skills': typeof SuperhumanGoSkillsRoute
+  '/wordpress-skills': typeof WordpressSkillsRoute
   '/s/$token': typeof STokenRoute
 }
 export interface FileRoutesByTo {
@@ -117,6 +124,7 @@ export interface FileRoutesByTo {
   '/perplexity-skills': typeof PerplexitySkillsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/superhuman-go-skills': typeof SuperhumanGoSkillsRoute
+  '/wordpress-skills': typeof WordpressSkillsRoute
   '/s/$token': typeof STokenRoute
 }
 export interface FileRoutesById {
@@ -133,6 +141,7 @@ export interface FileRoutesById {
   '/perplexity-skills': typeof PerplexitySkillsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/superhuman-go-skills': typeof SuperhumanGoSkillsRoute
+  '/wordpress-skills': typeof WordpressSkillsRoute
   '/s/$token': typeof STokenRoute
 }
 export interface FileRouteTypes {
@@ -150,6 +159,7 @@ export interface FileRouteTypes {
     | '/perplexity-skills'
     | '/sitemap.xml'
     | '/superhuman-go-skills'
+    | '/wordpress-skills'
     | '/s/$token'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -165,6 +175,7 @@ export interface FileRouteTypes {
     | '/perplexity-skills'
     | '/sitemap.xml'
     | '/superhuman-go-skills'
+    | '/wordpress-skills'
     | '/s/$token'
   id:
     | '__root__'
@@ -180,6 +191,7 @@ export interface FileRouteTypes {
     | '/perplexity-skills'
     | '/sitemap.xml'
     | '/superhuman-go-skills'
+    | '/wordpress-skills'
     | '/s/$token'
   fileRoutesById: FileRoutesById
 }
@@ -196,6 +208,7 @@ export interface RootRouteChildren {
   PerplexitySkillsRoute: typeof PerplexitySkillsRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SuperhumanGoSkillsRoute: typeof SuperhumanGoSkillsRoute
+  WordpressSkillsRoute: typeof WordpressSkillsRoute
   STokenRoute: typeof STokenRoute
 }
 
@@ -285,6 +298,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SuperhumanGoSkillsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/wordpress-skills': {
+      id: '/wordpress-skills'
+      path: '/wordpress-skills'
+      fullPath: '/wordpress-skills'
+      preLoaderRoute: typeof WordpressSkillsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/s/$token': {
       id: '/s/$token'
       path: '/s/$token'
@@ -308,6 +328,7 @@ const rootRouteChildren: RootRouteChildren = {
   PerplexitySkillsRoute: PerplexitySkillsRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SuperhumanGoSkillsRoute: SuperhumanGoSkillsRoute,
+  WordpressSkillsRoute: WordpressSkillsRoute,
   STokenRoute: STokenRoute,
 }
 export const routeTree = rootRouteImport
