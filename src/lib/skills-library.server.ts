@@ -115,6 +115,15 @@ const AGENT_TOPICS: Readonly<Record<AgentKey, readonly string[]>> = {
     "typescript",
     "documentation",
   ],
+  wordpress: [
+    "wordpress",
+    "php",
+    "blog post",
+    "seo",
+    "content writing",
+    "css",
+    "accessibility",
+  ],
 };
 
 

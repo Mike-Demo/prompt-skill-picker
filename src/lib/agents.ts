@@ -12,6 +12,7 @@ export const AGENT_KEYS = [
   "claude",
   "github-copilot",
   "cursor",
+  "wordpress",
 ] as const;
 
 export type AgentKey = (typeof AGENT_KEYS)[number];
@@ -154,6 +155,21 @@ export const AGENT_PAGES: Readonly<Record<AgentKey, AgentPage>> = {
     activation:
       "Reload the Cursor window so it re-reads the project rules, then ask Cursor's chat or agent for the task the skill covers.",
     zipName: "cursor-skills.zip",
+  },
+  wordpress: {
+    key: "wordpress",
+    path: "/wordpress-skills",
+    label: "WordPress",
+    heading: "WordPress Skills",
+    title: "WordPress Skills — curated agent skills for WordPress sites",
+    description:
+      "A curated, most-used-first list of WordPress skills from the open skills registry, with install directions and a one-click zip download of the SKILL.md files.",
+    intro:
+      "Skills are plain SKILL.md files, so your coding agent can use them while it works on a WordPress site — themes, plugins, blocks, content and SEO. These are the most-installed ones for that work.",
+    skillsDir: "your project's skills directory, e.g. .claude/skills/<skill-name>/SKILL.md",
+    activation:
+      "Start a new agent session in your WordPress project so it picks up the skills directory, then ask for the task the skill covers.",
+    zipName: "wordpress-skills.zip",
   },
 };
 
