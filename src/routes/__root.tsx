@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
+  ClientOnly,
   Outlet,
   Link,
   createRootRouteWithContext,
@@ -14,6 +15,8 @@ import { useChunkLoadRecovery } from "@/hooks/use-chunk-load-recovery";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SiteFooter } from "@/components/site-footer";
+import { getRenderMode } from "@/lib/render-mode.functions";
+import { WaSkeleton } from "@/design-system/font-awsome-web-awesome-171158";
 import {
   WebAwesomeLoader,
   WEB_AWESOME_HTML_CLASSES,
