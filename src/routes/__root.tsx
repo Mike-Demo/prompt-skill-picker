@@ -131,17 +131,33 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+function PageSkeleton() {
+  return (
+    <div className="mx-auto w-full max-w-3xl px-4 py-10 sm:py-16">
+      <WaSkeleton className="h-10 w-2/3" />
+      <WaSkeleton className="mt-4 h-4 w-full" />
+      <WaSkeleton className="mt-2 h-4 w-5/6" />
+      <WaSkeleton className="mt-8 h-24 w-full" />
+    </div>
+  );
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const renderMode = Route.useLoaderData();
   useChunkLoadRecovery();
-
-
 
   return (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
-      <SiteFooter />
+      {renderMode === "off" ? (
+        <ClientOnly fallback={<PageSkeleton />}>
+          <Outlet />
+        </ClientOnly>
+      ) : (
+        <Outlet />
+      )}
+      <SiteFooter renderMode={renderMode} />
       {/* Registers all <wa-*> custom elements client-side, post-hydration. */}
       <WebAwesomeLoader />
     </QueryClientProvider>
