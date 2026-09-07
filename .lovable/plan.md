@@ -22,6 +22,8 @@ The remembered choice is stored in a cookie, so the server can read it on the ve
 
 ## Notes and trade-offs
 
+- The switch relies on the design system's built-in server-rendering support: its switch renders as plain server HTML and upgrades in the browser, so it shows correctly in both modes with no extra wrapper of our own.
+
 - This is a runtime switch layered on top of the framework's rendering, not a change to the build configuration — per-route build-time rendering flags cannot be flipped by a user at runtime.
 - Turning it off makes pages slower to appear and less useful to search engines; the switch keeps "on" as the default and the hint says so.
 - Verification: typecheck, then load the homepage and library with the switch on and off, confirming server HTML contains page content when on and only the shell when off.
