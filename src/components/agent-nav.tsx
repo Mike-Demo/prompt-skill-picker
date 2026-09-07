@@ -18,7 +18,7 @@ const FONT_AWESOME_ICONS: Partial<Record<AgentKey, string>> = {
   grok: "x-twitter",
   claude: "claude",
   "github-copilot": "copilot",
-  cursor: "cuttlefish",
+  
 };
 
 /** Brand mark for an agent, sized with a design-system font-size token. */
