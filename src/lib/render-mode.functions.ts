@@ -10,7 +10,7 @@ import { DEFAULT_RENDER_MODE, parseRenderModeCookie, type RenderMode } from "./r
 export const getRenderMode = createServerFn({ method: "GET" }).handler(
   async (): Promise<RenderMode> => {
     try {
-      return parseRenderModeCookie(getRequestHeader("cookie"));
+      return parseRenderModeCookie(getRequest().headers.get("cookie"));
     } catch {
       return DEFAULT_RENDER_MODE;
     }
