@@ -19,7 +19,11 @@ const FONT_AWESOME_ICONS: Partial<Record<AgentKey, string>> = {
   claude: "claude",
   "github-copilot": "copilot",
   wordpress: "wordpress",
-  
+};
+
+/** Agents without a brand glyph fall back to a classic Font Awesome icon. */
+const CLASSIC_ICONS: Partial<Record<AgentKey, string>> = {
+  cursor: "i-cursor",
 };
 
 /** Brand mark for an agent, sized with a design-system font-size token. */
@@ -42,8 +46,12 @@ export function AgentIcon({
     );
   }
   const name = FONT_AWESOME_ICONS[agent];
-  if (!name) return null;
-  return <WaIcon name={name} family="brands" style={{ fontSize: size }} />;
+  if (name) {
+    return <WaIcon name={name} family="brands" style={{ fontSize: size }} />;
+  }
+  const classic = CLASSIC_ICONS[agent];
+  if (!classic) return null;
+  return <WaIcon name={classic} style={{ fontSize: size }} />;
 }
 
 /** Route literals kept inline so TanStack can type-check every destination. */
