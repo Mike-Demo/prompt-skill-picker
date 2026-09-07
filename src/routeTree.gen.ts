@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ChatgptSkillsRouteImport } from './routes/chatgpt-skills'
 import { Route as ClaudeSkillsRouteImport } from './routes/claude-skills'
+import { Route as CursorSkillsRouteImport } from './routes/cursor-skills'
 import { Route as GithubCopilotSkillsRouteImport } from './routes/github-copilot-skills'
 import { Route as GrokSkillsRouteImport } from './routes/grok-skills'
 import { Route as LibraryRouteImport } from './routes/library'
@@ -35,6 +36,11 @@ const ChatgptSkillsRoute = ChatgptSkillsRouteImport.update({
 const ClaudeSkillsRoute = ClaudeSkillsRouteImport.update({
   id: '/claude-skills',
   path: '/claude-skills',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CursorSkillsRoute = CursorSkillsRouteImport.update({
+  id: '/cursor-skills',
+  path: '/cursor-skills',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GithubCopilotSkillsRoute = GithubCopilotSkillsRouteImport.update({
@@ -87,6 +93,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/chatgpt-skills': typeof ChatgptSkillsRoute
   '/claude-skills': typeof ClaudeSkillsRoute
+  '/cursor-skills': typeof CursorSkillsRoute
   '/github-copilot-skills': typeof GithubCopilotSkillsRoute
   '/grok-skills': typeof GrokSkillsRoute
   '/library': typeof LibraryRoute
@@ -101,6 +108,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/chatgpt-skills': typeof ChatgptSkillsRoute
   '/claude-skills': typeof ClaudeSkillsRoute
+  '/cursor-skills': typeof CursorSkillsRoute
   '/github-copilot-skills': typeof GithubCopilotSkillsRoute
   '/grok-skills': typeof GrokSkillsRoute
   '/library': typeof LibraryRoute
@@ -116,6 +124,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/chatgpt-skills': typeof ChatgptSkillsRoute
   '/claude-skills': typeof ClaudeSkillsRoute
+  '/cursor-skills': typeof CursorSkillsRoute
   '/github-copilot-skills': typeof GithubCopilotSkillsRoute
   '/grok-skills': typeof GrokSkillsRoute
   '/library': typeof LibraryRoute
@@ -132,6 +141,7 @@ export interface FileRouteTypes {
     | '/'
     | '/chatgpt-skills'
     | '/claude-skills'
+    | '/cursor-skills'
     | '/github-copilot-skills'
     | '/grok-skills'
     | '/library'
@@ -146,6 +156,7 @@ export interface FileRouteTypes {
     | '/'
     | '/chatgpt-skills'
     | '/claude-skills'
+    | '/cursor-skills'
     | '/github-copilot-skills'
     | '/grok-skills'
     | '/library'
@@ -160,6 +171,7 @@ export interface FileRouteTypes {
     | '/'
     | '/chatgpt-skills'
     | '/claude-skills'
+    | '/cursor-skills'
     | '/github-copilot-skills'
     | '/grok-skills'
     | '/library'
@@ -175,6 +187,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ChatgptSkillsRoute: typeof ChatgptSkillsRoute
   ClaudeSkillsRoute: typeof ClaudeSkillsRoute
+  CursorSkillsRoute: typeof CursorSkillsRoute
   GithubCopilotSkillsRoute: typeof GithubCopilotSkillsRoute
   GrokSkillsRoute: typeof GrokSkillsRoute
   LibraryRoute: typeof LibraryRoute
@@ -207,6 +220,13 @@ declare module '@tanstack/react-router' {
       path: '/claude-skills'
       fullPath: '/claude-skills'
       preLoaderRoute: typeof ClaudeSkillsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cursor-skills': {
+      id: '/cursor-skills'
+      path: '/cursor-skills'
+      fullPath: '/cursor-skills'
+      preLoaderRoute: typeof CursorSkillsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/github-copilot-skills': {
@@ -279,6 +299,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ChatgptSkillsRoute: ChatgptSkillsRoute,
   ClaudeSkillsRoute: ClaudeSkillsRoute,
+  CursorSkillsRoute: CursorSkillsRoute,
   GithubCopilotSkillsRoute: GithubCopilotSkillsRoute,
   GrokSkillsRoute: GrokSkillsRoute,
   LibraryRoute: LibraryRoute,

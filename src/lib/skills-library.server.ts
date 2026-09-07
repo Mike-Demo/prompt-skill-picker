@@ -106,6 +106,15 @@ const AGENT_TOPICS: Readonly<Record<AgentKey, readonly string[]>> = {
     "git commit",
     "documentation",
   ],
+  cursor: [
+    "cursor",
+    "code review",
+    "refactoring",
+    "debugging",
+    "testing",
+    "typescript",
+    "documentation",
+  ],
 };
 
 

@@ -11,6 +11,7 @@ export const AGENT_KEYS = [
   "perplexity",
   "claude",
   "github-copilot",
+  "cursor",
 ] as const;
 
 export type AgentKey = (typeof AGENT_KEYS)[number];
@@ -138,6 +139,21 @@ export const AGENT_PAGES: Readonly<Record<AgentKey, AgentPage>> = {
     activation:
       "Reload your editor window so Copilot re-reads the repository instructions, then ask Copilot Chat for the task the skill covers.",
     zipName: "github-copilot-skills.zip",
+  },
+  cursor: {
+    key: "cursor",
+    path: "/cursor-skills",
+    label: "Cursor",
+    heading: "Cursor Skills",
+    title: "Cursor Skills — curated agent skills for the Cursor editor",
+    description:
+      "A curated, most-used-first list of skills for Cursor from the open skills registry, with install directions and a one-click zip download of the SKILL.md files.",
+    intro:
+      "Cursor reads project rule and instruction files, so a plain SKILL.md becomes a Cursor skill by dropping it into your repo. These are the most-installed skills for code review, refactoring, debugging, testing and docs.",
+    skillsDir: ".cursor/skills/<skill-name>/SKILL.md",
+    activation:
+      "Reload the Cursor window so it re-reads the project rules, then ask Cursor's chat or agent for the task the skill covers.",
+    zipName: "cursor-skills.zip",
   },
 };
 

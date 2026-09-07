@@ -18,6 +18,7 @@ const STATIC_ENTRIES: readonly SitemapEntry[] = [
   { path: "/grok-skills", changefreq: "weekly", priority: "0.8" },
   { path: "/perplexity-skills", changefreq: "weekly", priority: "0.8" },
   { path: "/superhuman-go-skills", changefreq: "weekly", priority: "0.8" },
+  { path: "/cursor-skills", changefreq: "weekly", priority: "0.8" },
   { path: "/licenses", changefreq: "monthly", priority: "0.5" },
 ];
 

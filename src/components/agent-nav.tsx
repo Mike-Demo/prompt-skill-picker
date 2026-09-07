@@ -18,6 +18,7 @@ const FONT_AWESOME_ICONS: Partial<Record<AgentKey, string>> = {
   grok: "x-twitter",
   claude: "claude",
   "github-copilot": "copilot",
+  
 };
 
 /** Brand mark for an agent, sized with a design-system font-size token. */
@@ -57,6 +58,7 @@ const LINKS: ReadonlyArray<{
   { key: "perplexity", label: "Perplexity", to: "/perplexity-skills" },
   { key: "claude", label: "Claude", to: "/claude-skills" },
   { key: "github-copilot", label: "GitHub Copilot", to: "/github-copilot-skills" },
+  { key: "cursor", label: "Cursor", to: "/cursor-skills" },
 ];
 
 
