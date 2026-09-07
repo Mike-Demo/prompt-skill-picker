@@ -18,6 +18,7 @@ const FONT_AWESOME_ICONS: Partial<Record<AgentKey, string>> = {
   grok: "x-twitter",
   claude: "claude",
   "github-copilot": "copilot",
+  wordpress: "wordpress",
   
 };
 
@@ -59,6 +60,7 @@ const LINKS: ReadonlyArray<{
   { key: "claude", label: "Claude", to: "/claude-skills" },
   { key: "github-copilot", label: "GitHub Copilot", to: "/github-copilot-skills" },
   { key: "cursor", label: "Cursor", to: "/cursor-skills" },
+  { key: "wordpress", label: "WordPress", to: "/wordpress-skills" },
 ];
 
 
