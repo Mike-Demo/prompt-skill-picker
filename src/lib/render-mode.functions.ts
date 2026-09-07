@@ -1,4 +1,5 @@
-import { createServerFn, getRequestHeader } from "@tanstack/react-start";
+import { createServerFn } from "@tanstack/react-start";
+import { getRequest } from "@tanstack/react-start/server";
 
 import { DEFAULT_RENDER_MODE, parseRenderModeCookie, type RenderMode } from "./render-mode";
 
