@@ -69,12 +69,32 @@ function SkillFinderPage() {
   const [prompt, setPrompt] = useState("");
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  // Stays true after a solve even when the widget later expires its token:
+  // the server remembers verified tokens for 5 minutes, so one solve covers
+  // Enhance plus the search that follows it.
+  const [captchaVerified, setCaptchaVerified] = useState(false);
   const [shareToken, setShareToken] = useState<string | null>(null);
   const [shareCopied, setShareCopied] = useState(false);
   const [recent, setRecent] = useState<RecentSearch[]>([]);
   const [enhanceHint, setEnhanceHint] = useState<string | null>(null);
   const captchaRef = useRef<HCaptcha | null>(null);
   const enhanceHintTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const captchaVerifiedTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const clearCaptcha = () => {
+    setCaptchaToken(null);
+    setCaptchaVerified(false);
+    if (captchaVerifiedTimer.current) clearTimeout(captchaVerifiedTimer.current);
+    captchaVerifiedTimer.current = null;
+  };
+
+  const markCaptchaVerified = (token: string) => {
+    setCaptchaToken(token);
+    setCaptchaVerified(true);
+    if (captchaVerifiedTimer.current) clearTimeout(captchaVerifiedTimer.current);
+    // Matches the 5-minute server-side cache of verified tokens.
+    captchaVerifiedTimer.current = setTimeout(clearCaptcha, 5 * 60 * 1000);
+  };
 
   // Local storage is browser-only, so hydrate the list after mount.
   useEffect(() => setRecent(readRecentSearches()), []);
@@ -90,6 +110,14 @@ function SkillFinderPage() {
     mutationFn: (value: { prompt: string; captchaToken: string }) =>
       runSearch({ data: value }),
     onMutate: () => setShareToken(null),
+    onError: (error) => {
+      // The cached token was rejected (evicted cache, worker restart): make
+      // the user solve the captcha again instead of leaving a dead button.
+      if (error instanceof Error && error.message.toLowerCase().includes("captcha")) {
+        captchaRef.current?.resetCaptcha();
+        clearCaptcha();
+      }
+    },
     onSuccess: (response, value) => {
       setSelected(new Set());
       setShareToken(response.token);
@@ -98,7 +126,7 @@ function SkillFinderPage() {
     onSettled: () => {
       // hCaptcha tokens are single-use; force a fresh challenge each search.
       captchaRef.current?.resetCaptcha();
-      setCaptchaToken(null);
+      clearCaptcha();
     },
   });
 
@@ -132,11 +160,13 @@ function SkillFinderPage() {
   // widget resets after each attempt, so usually the user must confirm again.
   const searchCooldown = useCooldown(search.error, () => {
     const trimmed = prompt.trim();
-    if (trimmed.length >= 3 && captchaToken) search.mutate({ prompt: trimmed, captchaToken });
+    if (trimmed.length >= 3 && captchaToken && captchaVerified)
+      search.mutate({ prompt: trimmed, captchaToken });
   });
   const enhanceCooldown = useCooldown(enhance.error, () => {
     const trimmed = prompt.trim();
-    if (trimmed.length >= 3 && captchaToken) enhance.mutate({ prompt: trimmed, captchaToken });
+    if (trimmed.length >= 3 && captchaToken && captchaVerified)
+      enhance.mutate({ prompt: trimmed, captchaToken });
   });
   const downloadCooldown = useCooldown(download.error, () => {
     if (selected.size > 0) download.mutate([...selected]);
@@ -155,7 +185,7 @@ function SkillFinderPage() {
 
   const submit = (value: string) => {
     const trimmed = value.trim();
-    if (trimmed.length < 3 || busy || !captchaToken) return;
+    if (trimmed.length < 3 || busy || !captchaToken || !captchaVerified) return;
     search.mutate({ prompt: trimmed, captchaToken });
   };
 
@@ -168,7 +198,7 @@ function SkillFinderPage() {
   const runEnhanceClick = () => {
     const trimmed = prompt.trim();
     if (trimmed.length < 3 || busy) return;
-    if (!captchaToken) {
+    if (!captchaToken || !captchaVerified) {
       showEnhanceHint("Complete the CAPTCHA first to use Enhance.");
       return;
     }
@@ -277,9 +307,9 @@ function SkillFinderPage() {
               <HCaptcha
                 ref={captchaRef}
                 sitekey={sitekeyQuery.data}
-                onVerify={(token) => setCaptchaToken(token)}
+                onVerify={markCaptchaVerified}
                 onExpire={() => setCaptchaToken(null)}
-                onError={() => setCaptchaToken(null)}
+                onError={clearCaptcha}
               />
             ) : (
               <WaSkeleton className="h-[78px] w-[303px]" />
@@ -290,7 +320,7 @@ function SkillFinderPage() {
               type="submit"
               variant="brand"
               loading={search.isPending}
-              disabled={prompt.trim().length < 3 || busy || !captchaToken}
+              disabled={prompt.trim().length < 3 || busy || !captchaVerified}
             >
               <WaIcon name="magnifying-glass" />
               {cooldown > 0 ? `Find skills in ${cooldown}s` : "Find skills"}
@@ -307,7 +337,7 @@ function SkillFinderPage() {
         {search.isError ? (
           <WaCallout variant="danger" className="mt-6">
             <p>{search.error instanceof Error ? search.error.message : "Search failed."}</p>
-            {cooldown === 0 && !captchaToken ? (
+            {cooldown === 0 && !captchaVerified ? (
               <p className="mt-1">Confirm the captcha above and we&rsquo;ll try again.</p>
             ) : null}
           </WaCallout>
