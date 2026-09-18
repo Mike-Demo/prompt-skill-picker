@@ -7,7 +7,7 @@
 // never persisted.
 import { getRequest } from "@tanstack/react-start/server";
 
-export type RateLimitAction = "search" | "enhance" | "download" | "library";
+export type RateLimitAction = "search" | "enhance" | "download" | "library" | "gist";
 
 interface Window {
   readonly seconds: number;
@@ -24,6 +24,12 @@ const LIMITS: Record<RateLimitAction, readonly Window[]> = {
     { seconds: 24 * 60 * 60, max: 30 },
   ],
   download: [{ seconds: 60, max: 10 }],
+  // Publishing a gist writes to GitHub under the project's own token, so it
+  // gets its own, much tighter quota than a read-only download.
+  gist: [
+    { seconds: 60, max: 2 },
+    { seconds: 24 * 60 * 60, max: 20 },
+  ],
   // The library is served from a shared server cache, so its limit is enforced
   // in memory and never writes a database row.
   library: [{ seconds: 60, max: 20 }],
@@ -37,6 +43,7 @@ const ACTION_LABELS: Record<RateLimitAction, string> = {
   enhance: "enhance again",
   download: "download again",
   library: "reload the library",
+  gist: "publish another gist",
 };
 
 export const BLOCKED_MESSAGE =
