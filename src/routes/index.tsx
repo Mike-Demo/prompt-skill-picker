@@ -177,7 +177,7 @@ function SkillFinderPage() {
 
   const submit = (value: string) => {
     const trimmed = value.trim();
-    if (trimmed.length < 3 || busy || !captchaToken) return;
+    if (trimmed.length < 3 || busy || !captchaToken || !captchaVerified) return;
     search.mutate({ prompt: trimmed, captchaToken });
   };
 
@@ -190,7 +190,7 @@ function SkillFinderPage() {
   const runEnhanceClick = () => {
     const trimmed = prompt.trim();
     if (trimmed.length < 3 || busy) return;
-    if (!captchaToken) {
+    if (!captchaToken || !captchaVerified) {
       showEnhanceHint("Complete the CAPTCHA first to use Enhance.");
       return;
     }
@@ -299,9 +299,9 @@ function SkillFinderPage() {
               <HCaptcha
                 ref={captchaRef}
                 sitekey={sitekeyQuery.data}
-                onVerify={(token) => setCaptchaToken(token)}
+                onVerify={markCaptchaVerified}
                 onExpire={() => setCaptchaToken(null)}
-                onError={() => setCaptchaToken(null)}
+                onError={clearCaptcha}
               />
             ) : (
               <WaSkeleton className="h-[78px] w-[303px]" />
@@ -312,7 +312,7 @@ function SkillFinderPage() {
               type="submit"
               variant="brand"
               loading={search.isPending}
-              disabled={prompt.trim().length < 3 || busy || !captchaToken}
+              disabled={prompt.trim().length < 3 || busy || !captchaVerified}
             >
               <WaIcon name="magnifying-glass" />
               {cooldown > 0 ? `Find skills in ${cooldown}s` : "Find skills"}
@@ -329,7 +329,7 @@ function SkillFinderPage() {
         {search.isError ? (
           <WaCallout variant="danger" className="mt-6">
             <p>{search.error instanceof Error ? search.error.message : "Search failed."}</p>
-            {cooldown === 0 && !captchaToken ? (
+            {cooldown === 0 && !captchaVerified ? (
               <p className="mt-1">Confirm the captcha above and we&rsquo;ll try again.</p>
             ) : null}
           </WaCallout>
