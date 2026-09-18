@@ -23,7 +23,10 @@ const LIMITS: Record<RateLimitAction, readonly Window[]> = {
     { seconds: 60, max: 3 },
     { seconds: 24 * 60 * 60, max: 30 },
   ],
-  download: [{ seconds: 60, max: 10 }],
+  download: [
+    { seconds: 60, max: 10 },
+    { seconds: 24 * 60 * 60, max: 200 },
+  ],
   // Publishing a gist writes to GitHub under the project's own token, so it
   // gets its own, much tighter quota than a read-only download.
   gist: [
@@ -32,7 +35,10 @@ const LIMITS: Record<RateLimitAction, readonly Window[]> = {
   ],
   // The library is served from a shared server cache, so its limit is enforced
   // in memory and never writes a database row.
-  library: [{ seconds: 60, max: 20 }],
+  library: [
+    { seconds: 60, max: 20 },
+    { seconds: 60 * 60, max: 200 },
+  ],
 };
 
 /** Actions counted in memory instead of in the database. */
