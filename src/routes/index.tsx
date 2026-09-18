@@ -118,7 +118,7 @@ function SkillFinderPage() {
     onSettled: () => {
       // hCaptcha tokens are single-use; force a fresh challenge each search.
       captchaRef.current?.resetCaptcha();
-      setCaptchaToken(null);
+      clearCaptcha();
     },
   });
 
@@ -152,11 +152,13 @@ function SkillFinderPage() {
   // widget resets after each attempt, so usually the user must confirm again.
   const searchCooldown = useCooldown(search.error, () => {
     const trimmed = prompt.trim();
-    if (trimmed.length >= 3 && captchaToken) search.mutate({ prompt: trimmed, captchaToken });
+    if (trimmed.length >= 3 && captchaToken && captchaVerified)
+      search.mutate({ prompt: trimmed, captchaToken });
   });
   const enhanceCooldown = useCooldown(enhance.error, () => {
     const trimmed = prompt.trim();
-    if (trimmed.length >= 3 && captchaToken) enhance.mutate({ prompt: trimmed, captchaToken });
+    if (trimmed.length >= 3 && captchaToken && captchaVerified)
+      enhance.mutate({ prompt: trimmed, captchaToken });
   });
   const downloadCooldown = useCooldown(download.error, () => {
     if (selected.size > 0) download.mutate([...selected]);
