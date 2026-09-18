@@ -1,12 +1,19 @@
 // hCaptcha server-side verification.
-// Uses HCAPTCHA_SECRET_KEY / HCAPTCHA_SITEKEY when configured; falls back to
-// hCaptcha's official test pair (always passes) so local development works
-// without keys.
+// Requires HCAPTCHA_SECRET_KEY / HCAPTCHA_SITEKEY. Outside production, and only
+// then, hCaptcha's official test pair is used so local development works without
+// keys. A deployed build with no secret configured fails closed.
 const TEST_SECRET = "0x0000000000000000000000000000000000000000";
 const TEST_SITEKEY = "10000000-ffff-ffff-ffff-000000000001";
 
+function isProduction(): boolean {
+  return process.env["NODE_ENV"] === "production";
+}
+
 export function getCaptchaSitekey(): string {
-  return process.env["HCAPTCHA_SITEKEY"] ?? TEST_SITEKEY;
+  const sitekey = process.env["HCAPTCHA_SITEKEY"];
+  if (sitekey) return sitekey;
+  if (isProduction()) throw new Error("Captcha is not configured.");
+  return TEST_SITEKEY;
 }
 
 interface SiteverifyResponse {
@@ -39,7 +46,11 @@ export async function verifyCaptchaToken(token: string): Promise<void> {
   const cachedExpiry = verifiedTokens.get(key);
   if (cachedExpiry && cachedExpiry > now) return;
 
-  const secret = process.env["HCAPTCHA_SECRET_KEY"] ?? TEST_SECRET;
+  const configured = process.env["HCAPTCHA_SECRET_KEY"];
+  if (!configured && isProduction()) {
+    throw new Error("Captcha verification is unavailable right now. Please try again later.");
+  }
+  const secret = configured ?? TEST_SECRET;
 
   const body = new URLSearchParams({ secret, response: token });
   const response = await fetch("https://hcaptcha.com/siteverify", {

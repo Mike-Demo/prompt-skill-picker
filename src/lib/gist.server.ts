@@ -38,8 +38,10 @@ export async function createGist(
   });
 
   if (!response.ok) {
+    // Keep upstream detail in the server log only; callers get a generic message.
     const detail = (await response.text()).slice(0, 300);
-    throw new Error(`GitHub rejected the gist (status ${response.status}): ${detail}`);
+    console.error(`Gist creation failed [${response.status}]: ${detail}`);
+    throw new Error("Publishing this skill as a gist failed. Please try again later.");
   }
 
   const body = (await response.json()) as { html_url?: unknown };

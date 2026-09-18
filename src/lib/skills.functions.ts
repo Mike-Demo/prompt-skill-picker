@@ -28,7 +28,7 @@ const FetchInput = z.object({ ids: z.array(z.string()).min(1).max(50) });
 
 /** Blocks abusive callers, enforces the quota, then verifies the captcha. */
 async function guard(
-  action: "search" | "enhance" | "download" | "library",
+  action: "search" | "enhance" | "download" | "library" | "gist",
   captchaToken?: string,
 ): Promise<void> {
   const { enforceRateLimit, getClientIp, recordCaptchaFailure } = await import(
@@ -95,7 +95,7 @@ const GistInput = z.object({ id: z.string().min(3).max(200) });
 export const createSkillGist = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => GistInput.parse(input))
   .handler(async ({ data }): Promise<{ url: string }> => {
-    await guard("download");
+    await guard("gist");
     const { collectSkillFiles } = await import("./skills-ranking.server");
     const files = await collectSkillFiles([data.id]);
     const file = files[0];
