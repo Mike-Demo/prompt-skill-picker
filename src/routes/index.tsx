@@ -69,6 +69,10 @@ function SkillFinderPage() {
   const [prompt, setPrompt] = useState("");
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  // Stays true after a solve even when the widget later expires its token:
+  // the server remembers verified tokens for 5 minutes, so one solve covers
+  // Enhance plus the search that follows it.
+  const [captchaVerified, setCaptchaVerified] = useState(false);
   const [shareToken, setShareToken] = useState<string | null>(null);
   const [shareCopied, setShareCopied] = useState(false);
   const [recent, setRecent] = useState<RecentSearch[]>([]);
