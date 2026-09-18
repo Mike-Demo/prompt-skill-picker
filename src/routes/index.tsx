@@ -110,6 +110,14 @@ function SkillFinderPage() {
     mutationFn: (value: { prompt: string; captchaToken: string }) =>
       runSearch({ data: value }),
     onMutate: () => setShareToken(null),
+    onError: (error) => {
+      // The cached token was rejected (evicted cache, worker restart): make
+      // the user solve the captcha again instead of leaving a dead button.
+      if (error instanceof Error && error.message.toLowerCase().includes("captcha")) {
+        captchaRef.current?.resetCaptcha();
+        clearCaptcha();
+      }
+    },
     onSuccess: (response, value) => {
       setSelected(new Set());
       setShareToken(response.token);
