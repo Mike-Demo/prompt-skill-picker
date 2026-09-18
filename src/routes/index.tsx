@@ -79,6 +79,22 @@ function SkillFinderPage() {
   const [enhanceHint, setEnhanceHint] = useState<string | null>(null);
   const captchaRef = useRef<HCaptcha | null>(null);
   const enhanceHintTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const captchaVerifiedTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const clearCaptcha = () => {
+    setCaptchaToken(null);
+    setCaptchaVerified(false);
+    if (captchaVerifiedTimer.current) clearTimeout(captchaVerifiedTimer.current);
+    captchaVerifiedTimer.current = null;
+  };
+
+  const markCaptchaVerified = (token: string) => {
+    setCaptchaToken(token);
+    setCaptchaVerified(true);
+    if (captchaVerifiedTimer.current) clearTimeout(captchaVerifiedTimer.current);
+    // Matches the 5-minute server-side cache of verified tokens.
+    captchaVerifiedTimer.current = setTimeout(clearCaptcha, 5 * 60 * 1000);
+  };
 
   // Local storage is browser-only, so hydrate the list after mount.
   useEffect(() => setRecent(readRecentSearches()), []);
