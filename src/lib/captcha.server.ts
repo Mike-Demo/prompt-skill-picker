@@ -46,7 +46,11 @@ export async function verifyCaptchaToken(token: string): Promise<void> {
   const cachedExpiry = verifiedTokens.get(key);
   if (cachedExpiry && cachedExpiry > now) return;
 
-  const secret = process.env["HCAPTCHA_SECRET_KEY"] ?? TEST_SECRET;
+  const configured = process.env["HCAPTCHA_SECRET_KEY"];
+  if (!configured && isProduction()) {
+    throw new Error("Captcha verification is unavailable right now. Please try again later.");
+  }
+  const secret = configured ?? TEST_SECRET;
 
   const body = new URLSearchParams({ secret, response: token });
   const response = await fetch("https://hcaptcha.com/siteverify", {
