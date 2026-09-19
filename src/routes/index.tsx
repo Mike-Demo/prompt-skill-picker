@@ -308,7 +308,10 @@ function SkillFinderPage() {
                 ref={captchaRef}
                 sitekey={sitekeyQuery.data}
                 onVerify={markCaptchaVerified}
-                onExpire={() => setCaptchaToken(null)}
+                // Keep the last verified token: the server accepts it from its
+                // 5-minute cache, and dropping it would make the still-enabled
+                // "Find skills" button a silent no-op.
+                onExpire={() => undefined}
                 onError={clearCaptcha}
               />
             ) : (
