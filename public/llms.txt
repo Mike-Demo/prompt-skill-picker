@@ -1,0 +1,31 @@
+# Skill Finder
+
+> Skill Finder helps people discover, compare and download open "agent skills" (SKILL.md instruction files) for AI coding agents such as Claude Code, Cursor, GitHub Copilot and ChatGPT. Skills come from the open skills registry (skills.sh) and GitHub.
+
+Interactive AI search on the homepage is protected by hCaptcha. Agents should use the free, read-only JSON API below instead; it needs no key or captcha and is rate-limited per visitor (30 requests/minute, 500/day).
+
+## Agent API
+
+- [API docs](https://skills.mikedemo.dev/docs/api): human-readable reference
+- [OpenAPI spec](https://skills.mikedemo.dev/openapi.json): machine-readable spec
+- [Search skills](https://skills.mikedemo.dev/api/public/skills?q=react&limit=10): GET /api/public/skills?q=&limit=
+- [Skills for one agent](https://skills.mikedemo.dev/api/public/skills/agent/claude): GET /api/public/skills/agent/{agent}, where agent is one of microsoft-copilot, superhuman-go, chatgpt, grok, perplexity, claude, github-copilot, cursor, wordpress
+- [Agent card](https://skills.mikedemo.dev/.well-known/agent.json)
+
+## Pages
+
+- [Skill library](https://skills.mikedemo.dev/library): every skill, ranked by installs
+- [Claude skills](https://skills.mikedemo.dev/claude-skills)
+- [Cursor skills](https://skills.mikedemo.dev/cursor-skills)
+- [GitHub Copilot skills](https://skills.mikedemo.dev/github-copilot-skills)
+- [ChatGPT skills](https://skills.mikedemo.dev/chatgpt-skills)
+- [Microsoft Copilot skills](https://skills.mikedemo.dev/mcp-skills)
+- [Grok skills](https://skills.mikedemo.dev/grok-skills)
+- [Perplexity skills](https://skills.mikedemo.dev/perplexity-skills)
+- [Superhuman Go skills](https://skills.mikedemo.dev/superhuman-go-skills)
+- [WordPress skills](https://skills.mikedemo.dev/wordpress-skills)
+
+## Optional
+
+- [Open source licenses](https://skills.mikedemo.dev/licenses)
+- [Sitemap](https://skills.mikedemo.dev/sitemap.xml)

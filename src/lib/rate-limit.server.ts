@@ -7,7 +7,7 @@
 // never persisted.
 import { getRequest } from "@tanstack/react-start/server";
 
-export type RateLimitAction = "search" | "enhance" | "download" | "library" | "gist";
+export type RateLimitAction = "search" | "enhance" | "download" | "library" | "gist" | "api";
 
 interface Window {
   readonly seconds: number;
@@ -39,10 +39,15 @@ const LIMITS: Record<RateLimitAction, readonly Window[]> = {
     { seconds: 60, max: 20 },
     { seconds: 60 * 60, max: 200 },
   ],
+  // Read-only public JSON API for agents, served from the shared cache.
+  api: [
+    { seconds: 60, max: 30 },
+    { seconds: 24 * 60 * 60, max: 500 },
+  ],
 };
 
 /** Actions counted in memory instead of in the database. */
-const IN_MEMORY_ACTIONS: ReadonlySet<RateLimitAction> = new Set<RateLimitAction>(["library"]);
+const IN_MEMORY_ACTIONS: ReadonlySet<RateLimitAction> = new Set<RateLimitAction>(["library", "api"]);
 
 const ACTION_LABELS: Record<RateLimitAction, string> = {
   search: "search again",
@@ -50,6 +55,7 @@ const ACTION_LABELS: Record<RateLimitAction, string> = {
   download: "download again",
   library: "reload the library",
   gist: "publish another gist",
+  api: "call the API again",
 };
 
 export const BLOCKED_MESSAGE =

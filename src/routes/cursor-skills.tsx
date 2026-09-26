@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 
 import { AgentSkillsPage } from "@/components/agent-skills-page";
 import { AGENT_PAGES } from "@/lib/agents";
+import { agentJsonLd } from "@/lib/structured-data";
 
 const AGENT = AGENT_PAGES["cursor"];
 const SHARE_IMAGE = "https://skills.mikedemo.dev/og-skill-finder.jpg";
@@ -21,6 +22,7 @@ export const Route = createFileRoute("/cursor-skills")({
       { name: "twitter:image", content: SHARE_IMAGE },
     ],
     links: [{ rel: "canonical", href: CANONICAL }],
+    scripts: [agentJsonLd(AGENT)],
   }),
   component: AgentRoute,
 });

@@ -1,0 +1,84 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Skill Finder API",
+    "version": "1.0.0",
+    "description": "Read-only access to the Skill Finder catalogue of open agent skills. No key required. Rate limit: 30 requests/minute and 500/day per visitor; over the limit returns 429 with Retry-After."
+  },
+  "servers": [{ "url": "https://skills.mikedemo.dev" }],
+  "paths": {
+    "/api/public/skills": {
+      "get": {
+        "operationId": "searchSkills",
+        "summary": "Search skills by keyword",
+        "parameters": [
+          { "name": "q", "in": "query", "required": false, "schema": { "type": "string", "maxLength": 100 }, "description": "Space-separated keywords; all must match name, description or source." },
+          { "name": "limit", "in": "query", "required": false, "schema": { "type": "integer", "minimum": 1, "maximum": 50, "default": 20 } }
+        ],
+        "responses": {
+          "200": { "description": "Matching skills", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/SearchResult" } } } },
+          "400": { "$ref": "#/components/responses/Error" },
+          "429": { "$ref": "#/components/responses/Error" },
+          "503": { "$ref": "#/components/responses/Error" }
+        }
+      }
+    },
+    "/api/public/skills/agent/{agent}": {
+      "get": {
+        "operationId": "listAgentSkills",
+        "summary": "Curated skills for one agent",
+        "parameters": [
+          { "name": "agent", "in": "path", "required": true, "schema": { "type": "string", "enum": ["microsoft-copilot", "superhuman-go", "chatgpt", "grok", "perplexity", "claude", "github-copilot", "cursor", "wordpress"] } }
+        ],
+        "responses": {
+          "200": { "description": "Skills for the agent", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/AgentResult" } } } },
+          "404": { "$ref": "#/components/responses/Error" },
+          "429": { "$ref": "#/components/responses/Error" },
+          "503": { "$ref": "#/components/responses/Error" }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Skill": {
+        "type": "object",
+        "required": ["id", "name", "description", "source", "installs", "installCommand"],
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "source": { "type": "string", "description": "GitHub owner/repo" },
+          "installs": { "type": "integer" },
+          "installCommand": { "type": "string" },
+          "url": { "type": ["string", "null"] }
+        }
+      },
+      "SearchResult": {
+        "type": "object",
+        "properties": {
+          "query": { "type": "string" },
+          "count": { "type": "integer" },
+          "stale": { "type": "boolean" },
+          "skills": { "type": "array", "items": { "$ref": "#/components/schemas/Skill" } }
+        }
+      },
+      "AgentResult": {
+        "type": "object",
+        "properties": {
+          "agent": { "type": "string" },
+          "count": { "type": "integer" },
+          "stale": { "type": "boolean" },
+          "skills": { "type": "array", "items": { "$ref": "#/components/schemas/Skill" } }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": { "error": { "type": "string" }, "code": { "type": "string" } }
+      }
+    },
+    "responses": {
+      "Error": { "description": "Error", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } }
+    }
+  }
+}
