@@ -132,6 +132,12 @@ export const libraryCredits: readonly LicenseEntry[] = [
     url: "https://github.com/hCaptcha/react-hcaptcha/blob/master/LICENSE",
     note: "Renders the captcha that gates search and prompt enhancement.",
   },
+  {
+    name: "Supabase",
+    author: "Supabase, Inc.",
+    license: "MIT (client libraries)",
+    url: "https://github.com/supabase/supabase-js/blob/master/LICENSE",
+  },
 ];
 
 export const dataCredits: readonly LicenseEntry[] = [
