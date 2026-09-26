@@ -75,6 +75,18 @@ function LicensesPage() {
             Skill Finder is built on open source software and freely licensed artwork. Everything it
             depends on is credited below.
           </p>
+          <a
+            href="https://app.aikido.dev/audit-report/external/smlvhLoPnScdRnVeF7TjudEr/request"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Aikido Security Audit Report (opens in new tab)"
+          >
+            <img
+              src="https://app.aikido.dev/assets/badges/full-light-theme.svg"
+              alt="Aikido Security Audit Report"
+              height={40}
+            />
+          </a>
         </header>
 
         <section className="mt-10">
