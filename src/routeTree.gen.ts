@@ -23,6 +23,8 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SuperhumanGoSkillsRouteImport } from './routes/superhuman-go-skills'
 import { Route as WordpressSkillsRouteImport } from './routes/wordpress-skills'
 import { Route as STokenRouteImport } from './routes/s.$token'
+import { Route as ApiPublicSkillsRouteImport } from './routes/api/public/skills'
+import { Route as ApiPublicSkillsAgentAgentRouteImport } from './routes/api/public/skills/agent/$agent'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -94,6 +96,17 @@ const STokenRoute = STokenRouteImport.update({
   path: '/s/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicSkillsRoute = ApiPublicSkillsRouteImport.update({
+  id: '/api/public/skills',
+  path: '/api/public/skills',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicSkillsAgentAgentRoute =
+  ApiPublicSkillsAgentAgentRouteImport.update({
+    id: '/agent/$agent',
+    path: '/agent/$agent',
+    getParentRoute: () => ApiPublicSkillsRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -110,6 +123,8 @@ export interface FileRoutesByFullPath {
   '/superhuman-go-skills': typeof SuperhumanGoSkillsRoute
   '/wordpress-skills': typeof WordpressSkillsRoute
   '/s/$token': typeof STokenRoute
+  '/api/public/skills': typeof ApiPublicSkillsRouteWithChildren
+  '/api/public/skills/agent/$agent': typeof ApiPublicSkillsAgentAgentRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -126,6 +141,8 @@ export interface FileRoutesByTo {
   '/superhuman-go-skills': typeof SuperhumanGoSkillsRoute
   '/wordpress-skills': typeof WordpressSkillsRoute
   '/s/$token': typeof STokenRoute
+  '/api/public/skills': typeof ApiPublicSkillsRouteWithChildren
+  '/api/public/skills/agent/$agent': typeof ApiPublicSkillsAgentAgentRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -143,6 +160,8 @@ export interface FileRoutesById {
   '/superhuman-go-skills': typeof SuperhumanGoSkillsRoute
   '/wordpress-skills': typeof WordpressSkillsRoute
   '/s/$token': typeof STokenRoute
+  '/api/public/skills': typeof ApiPublicSkillsRouteWithChildren
+  '/api/public/skills/agent/$agent': typeof ApiPublicSkillsAgentAgentRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -161,6 +180,8 @@ export interface FileRouteTypes {
     | '/superhuman-go-skills'
     | '/wordpress-skills'
     | '/s/$token'
+    | '/api/public/skills'
+    | '/api/public/skills/agent/$agent'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -177,6 +198,8 @@ export interface FileRouteTypes {
     | '/superhuman-go-skills'
     | '/wordpress-skills'
     | '/s/$token'
+    | '/api/public/skills'
+    | '/api/public/skills/agent/$agent'
   id:
     | '__root__'
     | '/'
@@ -193,6 +216,8 @@ export interface FileRouteTypes {
     | '/superhuman-go-skills'
     | '/wordpress-skills'
     | '/s/$token'
+    | '/api/public/skills'
+    | '/api/public/skills/agent/$agent'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -210,6 +235,7 @@ export interface RootRouteChildren {
   SuperhumanGoSkillsRoute: typeof SuperhumanGoSkillsRoute
   WordpressSkillsRoute: typeof WordpressSkillsRoute
   STokenRoute: typeof STokenRoute
+  ApiPublicSkillsRoute: typeof ApiPublicSkillsRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -312,8 +338,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof STokenRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/skills': {
+      id: '/api/public/skills'
+      path: '/api/public/skills'
+      fullPath: '/api/public/skills'
+      preLoaderRoute: typeof ApiPublicSkillsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/skills/agent/$agent': {
+      id: '/api/public/skills/agent/$agent'
+      path: '/agent/$agent'
+      fullPath: '/api/public/skills/agent/$agent'
+      preLoaderRoute: typeof ApiPublicSkillsAgentAgentRouteImport
+      parentRoute: typeof ApiPublicSkillsRoute
+    }
   }
 }
+
+interface ApiPublicSkillsRouteChildren {
+  ApiPublicSkillsAgentAgentRoute: typeof ApiPublicSkillsAgentAgentRoute
+}
+
+const ApiPublicSkillsRouteChildren: ApiPublicSkillsRouteChildren = {
+  ApiPublicSkillsAgentAgentRoute: ApiPublicSkillsAgentAgentRoute,
+}
+
+const ApiPublicSkillsRouteWithChildren = ApiPublicSkillsRoute._addFileChildren(
+  ApiPublicSkillsRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -330,6 +382,7 @@ const rootRouteChildren: RootRouteChildren = {
   SuperhumanGoSkillsRoute: SuperhumanGoSkillsRoute,
   WordpressSkillsRoute: WordpressSkillsRoute,
   STokenRoute: STokenRoute,
+  ApiPublicSkillsRoute: ApiPublicSkillsRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
