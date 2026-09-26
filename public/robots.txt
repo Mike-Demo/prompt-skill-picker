@@ -45,9 +45,13 @@ User-agent: *
 Disallow:
 
 Allow: /api/public/skills
+Allow: /api/public/v1/
+Allow: /mcp
 
 # Agent-readable site summary: https://skills.mikedemo.dev/llms.txt
 # Agent card: https://skills.mikedemo.dev/.well-known/agent.json
 # API spec: https://skills.mikedemo.dev/openapi.json
+# Capabilities: https://skills.mikedemo.dev/api/public/v1/capabilities
+# MCP server: https://skills.mikedemo.dev/mcp
 
 Sitemap: https://skills.mikedemo.dev/sitemap.xml

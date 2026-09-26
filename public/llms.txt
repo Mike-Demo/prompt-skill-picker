@@ -2,15 +2,26 @@
 
 > Skill Finder helps people discover, compare and download open "agent skills" (SKILL.md instruction files) for AI coding agents such as Claude Code, Cursor, GitHub Copilot and ChatGPT. Skills come from the open skills registry (skills.sh) and GitHub.
 
-Interactive AI search on the homepage is protected by hCaptcha. Agents should use the free, read-only JSON API below instead; it needs no key or captcha and is rate-limited per visitor (30 requests/minute, 500/day).
+Interactive AI search on the homepage is protected by hCaptcha. Agents should use the free, read-only JSON API or the MCP server below; neither needs a key or captcha. Both are rate-limited per visitor (30 requests/minute, 500/day) and return 429 with a Retry-After header when exceeded.
 
-## Agent API
+## Agent API (v1)
 
 - [API docs](https://skills.mikedemo.dev/docs/api): human-readable reference
 - [OpenAPI spec](https://skills.mikedemo.dev/openapi.json): machine-readable spec
-- [Search skills](https://skills.mikedemo.dev/api/public/skills?q=react&limit=10): GET /api/public/skills?q=&limit=
-- [Skills for one agent](https://skills.mikedemo.dev/api/public/skills/agent/claude): GET /api/public/skills/agent/{agent}, where agent is one of microsoft-copilot, superhuman-go, chatgpt, grok, perplexity, claude, github-copilot, cursor, wordpress
+- [Search skills](https://skills.mikedemo.dev/api/public/v1/skills?q=react&limit=10): GET /api/public/v1/skills?q=&agent=&source=&minInstalls=&limit=&offset=
+- [One skill](https://skills.mikedemo.dev/api/public/v1/skills/{id}): GET /api/public/v1/skills/{id}
+- [Skills for one agent](https://skills.mikedemo.dev/api/public/v1/skills/agent/claude): GET /api/public/v1/skills/agent/{agent}
+- [Capabilities](https://skills.mikedemo.dev/api/public/v1/capabilities): supported features, limits and discovery documents
 - [Agent card](https://skills.mikedemo.dev/.well-known/agent.json)
+
+Version 1 responses are `{ "data": ..., "meta": { ... } }` on success and `{ "error": { "code": ..., "message": ... } }` on failure. Agent keys: microsoft-copilot, superhuman-go, chatgpt, grok, perplexity, claude, github-copilot, cursor, wordpress.
+
+Legacy flat endpoints stay available: GET /api/public/skills and GET /api/public/skills/agent/{agent}.
+
+## MCP server
+
+- Endpoint: https://skills.mikedemo.dev/mcp (Streamable HTTP, no authentication)
+- Tools: `search_skills`, `get_skill`, `list_agents` — all read-only.
 
 ## Pages
 

@@ -2,45 +2,112 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Skill Finder API",
-    "version": "1.0.0",
-    "description": "Read-only access to the Skill Finder catalogue of open agent skills. No key required. Rate limit: 30 requests/minute and 500/day per visitor; over the limit returns 429 with Retry-After."
+    "version": "1.1.0",
+    "description": "Read-only access to the Skill Finder catalogue of open agent skills. No key required. Rate limit: 30 requests/minute and 500/day per visitor; over the limit returns 429 with Retry-After. Version 1 endpoints under /api/public/v1 return an envelope: { data, meta } on success and { error: { code, message } } on failure. The unversioned /api/public/skills endpoints remain available for compatibility and return a flat payload."
   },
   "servers": [{ "url": "https://skills.mikedemo.dev" }],
   "paths": {
-    "/api/public/skills": {
+    "/api/public/v1/skills": {
       "get": {
-        "operationId": "searchSkills",
-        "summary": "Search skills by keyword",
+        "operationId": "searchSkillsV1",
+        "summary": "Search skills with filtering and paging",
         "parameters": [
           { "name": "q", "in": "query", "required": false, "schema": { "type": "string", "maxLength": 100 }, "description": "Space-separated keywords; all must match name, description or source." },
-          { "name": "limit", "in": "query", "required": false, "schema": { "type": "integer", "minimum": 1, "maximum": 50, "default": 20 } }
+          { "name": "agent", "in": "query", "required": false, "schema": { "$ref": "#/components/schemas/AgentKey" } },
+          { "name": "source", "in": "query", "required": false, "schema": { "type": "string", "maxLength": 120 }, "description": "Match part of the GitHub owner/repo." },
+          { "name": "minInstalls", "in": "query", "required": false, "schema": { "type": "integer", "minimum": 0 } },
+          { "name": "limit", "in": "query", "required": false, "schema": { "type": "integer", "minimum": 1, "maximum": 50, "default": 20 } },
+          { "name": "offset", "in": "query", "required": false, "schema": { "type": "integer", "minimum": 0, "maximum": 5000, "default": 0 } }
         ],
         "responses": {
-          "200": { "description": "Matching skills", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/SearchResult" } } } },
+          "200": { "description": "Matching skills", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/SkillListEnvelope" } } } },
           "400": { "$ref": "#/components/responses/Error" },
           "429": { "$ref": "#/components/responses/Error" },
           "503": { "$ref": "#/components/responses/Error" }
         }
       }
     },
-    "/api/public/skills/agent/{agent}": {
+    "/api/public/v1/skills/{id}": {
       "get": {
-        "operationId": "listAgentSkills",
-        "summary": "Curated skills for one agent",
+        "operationId": "getSkillV1",
+        "summary": "One skill by catalogue id",
         "parameters": [
-          { "name": "agent", "in": "path", "required": true, "schema": { "type": "string", "enum": ["microsoft-copilot", "superhuman-go", "chatgpt", "grok", "perplexity", "claude", "github-copilot", "cursor", "wordpress"] } }
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "maxLength": 200 } }
         ],
         "responses": {
-          "200": { "description": "Skills for the agent", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/AgentResult" } } } },
+          "200": { "description": "The skill", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/SkillEnvelope" } } } },
+          "400": { "$ref": "#/components/responses/Error" },
           "404": { "$ref": "#/components/responses/Error" },
           "429": { "$ref": "#/components/responses/Error" },
           "503": { "$ref": "#/components/responses/Error" }
+        }
+      }
+    },
+    "/api/public/v1/skills/agent/{agent}": {
+      "get": {
+        "operationId": "listAgentSkillsV1",
+        "summary": "Curated skills for one agent, paged",
+        "parameters": [
+          { "name": "agent", "in": "path", "required": true, "schema": { "$ref": "#/components/schemas/AgentKey" } },
+          { "name": "limit", "in": "query", "required": false, "schema": { "type": "integer", "minimum": 1, "maximum": 50, "default": 20 } },
+          { "name": "offset", "in": "query", "required": false, "schema": { "type": "integer", "minimum": 0, "maximum": 5000, "default": 0 } }
+        ],
+        "responses": {
+          "200": { "description": "Skills for the agent", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/SkillListEnvelope" } } } },
+          "400": { "$ref": "#/components/responses/Error" },
+          "404": { "$ref": "#/components/responses/Error" },
+          "429": { "$ref": "#/components/responses/Error" },
+          "503": { "$ref": "#/components/responses/Error" }
+        }
+      }
+    },
+    "/api/public/v1/capabilities": {
+      "get": {
+        "operationId": "getCapabilities",
+        "summary": "Supported features, limits, endpoints and discovery documents",
+        "responses": {
+          "200": { "description": "Capability document", "content": { "application/json": { "schema": { "type": "object" } } } }
+        }
+      }
+    },
+    "/api/public/skills": {
+      "get": {
+        "operationId": "searchSkills",
+        "summary": "Search skills by keyword (legacy, flat payload)",
+        "parameters": [
+          { "name": "q", "in": "query", "required": false, "schema": { "type": "string", "maxLength": 100 } },
+          { "name": "limit", "in": "query", "required": false, "schema": { "type": "integer", "minimum": 1, "maximum": 50, "default": 20 } }
+        ],
+        "responses": {
+          "200": { "description": "Matching skills", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/SearchResult" } } } },
+          "400": { "$ref": "#/components/responses/LegacyError" },
+          "429": { "$ref": "#/components/responses/LegacyError" },
+          "503": { "$ref": "#/components/responses/LegacyError" }
+        }
+      }
+    },
+    "/api/public/skills/agent/{agent}": {
+      "get": {
+        "operationId": "listAgentSkills",
+        "summary": "Curated skills for one agent (legacy, flat payload)",
+        "parameters": [
+          { "name": "agent", "in": "path", "required": true, "schema": { "$ref": "#/components/schemas/AgentKey" } }
+        ],
+        "responses": {
+          "200": { "description": "Skills for the agent", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/AgentResult" } } } },
+          "404": { "$ref": "#/components/responses/LegacyError" },
+          "429": { "$ref": "#/components/responses/LegacyError" },
+          "503": { "$ref": "#/components/responses/LegacyError" }
         }
       }
     }
   },
   "components": {
     "schemas": {
+      "AgentKey": {
+        "type": "string",
+        "enum": ["microsoft-copilot", "superhuman-go", "chatgpt", "grok", "perplexity", "claude", "github-copilot", "cursor", "wordpress"]
+      },
       "Skill": {
         "type": "object",
         "required": ["id", "name", "description", "source", "installs", "installCommand"],
@@ -52,6 +119,34 @@
           "installs": { "type": "integer" },
           "installCommand": { "type": "string" },
           "url": { "type": ["string", "null"] }
+        }
+      },
+      "Meta": {
+        "type": "object",
+        "properties": {
+          "apiVersion": { "type": "string" },
+          "query": { "type": "string" },
+          "agent": { "type": ["string", "null"] },
+          "count": { "type": "integer" },
+          "total": { "type": "integer" },
+          "limit": { "type": "integer" },
+          "offset": { "type": "integer" },
+          "nextOffset": { "type": ["integer", "null"] },
+          "stale": { "type": "boolean" }
+        }
+      },
+      "SkillListEnvelope": {
+        "type": "object",
+        "properties": {
+          "data": { "type": "array", "items": { "$ref": "#/components/schemas/Skill" } },
+          "meta": { "$ref": "#/components/schemas/Meta" }
+        }
+      },
+      "SkillEnvelope": {
+        "type": "object",
+        "properties": {
+          "data": { "$ref": "#/components/schemas/Skill" },
+          "meta": { "$ref": "#/components/schemas/Meta" }
         }
       },
       "SearchResult": {
@@ -72,13 +167,23 @@
           "skills": { "type": "array", "items": { "$ref": "#/components/schemas/Skill" } }
         }
       },
+      "ErrorEnvelope": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": { "code": { "type": "string" }, "message": { "type": "string" } }
+          }
+        }
+      },
       "Error": {
         "type": "object",
         "properties": { "error": { "type": "string" }, "code": { "type": "string" } }
       }
     },
     "responses": {
-      "Error": { "description": "Error", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } }
+      "Error": { "description": "Error", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorEnvelope" } } } },
+      "LegacyError": { "description": "Error", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } }
     }
   }
 }

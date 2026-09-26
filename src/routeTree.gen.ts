@@ -17,11 +17,13 @@ import { Route as GithubCopilotSkillsRouteImport } from './routes/github-copilot
 import { Route as GrokSkillsRouteImport } from './routes/grok-skills'
 import { Route as LibraryRouteImport } from './routes/library'
 import { Route as LicensesRouteImport } from './routes/licenses'
+import { Route as McpRouteImport } from './routes/mcp'
 import { Route as McpSkillsRouteImport } from './routes/mcp-skills'
 import { Route as PerplexitySkillsRouteImport } from './routes/perplexity-skills'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SuperhumanGoSkillsRouteImport } from './routes/superhuman-go-skills'
 import { Route as WordpressSkillsRouteImport } from './routes/wordpress-skills'
+import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as DocsApiRouteImport } from './routes/docs.api'
 import { Route as STokenRouteImport } from './routes/s.$token'
 import { Route as ApiPublicSkillsRouteImport } from './routes/api/public/skills'
@@ -71,6 +73,11 @@ const LicensesRoute = LicensesRouteImport.update({
   path: '/licenses',
   getParentRoute: () => rootRouteImport,
 } as any)
+const McpRoute = McpRouteImport.update({
+  id: '/mcp',
+  path: '/mcp',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const McpSkillsRoute = McpSkillsRouteImport.update({
   id: '/mcp-skills',
   path: '/mcp-skills',
@@ -96,6 +103,12 @@ const WordpressSkillsRoute = WordpressSkillsRouteImport.update({
   path: '/wordpress-skills',
   getParentRoute: () => rootRouteImport,
 } as any)
+const Char91DotwellKnownChar93OauthProtectedResourceRoute =
+  Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
+    id: '/.well-known/oauth-protected-resource',
+    path: '/.well-known/oauth-protected-resource',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const DocsApiRoute = DocsApiRouteImport.update({
   id: '/docs/api',
   path: '/docs/api',
@@ -148,11 +161,13 @@ export interface FileRoutesByFullPath {
   '/grok-skills': typeof GrokSkillsRoute
   '/library': typeof LibraryRoute
   '/licenses': typeof LicensesRoute
+  '/mcp': typeof McpRoute
   '/mcp-skills': typeof McpSkillsRoute
   '/perplexity-skills': typeof PerplexitySkillsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/superhuman-go-skills': typeof SuperhumanGoSkillsRoute
   '/wordpress-skills': typeof WordpressSkillsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/docs/api': typeof DocsApiRoute
   '/s/$token': typeof STokenRoute
   '/api/public/skills': typeof ApiPublicSkillsRouteWithChildren
@@ -171,11 +186,13 @@ export interface FileRoutesByTo {
   '/grok-skills': typeof GrokSkillsRoute
   '/library': typeof LibraryRoute
   '/licenses': typeof LicensesRoute
+  '/mcp': typeof McpRoute
   '/mcp-skills': typeof McpSkillsRoute
   '/perplexity-skills': typeof PerplexitySkillsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/superhuman-go-skills': typeof SuperhumanGoSkillsRoute
   '/wordpress-skills': typeof WordpressSkillsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/docs/api': typeof DocsApiRoute
   '/s/$token': typeof STokenRoute
   '/api/public/skills': typeof ApiPublicSkillsRouteWithChildren
@@ -195,11 +212,13 @@ export interface FileRoutesById {
   '/grok-skills': typeof GrokSkillsRoute
   '/library': typeof LibraryRoute
   '/licenses': typeof LicensesRoute
+  '/mcp': typeof McpRoute
   '/mcp-skills': typeof McpSkillsRoute
   '/perplexity-skills': typeof PerplexitySkillsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/superhuman-go-skills': typeof SuperhumanGoSkillsRoute
   '/wordpress-skills': typeof WordpressSkillsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/docs/api': typeof DocsApiRoute
   '/s/$token': typeof STokenRoute
   '/api/public/skills': typeof ApiPublicSkillsRouteWithChildren
@@ -220,11 +239,13 @@ export interface FileRouteTypes {
     | '/grok-skills'
     | '/library'
     | '/licenses'
+    | '/mcp'
     | '/mcp-skills'
     | '/perplexity-skills'
     | '/sitemap.xml'
     | '/superhuman-go-skills'
     | '/wordpress-skills'
+    | '/.well-known/oauth-protected-resource'
     | '/docs/api'
     | '/s/$token'
     | '/api/public/skills'
@@ -243,11 +264,13 @@ export interface FileRouteTypes {
     | '/grok-skills'
     | '/library'
     | '/licenses'
+    | '/mcp'
     | '/mcp-skills'
     | '/perplexity-skills'
     | '/sitemap.xml'
     | '/superhuman-go-skills'
     | '/wordpress-skills'
+    | '/.well-known/oauth-protected-resource'
     | '/docs/api'
     | '/s/$token'
     | '/api/public/skills'
@@ -266,11 +289,13 @@ export interface FileRouteTypes {
     | '/grok-skills'
     | '/library'
     | '/licenses'
+    | '/mcp'
     | '/mcp-skills'
     | '/perplexity-skills'
     | '/sitemap.xml'
     | '/superhuman-go-skills'
     | '/wordpress-skills'
+    | '/.well-known/oauth-protected-resource'
     | '/docs/api'
     | '/s/$token'
     | '/api/public/skills'
@@ -290,11 +315,13 @@ export interface RootRouteChildren {
   GrokSkillsRoute: typeof GrokSkillsRoute
   LibraryRoute: typeof LibraryRoute
   LicensesRoute: typeof LicensesRoute
+  McpRoute: typeof McpRoute
   McpSkillsRoute: typeof McpSkillsRoute
   PerplexitySkillsRoute: typeof PerplexitySkillsRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SuperhumanGoSkillsRoute: typeof SuperhumanGoSkillsRoute
   WordpressSkillsRoute: typeof WordpressSkillsRoute
+  Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   DocsApiRoute: typeof DocsApiRoute
   STokenRoute: typeof STokenRoute
   ApiPublicSkillsRoute: typeof ApiPublicSkillsRouteWithChildren
@@ -360,6 +387,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LicensesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/mcp': {
+      id: '/mcp'
+      path: '/mcp'
+      fullPath: '/mcp'
+      preLoaderRoute: typeof McpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/mcp-skills': {
       id: '/mcp-skills'
       path: '/mcp-skills'
@@ -393,6 +427,13 @@ declare module '@tanstack/react-router' {
       path: '/wordpress-skills'
       fullPath: '/wordpress-skills'
       preLoaderRoute: typeof WordpressSkillsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.well-known/oauth-protected-resource': {
+      id: '/.well-known/oauth-protected-resource'
+      path: '/.well-known/oauth-protected-resource'
+      fullPath: '/.well-known/oauth-protected-resource'
+      preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/docs/api': {
@@ -488,11 +529,14 @@ const rootRouteChildren: RootRouteChildren = {
   GrokSkillsRoute: GrokSkillsRoute,
   LibraryRoute: LibraryRoute,
   LicensesRoute: LicensesRoute,
+  McpRoute: McpRoute,
   McpSkillsRoute: McpSkillsRoute,
   PerplexitySkillsRoute: PerplexitySkillsRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SuperhumanGoSkillsRoute: SuperhumanGoSkillsRoute,
   WordpressSkillsRoute: WordpressSkillsRoute,
+  Char91DotwellKnownChar93OauthProtectedResourceRoute:
+    Char91DotwellKnownChar93OauthProtectedResourceRoute,
   DocsApiRoute: DocsApiRoute,
   STokenRoute: STokenRoute,
   ApiPublicSkillsRoute: ApiPublicSkillsRouteWithChildren,

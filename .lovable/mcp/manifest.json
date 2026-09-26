@@ -1,0 +1,119 @@
+{
+  "version": 1,
+  "sdk_version": "3.0.4",
+  "path": "/mcp",
+  "auth": {
+    "type": "none"
+  },
+  "mcp": {
+    "server": {
+      "name": "skill-finder-plus",
+      "version": "1.0.0",
+      "title": "Skill Finder Plus"
+    },
+    "tools": [
+      {
+        "name": "search_skills",
+        "title": "Search skills",
+        "description": "Search the public catalogue of open agent skills (SKILL.md instruction files), most installed first.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {
+            "query": {
+              "description": "Keywords to match name, description or source.",
+              "type": "string",
+              "maxLength": 100
+            },
+            "agent": {
+              "description": "Restrict to one agent's curated list.",
+              "type": "string",
+              "enum": [
+                "microsoft-copilot",
+                "superhuman-go",
+                "chatgpt",
+                "grok",
+                "perplexity",
+                "claude",
+                "github-copilot",
+                "cursor",
+                "wordpress"
+              ]
+            },
+            "minInstalls": {
+              "description": "Only skills with at least this many installs.",
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "limit": {
+              "default": 10,
+              "description": "How many skills to return.",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 25
+            },
+            "offset": {
+              "default": 0,
+              "description": "Skip this many results for paging.",
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 5000
+            }
+          },
+          "additionalProperties": false
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_skill",
+        "title": "Get skill",
+        "description": "Look up one skill by its catalogue id and return its details and install command.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200,
+              "description": "Catalogue id from search_skills."
+            }
+          },
+          "required": [
+            "id"
+          ],
+          "additionalProperties": false
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_agents",
+        "title": "List supported agents",
+        "description": "List the agents that have a curated skill collection, with their keys and pages.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {},
+          "additionalProperties": false
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}

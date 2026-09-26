@@ -32,25 +32,59 @@ interface Endpoint {
 
 const ENDPOINTS: readonly Endpoint[] = [
   {
-    path: "GET /api/public/skills",
+    path: "GET /api/public/v1/skills",
     summary: "Keyword search over the catalogue, most-installed first.",
+    params: [
+      "q: keywords, up to 100 characters (optional)",
+      "agent: restrict to one agent's curated list (optional)",
+      "source: match part of the GitHub owner/repo (optional)",
+      "minInstalls: minimum install count (optional)",
+      "limit: 1 to 50, default 20",
+      "offset: 0 to 5000, default 0",
+    ],
+    example: "/api/public/v1/skills?q=react&limit=5",
+  },
+  {
+    path: "GET /api/public/v1/skills/{id}",
+    summary: "One skill by its catalogue id, with its install command.",
+    params: ["id: the id returned by a search"],
+    example: "/api/public/v1/skills",
+  },
+  {
+    path: "GET /api/public/v1/skills/agent/{agent}",
+    summary: "The curated list shown on one agent page, paged.",
+    params: [
+      "agent: microsoft-copilot, superhuman-go, chatgpt, grok, perplexity, claude, github-copilot, cursor, wordpress",
+      "limit: 1 to 50, default 20",
+      "offset: 0 to 5000, default 0",
+    ],
+    example: "/api/public/v1/skills/agent/claude",
+  },
+  {
+    path: "GET /api/public/v1/capabilities",
+    summary: "What this API supports, its limits, and where the other documents live.",
+    params: [],
+    example: "/api/public/v1/capabilities",
+  },
+  {
+    path: "GET /api/public/skills",
+    summary: "Earlier flat-payload search, kept working for existing callers.",
     params: ["q: keywords, up to 100 characters (optional)", "limit: 1 to 50, default 20"],
     example: "/api/public/skills?q=react&limit=5",
   },
-  {
-    path: "GET /api/public/skills/agent/{agent}",
-    summary: "The curated list shown on one agent page.",
-    params: [
-      "agent: microsoft-copilot, superhuman-go, chatgpt, grok, perplexity, claude, github-copilot, cursor, wordpress",
-    ],
-    example: "/api/public/skills/agent/claude",
-  },
 ];
+
+const MCP_TOOLS = [
+  "search_skills — keyword search with agent, source and install filters",
+  "get_skill — one skill's details and install command",
+  "list_agents — the agents that have a curated collection",
+] as const;
 
 const RESOURCES = [
   { href: "/openapi.json", label: "OpenAPI spec" },
   { href: "/llms.txt", label: "llms.txt" },
   { href: "/.well-known/agent.json", label: "Agent card" },
+  { href: "/api/public/v1/capabilities", label: "Capabilities" },
 ] as const;
 
 function ApiDocsPage() {
@@ -98,10 +132,27 @@ function ApiDocsPage() {
         </section>
 
         <section className="mt-10 space-y-3">
-          <h2 className="text-lg font-semibold text-foreground">Each skill includes</h2>
+          <h2 className="text-lg font-semibold text-foreground">Response shape</h2>
           <p className="text-sm text-muted-foreground">
-            id, name, description, source (GitHub owner/repo), installs, installCommand and url.
+            Version 1 endpoints answer with {"{"} data, meta {"}"} and, when something goes wrong,{" "}
+            {"{"} error: {"{"} code, message {"}"} {"}"}. Paging details live in meta: count, total,
+            limit, offset and nextOffset. Each skill includes id, name, description, source (GitHub
+            owner/repo), installs, installCommand and url.
           </p>
+        </section>
+
+        <section className="mt-10 space-y-3">
+          <h2 className="text-lg font-semibold text-foreground">Agent connection (MCP)</h2>
+          <p className="text-sm text-muted-foreground">
+            Compatible assistants can connect to{" "}
+            <span className="font-mono">https://skills.mikedemo.dev/mcp</span> over Streamable HTTP.
+            No sign-in, read-only, same per-visitor limits.
+          </p>
+          <ul className="list-disc space-y-1 pl-5 text-xs text-muted-foreground">
+            {MCP_TOOLS.map((tool) => (
+              <li key={tool}>{tool}</li>
+            ))}
+          </ul>
         </section>
 
         <section className="mt-10 space-y-3">
