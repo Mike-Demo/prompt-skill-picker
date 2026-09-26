@@ -132,10 +132,27 @@ function ApiDocsPage() {
         </section>
 
         <section className="mt-10 space-y-3">
-          <h2 className="text-lg font-semibold text-foreground">Each skill includes</h2>
+          <h2 className="text-lg font-semibold text-foreground">Response shape</h2>
           <p className="text-sm text-muted-foreground">
-            id, name, description, source (GitHub owner/repo), installs, installCommand and url.
+            Version 1 endpoints answer with {"{"} data, meta {"}"} and, when something goes wrong,{" "}
+            {"{"} error: {"{"} code, message {"}"} {"}"}. Paging details live in meta: count, total,
+            limit, offset and nextOffset. Each skill includes id, name, description, source (GitHub
+            owner/repo), installs, installCommand and url.
           </p>
+        </section>
+
+        <section className="mt-10 space-y-3">
+          <h2 className="text-lg font-semibold text-foreground">Agent connection (MCP)</h2>
+          <p className="text-sm text-muted-foreground">
+            Compatible assistants can connect to{" "}
+            <span className="font-mono">https://skills.mikedemo.dev/mcp</span> over Streamable HTTP.
+            No sign-in, read-only, same per-visitor limits.
+          </p>
+          <ul className="list-disc space-y-1 pl-5 text-xs text-muted-foreground">
+            {MCP_TOOLS.map((tool) => (
+              <li key={tool}>{tool}</li>
+            ))}
+          </ul>
         </section>
 
         <section className="mt-10 space-y-3">
