@@ -28,7 +28,7 @@
         "operationId": "listAgentSkills",
         "summary": "Curated skills for one agent",
         "parameters": [
-          { "name": "agent", "in": "path", "required": true, "schema": { "type": "string", "enum": ["mcp", "superhuman-go", "chatgpt", "grok", "perplexity", "claude", "github-copilot", "cursor", "wordpress"] } }
+          { "name": "agent", "in": "path", "required": true, "schema": { "type": "string", "enum": ["microsoft-copilot", "superhuman-go", "chatgpt", "grok", "perplexity", "claude", "github-copilot", "cursor", "wordpress"] } }
         ],
         "responses": {
           "200": { "description": "Skills for the agent", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/AgentResult" } } } },

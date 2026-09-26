@@ -9,7 +9,7 @@ Interactive AI search on the homepage is protected by hCaptcha. Agents should us
 - [API docs](https://skills.mikedemo.dev/docs/api): human-readable reference
 - [OpenAPI spec](https://skills.mikedemo.dev/openapi.json): machine-readable spec
 - [Search skills](https://skills.mikedemo.dev/api/public/skills?q=react&limit=10): GET /api/public/skills?q=&limit=
-- [Skills for one agent](https://skills.mikedemo.dev/api/public/skills/agent/claude): GET /api/public/skills/agent/{agent}, where agent is one of mcp, superhuman-go, chatgpt, grok, perplexity, claude, github-copilot, cursor, wordpress
+- [Skills for one agent](https://skills.mikedemo.dev/api/public/skills/agent/claude): GET /api/public/skills/agent/{agent}, where agent is one of microsoft-copilot, superhuman-go, chatgpt, grok, perplexity, claude, github-copilot, cursor, wordpress
 - [Agent card](https://skills.mikedemo.dev/.well-known/agent.json)
 
 ## Pages

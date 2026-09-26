@@ -1,0 +1,28 @@
+{
+  "name": "Skill Finder",
+  "description": "Search and browse open agent skills (SKILL.md files) for AI coding agents. Read-only, no authentication.",
+  "url": "https://skills.mikedemo.dev/",
+  "version": "1.0.0",
+  "provider": { "organization": "MikeDemo", "url": "https://skills.mikedemo.dev/" },
+  "documentationUrl": "https://skills.mikedemo.dev/docs/api",
+  "llmsTxt": "https://skills.mikedemo.dev/llms.txt",
+  "api": { "type": "openapi", "url": "https://skills.mikedemo.dev/openapi.json" },
+  "authentication": { "schemes": ["none"] },
+  "capabilities": { "streaming": false },
+  "defaultInputModes": ["text/plain"],
+  "defaultOutputModes": ["application/json"],
+  "skills": [
+    {
+      "id": "search-skills",
+      "name": "Search skills",
+      "description": "Keyword search over the skill catalogue, ranked by installs. GET /api/public/skills?q=&limit=",
+      "tags": ["search", "agent-skills"]
+    },
+    {
+      "id": "agent-skills",
+      "name": "Skills for an agent",
+      "description": "Curated skills for one agent. GET /api/public/skills/agent/{agent}",
+      "tags": ["catalogue", "agent-skills"]
+    }
+  ]
+}

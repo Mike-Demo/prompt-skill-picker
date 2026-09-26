@@ -41,7 +41,7 @@ const ENDPOINTS: readonly Endpoint[] = [
     path: "GET /api/public/skills/agent/{agent}",
     summary: "The curated list shown on one agent page.",
     params: [
-      "agent: mcp, superhuman-go, chatgpt, grok, perplexity, claude, github-copilot, cursor, wordpress",
+      "agent: microsoft-copilot, superhuman-go, chatgpt, grok, perplexity, claude, github-copilot, cursor, wordpress",
     ],
     example: "/api/public/skills/agent/claude",
   },
