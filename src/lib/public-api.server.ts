@@ -1,7 +1,7 @@
 import { enforceRateLimit, getClientIp, RateLimitError } from "./rate-limit.server";
 import type { SkillLibraryEntry, SkillLibraryResponse } from "./skills.functions";
 
-const CORS_HEADERS: Record<string, string> = {
+export const CORS_HEADERS: Record<string, string> = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type",
