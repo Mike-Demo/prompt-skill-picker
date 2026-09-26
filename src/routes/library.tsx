@@ -17,6 +17,8 @@ import { fetchSkillFiles, listSkills, type SkillLibraryEntry } from "@/lib/skill
 import { isRateLimitMessage, useCooldown } from "@/hooks/use-cooldown";
 import { formatInstalls } from "@/lib/format";
 
+import { collectionJsonLd } from "@/lib/structured-data";
+
 const TITLE = "Skill library — browse every downloadable agent skill";
 const DESCRIPTION =
   "Browse the full library of agent skills from the open registry with a description and usage example for each, then bundle the ones you want into a zip.";
@@ -29,8 +31,11 @@ export const Route = createFileRoute("/library")({
       { property: "og:title", content: TITLE },
       { property: "og:description", content: DESCRIPTION },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://skills.mikedemo.dev/library" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [{ rel: "canonical", href: "https://skills.mikedemo.dev/library" }],
+    scripts: [collectionJsonLd(TITLE, DESCRIPTION, "/library")],
   }),
   component: SkillLibraryPage,
 });

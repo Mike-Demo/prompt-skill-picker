@@ -20,6 +20,7 @@ const STATIC_ENTRIES: readonly SitemapEntry[] = [
   { path: "/superhuman-go-skills", changefreq: "weekly", priority: "0.8" },
   { path: "/cursor-skills", changefreq: "weekly", priority: "0.8" },
   { path: "/wordpress-skills", changefreq: "weekly", priority: "0.8" },
+  { path: "/docs/api", changefreq: "monthly", priority: "0.6" },
   { path: "/licenses", changefreq: "monthly", priority: "0.5" },
 ];
 

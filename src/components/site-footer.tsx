@@ -38,6 +38,10 @@ export function SiteFooter({
           <WaIcon name="code" />
           Open Source
         </Link>
+        <Link to="/docs/api" className={linkClass}>
+          <WaIcon name="plug" />
+          Agent API
+        </Link>
       </nav>
       <nav aria-label="Social links" className="flex flex-wrap items-center justify-center gap-4">
         <a
