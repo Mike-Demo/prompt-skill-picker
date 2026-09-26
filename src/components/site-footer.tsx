@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 const linkedInUrl = "https://www.linkedin.com/in/mikedemopoulos";
 const xUrl = "https://x.com/mike_demo";
 const threadsUrl = "https://www.threads.com/@mdemop";
+const githubUrl = "https://github.com/Mike-Demo";
 
 const linkClass =
   "inline-flex items-center gap-1.5 rounded px-1.5 py-1 font-medium text-foreground/80 transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background";
@@ -44,6 +45,16 @@ export function SiteFooter({
         </Link>
       </nav>
       <nav aria-label="Social links" className="flex flex-wrap items-center justify-center gap-4">
+        <a
+          href={githubUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="MikeDemo on GitHub (opens in new tab)"
+          className={linkClass}
+        >
+          <WaIcon name="github" family="brands" />
+          GitHub
+        </a>
         <a
           href={linkedInUrl}
           target="_blank"
