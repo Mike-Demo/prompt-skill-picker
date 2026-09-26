@@ -23,7 +23,7 @@ export const toPublicSkill = (entry: SkillLibraryEntry): PublicSkill => ({
   description: entry.description,
   source: entry.source,
   installs: entry.installs,
-  installCommand: `npx skills add ${entry.source} --skill ${entry.skillId}`,
+  installCommand: `npx skills use "https://github.com/${entry.source}" --skill "${entry.skillId}"`,
   url: entry.htmlUrl,
 });
 
