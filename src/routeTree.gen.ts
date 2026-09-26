@@ -25,7 +25,11 @@ import { Route as WordpressSkillsRouteImport } from './routes/wordpress-skills'
 import { Route as DocsApiRouteImport } from './routes/docs.api'
 import { Route as STokenRouteImport } from './routes/s.$token'
 import { Route as ApiPublicSkillsRouteImport } from './routes/api/public/skills'
+import { Route as ApiPublicV1CapabilitiesRouteImport } from './routes/api/public/v1/capabilities'
+import { Route as ApiPublicV1SkillsRouteImport } from './routes/api/public/v1/skills'
 import { Route as ApiPublicSkillsAgentAgentRouteImport } from './routes/api/public/skills/agent/$agent'
+import { Route as ApiPublicV1SkillsIdRouteImport } from './routes/api/public/v1/skills/$id'
+import { Route as ApiPublicV1SkillsAgentAgentRouteImport } from './routes/api/public/v1/skills/agent/$agent'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -107,11 +111,32 @@ const ApiPublicSkillsRoute = ApiPublicSkillsRouteImport.update({
   path: '/api/public/skills',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicV1CapabilitiesRoute = ApiPublicV1CapabilitiesRouteImport.update({
+  id: '/api/public/v1/capabilities',
+  path: '/api/public/v1/capabilities',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicV1SkillsRoute = ApiPublicV1SkillsRouteImport.update({
+  id: '/api/public/v1/skills',
+  path: '/api/public/v1/skills',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicSkillsAgentAgentRoute =
   ApiPublicSkillsAgentAgentRouteImport.update({
     id: '/agent/$agent',
     path: '/agent/$agent',
     getParentRoute: () => ApiPublicSkillsRoute,
+  } as any)
+const ApiPublicV1SkillsIdRoute = ApiPublicV1SkillsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => ApiPublicV1SkillsRoute,
+} as any)
+const ApiPublicV1SkillsAgentAgentRoute =
+  ApiPublicV1SkillsAgentAgentRouteImport.update({
+    id: '/agent/$agent',
+    path: '/agent/$agent',
+    getParentRoute: () => ApiPublicV1SkillsRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -131,7 +156,11 @@ export interface FileRoutesByFullPath {
   '/docs/api': typeof DocsApiRoute
   '/s/$token': typeof STokenRoute
   '/api/public/skills': typeof ApiPublicSkillsRouteWithChildren
+  '/api/public/v1/capabilities': typeof ApiPublicV1CapabilitiesRoute
+  '/api/public/v1/skills': typeof ApiPublicV1SkillsRouteWithChildren
   '/api/public/skills/agent/$agent': typeof ApiPublicSkillsAgentAgentRoute
+  '/api/public/v1/skills/$id': typeof ApiPublicV1SkillsIdRoute
+  '/api/public/v1/skills/agent/$agent': typeof ApiPublicV1SkillsAgentAgentRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -150,7 +179,11 @@ export interface FileRoutesByTo {
   '/docs/api': typeof DocsApiRoute
   '/s/$token': typeof STokenRoute
   '/api/public/skills': typeof ApiPublicSkillsRouteWithChildren
+  '/api/public/v1/capabilities': typeof ApiPublicV1CapabilitiesRoute
+  '/api/public/v1/skills': typeof ApiPublicV1SkillsRouteWithChildren
   '/api/public/skills/agent/$agent': typeof ApiPublicSkillsAgentAgentRoute
+  '/api/public/v1/skills/$id': typeof ApiPublicV1SkillsIdRoute
+  '/api/public/v1/skills/agent/$agent': typeof ApiPublicV1SkillsAgentAgentRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -170,7 +203,11 @@ export interface FileRoutesById {
   '/docs/api': typeof DocsApiRoute
   '/s/$token': typeof STokenRoute
   '/api/public/skills': typeof ApiPublicSkillsRouteWithChildren
+  '/api/public/v1/capabilities': typeof ApiPublicV1CapabilitiesRoute
+  '/api/public/v1/skills': typeof ApiPublicV1SkillsRouteWithChildren
   '/api/public/skills/agent/$agent': typeof ApiPublicSkillsAgentAgentRoute
+  '/api/public/v1/skills/$id': typeof ApiPublicV1SkillsIdRoute
+  '/api/public/v1/skills/agent/$agent': typeof ApiPublicV1SkillsAgentAgentRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -191,7 +228,11 @@ export interface FileRouteTypes {
     | '/docs/api'
     | '/s/$token'
     | '/api/public/skills'
+    | '/api/public/v1/capabilities'
+    | '/api/public/v1/skills'
     | '/api/public/skills/agent/$agent'
+    | '/api/public/v1/skills/$id'
+    | '/api/public/v1/skills/agent/$agent'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -210,7 +251,11 @@ export interface FileRouteTypes {
     | '/docs/api'
     | '/s/$token'
     | '/api/public/skills'
+    | '/api/public/v1/capabilities'
+    | '/api/public/v1/skills'
     | '/api/public/skills/agent/$agent'
+    | '/api/public/v1/skills/$id'
+    | '/api/public/v1/skills/agent/$agent'
   id:
     | '__root__'
     | '/'
@@ -229,7 +274,11 @@ export interface FileRouteTypes {
     | '/docs/api'
     | '/s/$token'
     | '/api/public/skills'
+    | '/api/public/v1/capabilities'
+    | '/api/public/v1/skills'
     | '/api/public/skills/agent/$agent'
+    | '/api/public/v1/skills/$id'
+    | '/api/public/v1/skills/agent/$agent'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -249,6 +298,8 @@ export interface RootRouteChildren {
   DocsApiRoute: typeof DocsApiRoute
   STokenRoute: typeof STokenRoute
   ApiPublicSkillsRoute: typeof ApiPublicSkillsRouteWithChildren
+  ApiPublicV1CapabilitiesRoute: typeof ApiPublicV1CapabilitiesRoute
+  ApiPublicV1SkillsRoute: typeof ApiPublicV1SkillsRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -365,12 +416,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicSkillsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/v1/capabilities': {
+      id: '/api/public/v1/capabilities'
+      path: '/api/public/v1/capabilities'
+      fullPath: '/api/public/v1/capabilities'
+      preLoaderRoute: typeof ApiPublicV1CapabilitiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/v1/skills': {
+      id: '/api/public/v1/skills'
+      path: '/api/public/v1/skills'
+      fullPath: '/api/public/v1/skills'
+      preLoaderRoute: typeof ApiPublicV1SkillsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/skills/agent/$agent': {
       id: '/api/public/skills/agent/$agent'
       path: '/agent/$agent'
       fullPath: '/api/public/skills/agent/$agent'
       preLoaderRoute: typeof ApiPublicSkillsAgentAgentRouteImport
       parentRoute: typeof ApiPublicSkillsRoute
+    }
+    '/api/public/v1/skills/$id': {
+      id: '/api/public/v1/skills/$id'
+      path: '/$id'
+      fullPath: '/api/public/v1/skills/$id'
+      preLoaderRoute: typeof ApiPublicV1SkillsIdRouteImport
+      parentRoute: typeof ApiPublicV1SkillsRoute
+    }
+    '/api/public/v1/skills/agent/$agent': {
+      id: '/api/public/v1/skills/agent/$agent'
+      path: '/agent/$agent'
+      fullPath: '/api/public/v1/skills/agent/$agent'
+      preLoaderRoute: typeof ApiPublicV1SkillsAgentAgentRouteImport
+      parentRoute: typeof ApiPublicV1SkillsRoute
     }
   }
 }
@@ -386,6 +465,19 @@ const ApiPublicSkillsRouteChildren: ApiPublicSkillsRouteChildren = {
 const ApiPublicSkillsRouteWithChildren = ApiPublicSkillsRoute._addFileChildren(
   ApiPublicSkillsRouteChildren,
 )
+
+interface ApiPublicV1SkillsRouteChildren {
+  ApiPublicV1SkillsIdRoute: typeof ApiPublicV1SkillsIdRoute
+  ApiPublicV1SkillsAgentAgentRoute: typeof ApiPublicV1SkillsAgentAgentRoute
+}
+
+const ApiPublicV1SkillsRouteChildren: ApiPublicV1SkillsRouteChildren = {
+  ApiPublicV1SkillsIdRoute: ApiPublicV1SkillsIdRoute,
+  ApiPublicV1SkillsAgentAgentRoute: ApiPublicV1SkillsAgentAgentRoute,
+}
+
+const ApiPublicV1SkillsRouteWithChildren =
+  ApiPublicV1SkillsRoute._addFileChildren(ApiPublicV1SkillsRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -404,6 +496,8 @@ const rootRouteChildren: RootRouteChildren = {
   DocsApiRoute: DocsApiRoute,
   STokenRoute: STokenRoute,
   ApiPublicSkillsRoute: ApiPublicSkillsRouteWithChildren,
+  ApiPublicV1CapabilitiesRoute: ApiPublicV1CapabilitiesRoute,
+  ApiPublicV1SkillsRoute: ApiPublicV1SkillsRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
