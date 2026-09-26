@@ -22,6 +22,7 @@ import { Route as PerplexitySkillsRouteImport } from './routes/perplexity-skills
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SuperhumanGoSkillsRouteImport } from './routes/superhuman-go-skills'
 import { Route as WordpressSkillsRouteImport } from './routes/wordpress-skills'
+import { Route as DocsApiRouteImport } from './routes/docs.api'
 import { Route as STokenRouteImport } from './routes/s.$token'
 import { Route as ApiPublicSkillsRouteImport } from './routes/api/public/skills'
 import { Route as ApiPublicSkillsAgentAgentRouteImport } from './routes/api/public/skills/agent/$agent'
@@ -91,6 +92,11 @@ const WordpressSkillsRoute = WordpressSkillsRouteImport.update({
   path: '/wordpress-skills',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DocsApiRoute = DocsApiRouteImport.update({
+  id: '/docs/api',
+  path: '/docs/api',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const STokenRoute = STokenRouteImport.update({
   id: '/s/$token',
   path: '/s/$token',
@@ -122,6 +128,7 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/superhuman-go-skills': typeof SuperhumanGoSkillsRoute
   '/wordpress-skills': typeof WordpressSkillsRoute
+  '/docs/api': typeof DocsApiRoute
   '/s/$token': typeof STokenRoute
   '/api/public/skills': typeof ApiPublicSkillsRouteWithChildren
   '/api/public/skills/agent/$agent': typeof ApiPublicSkillsAgentAgentRoute
@@ -140,6 +147,7 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/superhuman-go-skills': typeof SuperhumanGoSkillsRoute
   '/wordpress-skills': typeof WordpressSkillsRoute
+  '/docs/api': typeof DocsApiRoute
   '/s/$token': typeof STokenRoute
   '/api/public/skills': typeof ApiPublicSkillsRouteWithChildren
   '/api/public/skills/agent/$agent': typeof ApiPublicSkillsAgentAgentRoute
@@ -159,6 +167,7 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/superhuman-go-skills': typeof SuperhumanGoSkillsRoute
   '/wordpress-skills': typeof WordpressSkillsRoute
+  '/docs/api': typeof DocsApiRoute
   '/s/$token': typeof STokenRoute
   '/api/public/skills': typeof ApiPublicSkillsRouteWithChildren
   '/api/public/skills/agent/$agent': typeof ApiPublicSkillsAgentAgentRoute
@@ -179,6 +188,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/superhuman-go-skills'
     | '/wordpress-skills'
+    | '/docs/api'
     | '/s/$token'
     | '/api/public/skills'
     | '/api/public/skills/agent/$agent'
@@ -197,6 +207,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/superhuman-go-skills'
     | '/wordpress-skills'
+    | '/docs/api'
     | '/s/$token'
     | '/api/public/skills'
     | '/api/public/skills/agent/$agent'
@@ -215,6 +226,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/superhuman-go-skills'
     | '/wordpress-skills'
+    | '/docs/api'
     | '/s/$token'
     | '/api/public/skills'
     | '/api/public/skills/agent/$agent'
@@ -234,6 +246,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SuperhumanGoSkillsRoute: typeof SuperhumanGoSkillsRoute
   WordpressSkillsRoute: typeof WordpressSkillsRoute
+  DocsApiRoute: typeof DocsApiRoute
   STokenRoute: typeof STokenRoute
   ApiPublicSkillsRoute: typeof ApiPublicSkillsRouteWithChildren
 }
@@ -331,6 +344,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WordpressSkillsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/docs/api': {
+      id: '/docs/api'
+      path: '/docs/api'
+      fullPath: '/docs/api'
+      preLoaderRoute: typeof DocsApiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/s/$token': {
       id: '/s/$token'
       path: '/s/$token'
@@ -381,6 +401,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SuperhumanGoSkillsRoute: SuperhumanGoSkillsRoute,
   WordpressSkillsRoute: WordpressSkillsRoute,
+  DocsApiRoute: DocsApiRoute,
   STokenRoute: STokenRoute,
   ApiPublicSkillsRoute: ApiPublicSkillsRouteWithChildren,
 }
