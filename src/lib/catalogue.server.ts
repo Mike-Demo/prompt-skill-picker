@@ -3,10 +3,10 @@ import type { PublicSkill } from "./public-api.server";
 import { toPublicSkill } from "./public-api.server";
 
 export interface CatalogueQuery {
-  q?: string;
-  agent?: AgentKey;
-  source?: string;
-  minInstalls?: number;
+  q?: string | undefined;
+  agent?: AgentKey | undefined;
+  source?: string | undefined;
+  minInstalls?: number | undefined;
   limit: number;
   offset: number;
 }
