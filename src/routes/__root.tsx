@@ -122,6 +122,12 @@ function RootShell({ children }: { children: ReactNode }) {
     <html lang="en" className={WEB_AWESOME_HTML_CLASSES}>
       <head>
         <HeadContent />
+        {/* Private analytics tracker (umami-lite). Loads on every page. */}
+        <script
+          defer
+          src="https://umami-lite.view.fast/tracker.js"
+          data-website-id="da3a8742-1cdd-46a8-9f26-41f867eb4119"
+        ></script>
       </head>
       <body>
         {children}
