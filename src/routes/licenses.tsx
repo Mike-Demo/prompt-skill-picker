@@ -108,6 +108,20 @@ function LicensesPage() {
           <h2 className="text-lg font-semibold text-foreground">Data sources</h2>
           <CreditList entries={dataCredits} />
         </section>
+
+        <section className="mt-10">
+          <h2 className="text-lg font-semibold text-foreground">Digital carbon</h2>
+          <p className="mt-3 text-sm text-muted-foreground">
+            Homepage transfer is about 239.1 KB, roughly 0.036 g of CO2 per visit. Estimated with
+            CO2.js using the Sustainable Web Design Model v4, measured 2026-09-27. Hosting:
+            Cloudflare, verified as green hosting by the Green Web Foundation. Machine-readable
+            disclosure:{" "}
+            <a href="/carbon.txt" className="font-medium text-primary hover:underline">
+              /carbon.txt
+            </a>
+            .
+          </p>
+        </section>
       </div>
     </main>
   );
