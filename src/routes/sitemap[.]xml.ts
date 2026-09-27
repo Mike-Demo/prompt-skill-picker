@@ -2,6 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 
 const BASE_URL = "https://skills.mikedemo.dev";
 
+const LASTMOD = "2026-09-27";
+
 interface SitemapEntry {
   path: string;
   changefreq?: "always" | "hourly" | "daily" | "weekly" | "monthly" | "yearly" | "never";
@@ -35,6 +37,7 @@ export const Route = createFileRoute("/sitemap.xml")({
           [
             "  <url>",
             `    <loc>${BASE_URL}${entry.path}</loc>`,
+            `    <lastmod>${LASTMOD}</lastmod>`,
             entry.changefreq ? `    <changefreq>${entry.changefreq}</changefreq>` : null,
             entry.priority ? `    <priority>${entry.priority}</priority>` : null,
             "  </url>",
