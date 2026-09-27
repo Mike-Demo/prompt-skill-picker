@@ -24,8 +24,19 @@ export const websiteJsonLd = (): JsonLdScript =>
     },
   });
 
-export const collectionJsonLd = (name: string, description: string, path: string): JsonLdScript =>
+export const webApplicationJsonLd = (): JsonLdScript =>
   toScript({
+    "@type": "WebApplication",
+    name: "Skill Finder",
+    url: `${SITE_URL}/`,
+    applicationCategory: "DeveloperApplication",
+    operatingSystem: "Web browser",
+    description:
+      "Search and browse a curated library of AI agent skills. Find skills for WordPress, MCP, Go, and more, with copy-ready install commands.",
+    isPartOf: { "@type": "WebSite", name: "Skill Finder", url: `${SITE_URL}/` },
+  });
+
+export const collectionJsonLd = (name: string, description: string, path: string): JsonLdScript =>  toScript({
     "@type": "CollectionPage",
     name,
     description,
