@@ -1,52 +1,10 @@
 # Skill Finder — robots.txt
-# Allow search engines and AI indexers to crawl. Block known
-# resource-hogging / content-scraping bots that add no discovery value.
+# Crawling and indexing are welcome, including AI crawlers.
 # Automated *use* of the tool (running searches, downloading zips) is
 # gated by hCaptcha + per-IP rate limiting in the app itself.
 
-User-agent: AhrefsBot
-Disallow: /
-
-User-agent: SemrushBot
-Disallow: /
-
-User-agent: MJ12bot
-Disallow: /
-
-User-agent: DotBot
-Disallow: /
-
-User-agent: PetalBot
-Disallow: /
-
-User-agent: Bytespider
-Disallow: /
-
-User-agent: Sogou web spider
-Disallow: /
-
-User-agent: Baiduspider
-Disallow: /
-
-User-agent: BLEXBot
-Disallow: /
-
-User-agent: DataForSeoBot
-Disallow: /
-
-User-agent: ZoominfoBot
-Disallow: /
-
-# Everyone else — search engines (Googlebot, Bingbot, DuckDuckBot,
-# YandexBot, etc.) and AI indexers (GPTBot, ClaudeBot, PerplexityBot,
-# Google-Extended, Applebot-Extended, CCBot, Automattic-External-Bot) —
-# may crawl the whole site.
 User-agent: *
-Disallow:
-
-Allow: /api/public/skills
-Allow: /api/public/v1/
-Allow: /mcp
+Allow: /
 
 # Agent-readable site summary: https://skills.mikedemo.dev/llms.txt
 # Agent card: https://skills.mikedemo.dev/.well-known/agent.json
