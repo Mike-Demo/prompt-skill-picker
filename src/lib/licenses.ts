@@ -126,13 +126,6 @@ export const libraryCredits: readonly LicenseEntry[] = [
     url: "https://github.com/colinhacks/zod/blob/main/LICENSE",
   },
   {
-    name: "@hcaptcha/react-hcaptcha",
-    author: "Intuition Machines, Inc.",
-    license: "MIT",
-    url: "https://github.com/hCaptcha/react-hcaptcha/blob/master/LICENSE",
-    note: "Renders the captcha that gates search and prompt enhancement.",
-  },
-  {
     name: "Supabase",
     author: "Supabase, Inc.",
     license: "MIT (client libraries)",

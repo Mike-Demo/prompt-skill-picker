@@ -1,8 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { useEffect, useRef, useState } from "react";
-import HCaptcha from "@hcaptcha/react-hcaptcha";
+import { useMutation } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 
 import { SelectionBar } from "@/components/selection-bar";
 import { SkillResultCard } from "@/components/skill-result-card";
@@ -27,7 +26,6 @@ import { downloadSkillsZip } from "@/lib/zip";
 import {
   enhancePrompt,
   fetchSkillFiles,
-  getCaptchaSitekey,
   searchSkills,
   type SkillSuggestion,
 } from "@/lib/skills.functions";
@@ -70,33 +68,9 @@ type TextareaHost = HTMLElement & { value: string };
 function SkillFinderPage() {
   const [prompt, setPrompt] = useState("");
   const [selected, setSelected] = useState<Set<string>>(new Set());
-  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
-  // Stays true after a solve even when the widget later expires its token:
-  // the server remembers verified tokens for 5 minutes, so one solve covers
-  // Enhance plus the search that follows it.
-  const [captchaVerified, setCaptchaVerified] = useState(false);
   const [shareToken, setShareToken] = useState<string | null>(null);
   const [shareCopied, setShareCopied] = useState(false);
   const [recent, setRecent] = useState<RecentSearch[]>([]);
-  const [enhanceHint, setEnhanceHint] = useState<string | null>(null);
-  const captchaRef = useRef<HCaptcha | null>(null);
-  const enhanceHintTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const captchaVerifiedTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const clearCaptcha = () => {
-    setCaptchaToken(null);
-    setCaptchaVerified(false);
-    if (captchaVerifiedTimer.current) clearTimeout(captchaVerifiedTimer.current);
-    captchaVerifiedTimer.current = null;
-  };
-
-  const markCaptchaVerified = (token: string) => {
-    setCaptchaToken(token);
-    setCaptchaVerified(true);
-    if (captchaVerifiedTimer.current) clearTimeout(captchaVerifiedTimer.current);
-    // Matches the 5-minute server-side cache of verified tokens.
-    captchaVerifiedTimer.current = setTimeout(clearCaptcha, 5 * 60 * 1000);
-  };
 
   // Local storage is browser-only, so hydrate the list after mount.
   useEffect(() => setRecent(readRecentSearches()), []);
@@ -104,40 +78,20 @@ function SkillFinderPage() {
   const runSearch = useServerFn(searchSkills);
   const runFetch = useServerFn(fetchSkillFiles);
   const runEnhance = useServerFn(enhancePrompt);
-  const fetchSitekey = useServerFn(getCaptchaSitekey);
-
-  const sitekeyQuery = useQuery({ queryKey: ["captcha-sitekey"], queryFn: fetchSitekey });
 
   const search = useMutation({
-    mutationFn: (value: { prompt: string; captchaToken: string }) =>
-      runSearch({ data: value }),
+    mutationFn: (value: { prompt: string }) => runSearch({ data: value }),
     onMutate: () => setShareToken(null),
-    onError: (error) => {
-      // The cached token was rejected (evicted cache, worker restart): make
-      // the user solve the captcha again instead of leaving a dead button.
-      if (error instanceof Error && error.message.toLowerCase().includes("captcha")) {
-        captchaRef.current?.resetCaptcha();
-        clearCaptcha();
-      }
-    },
     onSuccess: (response, value) => {
       setSelected(new Set());
       setShareToken(response.token);
       if (response.token) setRecent(addRecentSearch(value.prompt, response.token));
     },
-    onSettled: () => {
-      // hCaptcha tokens are single-use; force a fresh challenge each search.
-      captchaRef.current?.resetCaptcha();
-      clearCaptcha();
-    },
   });
 
   const enhance = useMutation({
-    mutationFn: (value: { prompt: string; captchaToken: string }) =>
-      runEnhance({ data: value }),
+    mutationFn: (value: { prompt: string }) => runEnhance({ data: value }),
     onSuccess: (result) => setPrompt(result.enhanced),
-    // The verified token stays valid server-side for a few minutes, so the
-    // same captcha solve still covers the search that follows an enhance.
   });
 
   const download = useMutation({
@@ -157,18 +111,14 @@ function SkillFinderPage() {
     window.setTimeout(() => setShareCopied(false), 2000);
   };
 
-  // A rate-limited attempt retries itself once the cooldown ends, but only when
-  // a captcha token is still available: hCaptcha tokens are single-use and the
-  // widget resets after each attempt, so usually the user must confirm again.
+  // A rate-limited attempt retries itself once the cooldown ends.
   const searchCooldown = useCooldown(search.error, () => {
     const trimmed = prompt.trim();
-    if (trimmed.length >= 3 && captchaToken && captchaVerified)
-      search.mutate({ prompt: trimmed, captchaToken });
+    if (trimmed.length >= 3) search.mutate({ prompt: trimmed });
   });
   const enhanceCooldown = useCooldown(enhance.error, () => {
     const trimmed = prompt.trim();
-    if (trimmed.length >= 3 && captchaToken && captchaVerified)
-      enhance.mutate({ prompt: trimmed, captchaToken });
+    if (trimmed.length >= 3) enhance.mutate({ prompt: trimmed });
   });
   const downloadCooldown = useCooldown(download.error, () => {
     if (selected.size > 0) download.mutate([...selected]);
@@ -187,24 +137,14 @@ function SkillFinderPage() {
 
   const submit = (value: string) => {
     const trimmed = value.trim();
-    if (trimmed.length < 3 || busy || !captchaToken || !captchaVerified) return;
-    search.mutate({ prompt: trimmed, captchaToken });
-  };
-
-  const showEnhanceHint = (message: string) => {
-    if (enhanceHintTimer.current) clearTimeout(enhanceHintTimer.current);
-    setEnhanceHint(message);
-    enhanceHintTimer.current = setTimeout(() => setEnhanceHint(null), 4000);
+    if (trimmed.length < 3 || busy) return;
+    search.mutate({ prompt: trimmed });
   };
 
   const runEnhanceClick = () => {
     const trimmed = prompt.trim();
     if (trimmed.length < 3 || busy) return;
-    if (!captchaToken || !captchaVerified) {
-      showEnhanceHint("Complete the CAPTCHA first to use Enhance.");
-      return;
-    }
-    enhance.mutate({ prompt: trimmed, captchaToken });
+    enhance.mutate({ prompt: trimmed });
   };
 
   return (
@@ -301,31 +241,12 @@ function SkillFinderPage() {
               </button>
             ))}
           </div>
-          {enhanceHint ? (
-            <p className="text-xs text-muted-foreground">{enhanceHint}</p>
-          ) : null}
-          <div className="flex justify-center">
-            {sitekeyQuery.data ? (
-              <HCaptcha
-                ref={captchaRef}
-                sitekey={sitekeyQuery.data}
-                onVerify={markCaptchaVerified}
-                // Keep the last verified token: the server accepts it from its
-                // 5-minute cache, and dropping it would make the still-enabled
-                // "Find skills" button a silent no-op.
-                onExpire={() => undefined}
-                onError={clearCaptcha}
-              />
-            ) : (
-              <WaSkeleton className="h-[78px] w-[303px]" />
-            )}
-          </div>
           <div className="flex justify-center">
             <WaButton
               type="submit"
               variant="brand"
               loading={search.isPending}
-              disabled={prompt.trim().length < 3 || busy || !captchaVerified}
+              disabled={prompt.trim().length < 3 || busy}
             >
               <WaIcon name="magnifying-glass" />
               {cooldown > 0 ? `Find skills in ${cooldown}s` : "Find skills"}
@@ -342,9 +263,6 @@ function SkillFinderPage() {
         {search.isError ? (
           <WaCallout variant="danger" className="mt-6">
             <p>{search.error instanceof Error ? search.error.message : "Search failed."}</p>
-            {cooldown === 0 && !captchaVerified ? (
-              <p className="mt-1">Confirm the captcha above and we&rsquo;ll try again.</p>
-            ) : null}
           </WaCallout>
         ) : null}
 

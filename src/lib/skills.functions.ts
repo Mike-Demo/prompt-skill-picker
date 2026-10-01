@@ -22,29 +22,16 @@ export interface SkillFile {
 
 const SearchInput = z.object({
   prompt: z.string().min(3).max(2000),
-  captchaToken: z.string().min(1, "Please complete the captcha."),
 });
 const FetchInput = z.object({ ids: z.array(z.string()).min(1).max(50) });
 
-/** Blocks abusive callers, enforces the quota, then verifies the captcha. */
+/** Blocks abusive callers and enforces the per-visitor quota. */
 async function guard(
   action: "search" | "enhance" | "download" | "library" | "gist",
-  captchaToken?: string,
 ): Promise<void> {
-  const { enforceRateLimit, getClientIp, recordCaptchaFailure } = await import(
-    "./rate-limit.server"
-  );
+  const { enforceRateLimit, getClientIp } = await import("./rate-limit.server");
   const ip = getClientIp();
   await enforceRateLimit(ip, action);
-
-  if (captchaToken === undefined) return;
-  const { verifyCaptchaToken } = await import("./captcha.server");
-  try {
-    await verifyCaptchaToken(captchaToken);
-  } catch (error) {
-    await recordCaptchaFailure(ip);
-    throw error;
-  }
 }
 
 export interface SearchResponse {
@@ -56,7 +43,7 @@ export interface SearchResponse {
 export const searchSkills = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => SearchInput.parse(input))
   .handler(async ({ data }): Promise<SearchResponse> => {
-    await guard("search", data.captchaToken);
+    await guard("search");
     const { rankSkills } = await import("./skills-ranking.server");
     const results = await rankSkills(data.prompt);
     const { saveSearch } = await import("./saved-search.server");
@@ -72,7 +59,7 @@ export interface SavedSearchResponse {
 }
 
 /**
- * Replays a stored search. No captcha and no AI call: the results were already
+ * Replays a stored search. No AI call: the results were already
  * ranked and paid for when the search first ran.
  */
 export const getSavedSearch = createServerFn({ method: "POST" })
@@ -116,19 +103,10 @@ export const createSkillGist = createServerFn({ method: "POST" })
 export const enhancePrompt = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => SearchInput.parse(input))
   .handler(async ({ data }): Promise<{ enhanced: string }> => {
-    await guard("enhance", data.captchaToken);
+    await guard("enhance");
     const { enhancePrompt: enhance } = await import("./skills-ranking.server");
     return { enhanced: await enhance(data.prompt) };
   });
-
-// The hCaptcha site key is public by design (it ships in every page that
-// renders the widget), so it is safe to hand to the browser.
-export const getCaptchaSitekey = createServerFn({ method: "GET" }).handler(
-  async (): Promise<string> => {
-    const { getCaptchaSitekey: resolve } = await import("./captcha.server");
-    return resolve();
-  },
-);
 
 export const fetchSkillFiles = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => FetchInput.parse(input))

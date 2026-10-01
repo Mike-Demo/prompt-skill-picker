@@ -1,7 +1,7 @@
 # Skill Finder — robots.txt
 # Crawling and indexing are welcome, including AI crawlers.
 # Automated *use* of the tool (running searches, downloading zips) is
-# gated by hCaptcha + per-IP rate limiting in the app itself.
+# gated by per-IP rate limiting in the app itself.
 
 User-agent: *
 Allow: /

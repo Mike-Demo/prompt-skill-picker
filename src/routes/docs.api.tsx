@@ -4,7 +4,7 @@ import { WaIcon } from "@/design-system/font-awsome-web-awesome-171158";
 
 const TITLE = "Agent API — read-only JSON access to Skill Finder";
 const DESCRIPTION =
-  "Free, read-only JSON API for AI agents to search the Skill Finder catalogue and list curated skills per agent. No key or captcha required.";
+  "Free, read-only JSON API for AI agents to search the Skill Finder catalogue and list curated skills per agent. No key required.";
 const CANONICAL = "https://skills.mikedemo.dev/docs/api";
 
 export const Route = createFileRoute("/docs/api")({
@@ -104,8 +104,8 @@ function ApiDocsPage() {
             Agent API
           </h1>
           <p className="text-sm text-muted-foreground sm:text-base">
-            A free, read-only JSON API so AI agents can use the skill catalogue without the
-            captcha. No key needed. Each visitor can make 30 requests a minute and 500 a day;
+            A free, read-only JSON API so AI agents can use the skill catalogue directly.
+            No key needed. Each visitor can make 30 requests a minute and 500 a day;
             over that you get a 429 with a Retry-After header.
           </p>
         </header>

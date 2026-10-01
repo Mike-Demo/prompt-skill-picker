@@ -193,13 +193,3 @@ export async function enforceRateLimit(ip: string, action: RateLimitAction): Pro
     false,
   );
 }
-
-/** Records a captcha failure and blocks the caller when failures pile up. */
-export async function recordCaptchaFailure(ip: string): Promise<void> {
-  try {
-    const db = await admin();
-    await db.rpc("record_captcha_failure", { _ip_hash: await hashIp(ip) });
-  } catch {
-    // Never mask the original captcha error.
-  }
-}
