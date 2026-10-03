@@ -1,0 +1,19 @@
+# llms.txt — Skill Finder docs section
+
+This file orients an LLM agent to the documentation resources at https://skills.mikedemo.dev/docs/api.
+
+## What this section covers
+
+- API endpoint reference with request/response shapes and the envelope format
+- Error codes and rate-limit behavior
+- MCP tool reference (search_skills, get_skill, list_agents)
+
+## Key links
+
+- [API docs](https://skills.mikedemo.dev/docs/api)
+- [OpenAPI spec](https://skills.mikedemo.dev/openapi.json)
+- [Capabilities endpoint](https://skills.mikedemo.dev/api/public/v1/capabilities)
+
+## When to use this section
+
+Use it when the agent needs endpoint-level detail beyond the overview in /llms.txt — parameter shapes, error codes, or the MCP tool schemas.

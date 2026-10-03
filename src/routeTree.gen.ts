@@ -28,7 +28,9 @@ import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SuperhumanGoSkillsRouteImport } from './routes/superhuman-go-skills'
 import { Route as WordpressSkillsRouteImport } from './routes/wordpress-skills'
+import { Route as Char91DotwellKnownChar93ApiCatalogRouteImport } from './routes/[.well-known]/api-catalog'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
+import { Route as ApiSplatRouteImport } from './routes/api/$'
 import { Route as DocsApiRouteImport } from './routes/docs.api'
 import { Route as STokenRouteImport } from './routes/s.$token'
 import { Route as ApiPublicSkillsRouteImport } from './routes/api/public/skills'
@@ -133,12 +135,23 @@ const WordpressSkillsRoute = WordpressSkillsRouteImport.update({
   path: '/wordpress-skills',
   getParentRoute: () => rootRouteImport,
 } as any)
+const Char91DotwellKnownChar93ApiCatalogRoute =
+  Char91DotwellKnownChar93ApiCatalogRouteImport.update({
+    id: '/.well-known/api-catalog',
+    path: '/.well-known/api-catalog',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const Char91DotwellKnownChar93OauthProtectedResourceRoute =
   Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
     id: '/.well-known/oauth-protected-resource',
     path: '/.well-known/oauth-protected-resource',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiSplatRoute = ApiSplatRouteImport.update({
+  id: '/api/$',
+  path: '/api/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DocsApiRoute = DocsApiRouteImport.update({
   id: '/docs/api',
   path: '/docs/api',
@@ -202,7 +215,9 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/superhuman-go-skills': typeof SuperhumanGoSkillsRoute
   '/wordpress-skills': typeof WordpressSkillsRoute
+  '/.well-known/api-catalog': typeof Char91DotwellKnownChar93ApiCatalogRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/api/$': typeof ApiSplatRoute
   '/docs/api': typeof DocsApiRoute
   '/s/$token': typeof STokenRoute
   '/api/public/skills': typeof ApiPublicSkillsRouteWithChildren
@@ -232,7 +247,9 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/superhuman-go-skills': typeof SuperhumanGoSkillsRoute
   '/wordpress-skills': typeof WordpressSkillsRoute
+  '/.well-known/api-catalog': typeof Char91DotwellKnownChar93ApiCatalogRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/api/$': typeof ApiSplatRoute
   '/docs/api': typeof DocsApiRoute
   '/s/$token': typeof STokenRoute
   '/api/public/skills': typeof ApiPublicSkillsRouteWithChildren
@@ -263,7 +280,9 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/superhuman-go-skills': typeof SuperhumanGoSkillsRoute
   '/wordpress-skills': typeof WordpressSkillsRoute
+  '/.well-known/api-catalog': typeof Char91DotwellKnownChar93ApiCatalogRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/api/$': typeof ApiSplatRoute
   '/docs/api': typeof DocsApiRoute
   '/s/$token': typeof STokenRoute
   '/api/public/skills': typeof ApiPublicSkillsRouteWithChildren
@@ -295,7 +314,9 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/superhuman-go-skills'
     | '/wordpress-skills'
+    | '/.well-known/api-catalog'
     | '/.well-known/oauth-protected-resource'
+    | '/api/$'
     | '/docs/api'
     | '/s/$token'
     | '/api/public/skills'
@@ -325,7 +346,9 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/superhuman-go-skills'
     | '/wordpress-skills'
+    | '/.well-known/api-catalog'
     | '/.well-known/oauth-protected-resource'
+    | '/api/$'
     | '/docs/api'
     | '/s/$token'
     | '/api/public/skills'
@@ -355,7 +378,9 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/superhuman-go-skills'
     | '/wordpress-skills'
+    | '/.well-known/api-catalog'
     | '/.well-known/oauth-protected-resource'
+    | '/api/$'
     | '/docs/api'
     | '/s/$token'
     | '/api/public/skills'
@@ -386,7 +411,9 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SuperhumanGoSkillsRoute: typeof SuperhumanGoSkillsRoute
   WordpressSkillsRoute: typeof WordpressSkillsRoute
+  Char91DotwellKnownChar93ApiCatalogRoute: typeof Char91DotwellKnownChar93ApiCatalogRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  ApiSplatRoute: typeof ApiSplatRoute
   DocsApiRoute: typeof DocsApiRoute
   STokenRoute: typeof STokenRoute
   ApiPublicSkillsRoute: typeof ApiPublicSkillsRouteWithChildren
@@ -529,11 +556,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WordpressSkillsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/.well-known/api-catalog': {
+      id: '/.well-known/api-catalog'
+      path: '/.well-known/api-catalog'
+      fullPath: '/.well-known/api-catalog'
+      preLoaderRoute: typeof Char91DotwellKnownChar93ApiCatalogRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/.well-known/oauth-protected-resource': {
       id: '/.well-known/oauth-protected-resource'
       path: '/.well-known/oauth-protected-resource'
       fullPath: '/.well-known/oauth-protected-resource'
       preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/$': {
+      id: '/api/$'
+      path: '/api/$'
+      fullPath: '/api/$'
+      preLoaderRoute: typeof ApiSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/docs/api': {
@@ -640,8 +681,11 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SuperhumanGoSkillsRoute: SuperhumanGoSkillsRoute,
   WordpressSkillsRoute: WordpressSkillsRoute,
+  Char91DotwellKnownChar93ApiCatalogRoute:
+    Char91DotwellKnownChar93ApiCatalogRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
+  ApiSplatRoute: ApiSplatRoute,
   DocsApiRoute: DocsApiRoute,
   STokenRoute: STokenRoute,
   ApiPublicSkillsRoute: ApiPublicSkillsRouteWithChildren,

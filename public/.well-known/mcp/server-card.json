@@ -1,1 +1,30 @@
-{"authentication":{"schemes":["none"]},"description":"Read-only MCP access to the Skill Finder catalogue of open agent skills (SKILL.md instruction files). Search the catalogue by keyword, fetch one skill's details and install command, or list curated skills per AI agent. No authentication required; no write operations.","documentationUrl":"https://skills.mikedemo.dev/docs/api","iconUrl":"https://skills.mikedemo.dev/favicon.svg","name":"skill-finder-plus","serverUrl":"https://skills.mikedemo.dev/mcp","title":"Skill Finder MCP","tools":[{"description":"Keyword search over the skill catalogue, ranked by install count. Parameters: query, agent, limit.","name":"search_skills"},{"description":"Full details for one skill, including its SKILL.md source URL and install command. Parameters: id.","name":"get_skill"},{"description":"List the AI agents that have curated skill collections, with skill counts.","name":"list_agents"}],"transport":"streamable-http","version":"1.0.0"}
+{
+  "authentication": {
+    "schemes": [
+      "none"
+    ]
+  },
+  "description": "Read-only MCP access to the Skill Finder catalogue of open agent skills (SKILL.md instruction files). Search the catalogue by keyword, fetch one skill's details and install command, or list curated skills per AI agent. No authentication required; no write operations.",
+  "documentationUrl": "https://skills.mikedemo.dev/docs/api",
+  "iconUrl": "https://skills.mikedemo.dev/favicon.svg",
+  "name": "skill-finder-plus",
+  "serverUrl": "https://skills.mikedemo.dev/mcp",
+  "title": "Skill Finder MCP",
+  "tools": [
+    {
+      "description": "Keyword search over the skill catalogue, ranked by install count. Parameters: query, agent, limit.",
+      "name": "search_skills"
+    },
+    {
+      "description": "Full details for one skill, including its SKILL.md source URL and install command. Parameters: id.",
+      "name": "get_skill"
+    },
+    {
+      "description": "List the AI agents that have curated skill collections, with skill counts.",
+      "name": "list_agents"
+    }
+  ],
+  "transport": "streamable-http",
+  "version": "1.0.0",
+  "icon": "https://skills.mikedemo.dev/favicon.svg"
+}

@@ -81,3 +81,50 @@ export const organizationJsonLd = (): JsonLdScript =>
       sameAs: ["https://github.com/Mike-Demo", "https://www.linkedin.com/in/mikedemopoulos"],
     },
   });
+
+export const faqJsonLd = (): JsonLdScript =>
+  toScript({
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "What is Skill Finder?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Skill Finder is a free directory of open agent skills — SKILL.md instruction files that teach AI coding agents like Claude Code, Cursor, GitHub Copilot, and ChatGPT how to do specific tasks well. Describe what you want your agent to do, get ranked suggestions, and download your picks as a zip.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Do I need an API key to use Skill Finder?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "No. The public JSON API and the MCP server are keyless and require no authentication. They are read-only and rate-limited per IP.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "How do I install a skill I find?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Every skill listing shows a one-command install string, for example: npx skills add https://github.com/mattpocock/skills --skill grill-me. You can also bundle several skills into one zip from the site and drop the files into your agent's skills directory.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Where does the skill catalogue come from?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "The catalogue is built from the open skills registry at skills.sh plus GitHub. Skills are ranked by install count from the open registry, so the most battle-tested instructions appear first.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Is Skill Finder free?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Yes. Browsing, the JSON API, the MCP server, and skill bundle downloads are all free with no paid tiers. Fair-use rate limits apply per IP.",
+        },
+      },
+    ],
+  });

@@ -19,3 +19,32 @@ Skill Finder is free. There are no paid tiers, no usage-based billing, and no pr
 Fair-use rate limits apply per IP to keep the service stable for everyone; exceeding a limit returns HTTP `429` with a `Retry-After` header.
 
 The optional AI-ranked homepage search is also free, rate-limited per visitor (30 requests/minute, 500/day). It can optionally use the visitor's own OpenAI key, which is sent per request, never logged, and never stored.
+
+## Feature breakdown
+
+| Capability | Included |
+|---|---|
+| Browse and search the skill library | Yes |
+| Read-only JSON API (`/api/public/v1/*`), no key | Yes |
+| MCP server (`/mcp`), no auth | Yes |
+| Download skill bundles as zip | Yes |
+| Agent Skills discovery index (`/.well-known/agent-skills/`) | Yes |
+| Machine-readable docs (`llms.txt`, `openapi.json`, `*.md`) | Yes |
+| Accounts, seats, or API keys to manage | None — nothing to manage |
+
+## Limits
+
+- Public API: 60 requests/minute per IP (see `/api/public/v1/capabilities` for current limits)
+- AI-ranked search: 30 requests/minute, 500/day per visitor
+- Catalogue size: 1,200+ skills, refreshed from the upstream registry
+- Downloads: skill bundles are generated per request as zip files
+
+## Paid tiers
+
+There are none — no Pro, Team, or Enterprise plans, and no usage-based billing. If that ever changes, this page and the `/pricing` page will describe the tiers before any charges exist.
+
+## Questions
+
+- **Do I need a credit card?** No — there is nothing to buy.
+- **Can I use the API in a commercial product?** Yes. See the [Licenses](/licenses) page for the terms that apply to the site content and the catalogue data.
+- **Will the free API stay free?** The public read-only API and MCP server are free with no announced end date.

@@ -1,10 +1,3 @@
----
-title: "Authentication — Skill Finder"
-description: "How AI agents authenticate with the Skill Finder API and MCP server."
-canonical: "https://skills.mikedemo.dev/auth.md"
-last-updated: "2026-10-03"
----
-
 # Authentication — Skill Finder
 
 Skill Finder's agent surfaces are public and read-only. There are no API keys, no OAuth flows, and no accounts to create.

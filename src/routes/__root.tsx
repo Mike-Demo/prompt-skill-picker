@@ -138,6 +138,35 @@ function RootShell({ children }: { children: ReactNode }) {
         ></script>
       </head>
       <body>
+        <noscript>
+          <div
+            style={{
+              maxWidth: "48rem",
+              margin: "0 auto",
+              padding: "2.5rem 1rem",
+              fontFamily: "system-ui, sans-serif",
+              lineHeight: 1.6,
+            }}
+          >
+            <h1>Skill Finder — discover and bundle agent skills</h1>
+            <p>
+              Skill Finder is a free directory of open agent skills: SKILL.md instruction files that
+              teach AI coding agents (Claude Code, Cursor, GitHub Copilot, ChatGPT, and others) how
+              to do specific tasks well. Describe what you want your agent to do, get ranked skill
+              suggestions from the open skills registry, and download the ones you pick as a single
+              zip file.
+            </p>
+            <p>
+              The interactive search needs JavaScript, but every agent surface works without it: the
+              keyless JSON API at /api/public/v1/skills, the MCP server at /mcp, the OpenAPI spec at
+              /openapi.json, and plain-text guides at /llms.txt, /auth.md, and /pricing.md.
+            </p>
+            <p>
+              <a href="/developers">Developers</a> · <a href="/docs/api">API docs</a> ·{" "}
+              <a href="/about">About</a> · <a href="/pricing">Pricing</a>
+            </p>
+          </div>
+        </noscript>
         {children}
         <Scripts />
       </body>

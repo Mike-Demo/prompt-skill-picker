@@ -111,6 +111,19 @@ function DevelopersPage() {
           </p>
         </section>
 
+        <section className="mt-10 space-y-3">
+          <h2 className="text-lg font-semibold text-foreground">Versioning and deprecation</h2>
+          <p className="text-sm leading-relaxed text-muted-foreground">
+            The current API version is <strong>v1</strong> (
+            <code className="font-mono text-xs">/api/public/v1/*</code>). Breaking changes ship as a
+            new versioned path; v1 keeps working. Unversioned paths (
+            <code className="font-mono text-xs">/api/public/skills*</code>) are legacy — they still
+            work and return the same data in a flatter shape. If an endpoint is ever deprecated, the
+            deprecation will be announced on this page with the replacement path documented before
+            the old one stops working.
+          </p>
+        </section>
+
         <section className="mt-10">
           <h2 className="text-lg font-semibold text-foreground">Discovery documents</h2>
           <DocList

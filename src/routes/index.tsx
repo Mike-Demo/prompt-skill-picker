@@ -30,7 +30,12 @@ import {
 } from "@/lib/skills.functions";
 import { formatInstalls } from "@/lib/format";
 import { useCooldown } from "@/hooks/use-cooldown";
-import { websiteJsonLd, webApplicationJsonLd, organizationJsonLd } from "@/lib/structured-data";
+import {
+  websiteJsonLd,
+  webApplicationJsonLd,
+  organizationJsonLd,
+  faqJsonLd,
+} from "@/lib/structured-data";
 
 const TITLE = "Skill Finder — discover and bundle agent skills";
 const DESCRIPTION =
@@ -51,7 +56,7 @@ export const Route = createFileRoute("/")({
       { name: "twitter:image", content: SHARE_IMAGE },
     ],
     links: [{ rel: "canonical", href: "https://skills.mikedemo.dev/" }],
-    scripts: [websiteJsonLd(), webApplicationJsonLd(), organizationJsonLd()],
+    scripts: [websiteJsonLd(), webApplicationJsonLd(), organizationJsonLd(), faqJsonLd()],
   }),
   component: SkillFinderPage,
 });

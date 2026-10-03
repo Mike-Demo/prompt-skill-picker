@@ -1,4 +1,5 @@
 import { defineTool } from "@lovable.dev/mcp-js";
+import { z } from "zod";
 
 import { AGENT_PAGE_LIST } from "@/lib/agents";
 
@@ -6,7 +7,7 @@ export default defineTool({
   name: "list_agents",
   title: "List supported agents",
   description: "List the agents that have a curated skill collection, with their keys and pages.",
-  inputSchema: {},
+  inputSchema: z.object({}).describe("This tool takes no parameters."),
   annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
   handler: () => {
     const agents = AGENT_PAGE_LIST.map((page) => ({

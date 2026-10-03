@@ -1,0 +1,22 @@
+# llms.txt — Skill Finder developers section
+
+This file orients an LLM agent to the developer resources at https://skills.mikedemo.dev/developers.
+
+## What this section covers
+
+- REST API reference (keyless, read-only): search, skill lookup, per-agent curated lists, capabilities
+- MCP server (Streamable HTTP) with tools: search_skills, get_skill, list_agents
+- Discovery documents: /.well-known/ard.json, /.well-known/ai-catalog.json, /.well-known/agent-card.json, /.well-known/agent-skills/, /.well-known/api-catalog
+- API versioning and deprecation policy
+
+## Key links
+
+- [Developers page](https://skills.mikedemo.dev/developers)
+- [OpenAPI spec](https://skills.mikedemo.dev/openapi.json)
+- [Capabilities endpoint](https://skills.mikedemo.dev/api/public/v1/capabilities)
+- [MCP server card](https://skills.mikedemo.dev/.well-known/mcp/server-card.json)
+- [Authentication walkthrough](https://skills.mikedemo.dev/auth.md) (no auth required — the file documents that)
+
+## When to use this section
+
+Use it when the agent needs to call the Skill Finder API or MCP server, needs the machine-readable spec, or needs to understand rate limits, versioning, or the envelope format.
