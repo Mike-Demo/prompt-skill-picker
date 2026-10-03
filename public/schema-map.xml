@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- NLWeb Schema Feeds: schema map for skills.mikedemo.dev -->
+<schemaMap xmlns="https://nlweb.ai/schema-map">
+  <dataset name="site-pages" format="jsonld" href="https://skills.mikedemo.dev/sitemap.xml"/>
+  <feed name="skills-catalogue" format="json" href="https://skills.mikedemo.dev/api/public/v1/skills?limit=100"/>
+  <feed name="openapi" format="json" href="https://skills.mikedemo.dev/openapi.json"/>
+  <feed name="agent-skills-index" format="json" href="https://skills.mikedemo.dev/.well-known/agent-skills/index.json"/>
+</schemaMap>

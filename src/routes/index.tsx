@@ -9,7 +9,6 @@ import { AgentNav } from "@/components/agent-nav";
 import {
   WaButton,
   WaCallout,
-
   WaIcon,
   WaSkeleton,
   WaTextarea,
@@ -31,7 +30,7 @@ import {
 } from "@/lib/skills.functions";
 import { formatInstalls } from "@/lib/format";
 import { useCooldown } from "@/hooks/use-cooldown";
-import { websiteJsonLd, webApplicationJsonLd } from "@/lib/structured-data";
+import { websiteJsonLd, webApplicationJsonLd, organizationJsonLd } from "@/lib/structured-data";
 
 const TITLE = "Skill Finder — discover and bundle agent skills";
 const DESCRIPTION =
@@ -52,7 +51,7 @@ export const Route = createFileRoute("/")({
       { name: "twitter:image", content: SHARE_IMAGE },
     ],
     links: [{ rel: "canonical", href: "https://skills.mikedemo.dev/" }],
-    scripts: [websiteJsonLd(), webApplicationJsonLd()],
+    scripts: [websiteJsonLd(), webApplicationJsonLd(), organizationJsonLd()],
   }),
   component: SkillFinderPage,
 });
@@ -179,7 +178,6 @@ function SkillFinderPage() {
           <AgentNav />
         </header>
 
-
         <form
           className="mt-8 space-y-3"
           onSubmit={(event) => {
@@ -265,7 +263,6 @@ function SkillFinderPage() {
             <p>{search.error instanceof Error ? search.error.message : "Search failed."}</p>
           </WaCallout>
         ) : null}
-
 
         {search.isPending ? (
           <ul className="mt-8 space-y-3">

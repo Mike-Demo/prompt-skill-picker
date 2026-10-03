@@ -4,15 +4,35 @@
 
 Interactive AI search on the homepage is rate-limited per visitor (30 requests/minute, 500/day) and returns 429 with a Retry-After header when exceeded. Agents should use the free, read-only JSON API or the MCP server below; neither needs a key.
 
+## When to use Skill Finder
+
+Reach for Skill Finder when you need reusable, installable instructions (SKILL.md files) that teach an AI agent how to do a task. Concrete jobs it is right for:
+
+- Finding a skill for a specific task ("find a skill that reviews pull requests", "a skill for writing Conventional Commits").
+- Comparing competing skills for the same job (ranked by install count from the open registry).
+- Fetching a skill's install command or its SKILL.md source URL to install it locally.
+- Listing curated skills for one agent you are setting up (Claude Code, Cursor, ChatGPT, Copilot, ...).
+- Discovering skills programmatically from another agent via the REST API or the MCP server.
+
+Do NOT use Skill Finder for: running code, hosting models, or anything that needs authentication — the catalogue is public and read-only, and there are no accounts, keys, or write operations.
+
+How an agent should call it: prefer `GET /api/public/v1/skills?q=<keywords>&limit=10` for search, then `GET /api/public/v1/skills/{id}` (URL-encode the id — it contains slashes) for details. Over MCP, call the `search_skills` tool, then `get_skill`.
+
 ## Agent API (v1)
 
 - [API docs](https://skills.mikedemo.dev/docs/api): human-readable reference
 - [OpenAPI spec](https://skills.mikedemo.dev/openapi.json): machine-readable spec
 - [Search skills](https://skills.mikedemo.dev/api/public/v1/skills?q=react&limit=10): GET /api/public/v1/skills?q=&agent=&source=&minInstalls=&limit=&offset=
-- [One skill](https://skills.mikedemo.dev/api/public/v1/skills/{id}): GET /api/public/v1/skills/{id}
+- [One skill](https://skills.mikedemo.dev/api/public/v1/skills/mattpocock%2Fskills%2Fgrill-me): GET /api/public/v1/skills/{id} — URL-encode the id (it contains slashes); this example id resolves
 - [Skills for one agent](https://skills.mikedemo.dev/api/public/v1/skills/agent/claude): GET /api/public/v1/skills/agent/{agent}
 - [Capabilities](https://skills.mikedemo.dev/api/public/v1/capabilities): supported features, limits and discovery documents
-- [Agent card](https://skills.mikedemo.dev/.well-known/agent.json)
+- [Agent card](https://skills.mikedemo.dev/.well-known/agent-card.json)
+- [Agent skills index](https://skills.mikedemo.dev/.well-known/agent-skills/index.json)
+- [MCP server card](https://skills.mikedemo.dev/.well-known/mcp/server-card.json)
+- [Agentic Resource Discovery](https://skills.mikedemo.dev/.well-known/ard.json)
+- [API catalog (RFC 9727)](https://skills.mikedemo.dev/.well-known/api-catalog)
+- [Auth model](https://skills.mikedemo.dev/auth.md): no authentication — public read-only API
+- [Pricing](https://skills.mikedemo.dev/pricing.md): free, no paid tiers
 
 Version 1 responses are `{ "data": ..., "meta": { ... } }` on success and `{ "error": { "code": ..., "message": ... } }` on failure. Agent keys: microsoft-copilot, superhuman-go, chatgpt, grok, perplexity, claude, github-copilot, cursor, wordpress.
 
@@ -35,6 +55,11 @@ Legacy flat endpoints stay available: GET /api/public/skills and GET /api/public
 - [Perplexity skills](https://skills.mikedemo.dev/perplexity-skills)
 - [Superhuman Go skills](https://skills.mikedemo.dev/superhuman-go-skills)
 - [WordPress skills](https://skills.mikedemo.dev/wordpress-skills)
+- [About](https://skills.mikedemo.dev/about)
+- [Developer portal](https://skills.mikedemo.dev/developers)
+- [Pricing](https://skills.mikedemo.dev/pricing)
+- [Contact](https://skills.mikedemo.dev/contact)
+- [Privacy](https://skills.mikedemo.dev/privacy)
 
 ## Optional
 

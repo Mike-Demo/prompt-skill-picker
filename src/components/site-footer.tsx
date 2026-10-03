@@ -35,8 +35,28 @@ export function SiteFooter({
       </div>
       <RenderModeSwitch mode={renderMode} />
       <nav aria-label="Legal links" className="flex flex-wrap items-center justify-center gap-4">
-        <Link to="/licenses" className={linkClass}>
+        <Link to="/about" className={linkClass}>
+          <WaIcon name="circle-info" />
+          About
+        </Link>
+        <Link to="/developers" className={linkClass}>
           <WaIcon name="code" />
+          Developers
+        </Link>
+        <Link to="/pricing" className={linkClass}>
+          <WaIcon name="tag" />
+          Pricing
+        </Link>
+        <Link to="/contact" className={linkClass}>
+          <WaIcon name="envelope" />
+          Contact
+        </Link>
+        <Link to="/privacy" className={linkClass}>
+          <WaIcon name="shield-halved" />
+          Privacy
+        </Link>
+        <Link to="/licenses" className={linkClass}>
+          <WaIcon name="scale-balanced" />
           Open Source
         </Link>
         <Link to="/docs/api" className={linkClass}>
@@ -72,8 +92,7 @@ export function SiteFooter({
           aria-label="MikeDemo on X (opens in new tab)"
           className={linkClass}
         >
-          <WaIcon name="x-twitter" family="brands" />
-          X
+          <WaIcon name="x-twitter" family="brands" />X
         </a>
         <a
           href={threadsUrl}

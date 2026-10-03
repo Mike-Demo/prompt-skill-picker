@@ -7,9 +7,16 @@ User-agent: *
 Allow: /
 
 # Agent-readable site summary: https://skills.mikedemo.dev/llms.txt
-# Agent card: https://skills.mikedemo.dev/.well-known/agent.json
+# Agent card: https://skills.mikedemo.dev/.well-known/agent-card.json
 # API spec: https://skills.mikedemo.dev/openapi.json
 # Capabilities: https://skills.mikedemo.dev/api/public/v1/capabilities
 # MCP server: https://skills.mikedemo.dev/mcp
+# MCP server card: https://skills.mikedemo.dev/.well-known/mcp/server-card.json
+# Agent skills index: https://skills.mikedemo.dev/.well-known/agent-skills/index.json
+# Agentic Resource Discovery: https://skills.mikedemo.dev/.well-known/ard.json
+# API catalog (RFC 9727): https://skills.mikedemo.dev/.well-known/api-catalog
+# Auth model: https://skills.mikedemo.dev/auth.md
+# Pricing: https://skills.mikedemo.dev/pricing.md
 
 Sitemap: https://skills.mikedemo.dev/sitemap.xml
+schemamap: https://skills.mikedemo.dev/schema-map.xml

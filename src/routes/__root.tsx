@@ -11,7 +11,6 @@ import {
 import { useEffect, type ReactNode } from "react";
 import { useChunkLoadRecovery } from "@/hooks/use-chunk-load-recovery";
 
-
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SiteFooter } from "@/components/site-footer";
@@ -93,21 +92,30 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         name: "google-site-verification",
         content: "RHlwBdxnagu8yjEC1UQ3cV-WcIJ17lGECi8uJYHO6P4",
       },
-
     ],
     links: [
       // Web Awesome base styles + utilities (CDN, version-pinned).
-      { rel: "stylesheet", href: "https://cdn.jsdelivr.net/npm/@awesome.me/webawesome@3.12.0/dist/styles/webawesome.css" },
+      {
+        rel: "stylesheet",
+        href: "https://cdn.jsdelivr.net/npm/@awesome.me/webawesome@3.12.0/dist/styles/webawesome.css",
+      },
       // Default theme + default palette: defines every --wa-* design token
       // scoped to the wa-theme-default / wa-light classes on <html>.
-      { rel: "stylesheet", href: "https://cdn.jsdelivr.net/npm/@awesome.me/webawesome@3.12.0/dist/styles/themes/default.css" },
+      {
+        rel: "stylesheet",
+        href: "https://cdn.jsdelivr.net/npm/@awesome.me/webawesome@3.12.0/dist/styles/themes/default.css",
+      },
       // Font Awesome Free icon set (wa-icon resolves SVGs from this).
-      { rel: "stylesheet", href: "https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css" },
+      {
+        rel: "stylesheet",
+        href: "https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css",
+      },
       {
         rel: "stylesheet",
         href: appCss,
       },
       { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
+      { rel: "alternate", type: "text/markdown", href: "/index.md" },
     ],
   }),
   loader: () => getRenderMode(),

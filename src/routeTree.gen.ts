@@ -10,9 +10,12 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AboutRouteImport } from './routes/about'
 import { Route as ChatgptSkillsRouteImport } from './routes/chatgpt-skills'
 import { Route as ClaudeSkillsRouteImport } from './routes/claude-skills'
+import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CursorSkillsRouteImport } from './routes/cursor-skills'
+import { Route as DevelopersRouteImport } from './routes/developers'
 import { Route as GithubCopilotSkillsRouteImport } from './routes/github-copilot-skills'
 import { Route as GrokSkillsRouteImport } from './routes/grok-skills'
 import { Route as LibraryRouteImport } from './routes/library'
@@ -20,6 +23,8 @@ import { Route as LicensesRouteImport } from './routes/licenses'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as McpSkillsRouteImport } from './routes/mcp-skills'
 import { Route as PerplexitySkillsRouteImport } from './routes/perplexity-skills'
+import { Route as PricingRouteImport } from './routes/pricing'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SuperhumanGoSkillsRouteImport } from './routes/superhuman-go-skills'
 import { Route as WordpressSkillsRouteImport } from './routes/wordpress-skills'
@@ -38,6 +43,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ChatgptSkillsRoute = ChatgptSkillsRouteImport.update({
   id: '/chatgpt-skills',
   path: '/chatgpt-skills',
@@ -48,9 +58,19 @@ const ClaudeSkillsRoute = ClaudeSkillsRouteImport.update({
   path: '/claude-skills',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CursorSkillsRoute = CursorSkillsRouteImport.update({
   id: '/cursor-skills',
   path: '/cursor-skills',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DevelopersRoute = DevelopersRouteImport.update({
+  id: '/developers',
+  path: '/developers',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GithubCopilotSkillsRoute = GithubCopilotSkillsRouteImport.update({
@@ -86,6 +106,16 @@ const McpSkillsRoute = McpSkillsRouteImport.update({
 const PerplexitySkillsRoute = PerplexitySkillsRouteImport.update({
   id: '/perplexity-skills',
   path: '/perplexity-skills',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PricingRoute = PricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -154,9 +184,12 @@ const ApiPublicV1SkillsAgentAgentRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/chatgpt-skills': typeof ChatgptSkillsRoute
   '/claude-skills': typeof ClaudeSkillsRoute
+  '/contact': typeof ContactRoute
   '/cursor-skills': typeof CursorSkillsRoute
+  '/developers': typeof DevelopersRoute
   '/github-copilot-skills': typeof GithubCopilotSkillsRoute
   '/grok-skills': typeof GrokSkillsRoute
   '/library': typeof LibraryRoute
@@ -164,6 +197,8 @@ export interface FileRoutesByFullPath {
   '/mcp': typeof McpRoute
   '/mcp-skills': typeof McpSkillsRoute
   '/perplexity-skills': typeof PerplexitySkillsRoute
+  '/pricing': typeof PricingRoute
+  '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/superhuman-go-skills': typeof SuperhumanGoSkillsRoute
   '/wordpress-skills': typeof WordpressSkillsRoute
@@ -179,9 +214,12 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/chatgpt-skills': typeof ChatgptSkillsRoute
   '/claude-skills': typeof ClaudeSkillsRoute
+  '/contact': typeof ContactRoute
   '/cursor-skills': typeof CursorSkillsRoute
+  '/developers': typeof DevelopersRoute
   '/github-copilot-skills': typeof GithubCopilotSkillsRoute
   '/grok-skills': typeof GrokSkillsRoute
   '/library': typeof LibraryRoute
@@ -189,6 +227,8 @@ export interface FileRoutesByTo {
   '/mcp': typeof McpRoute
   '/mcp-skills': typeof McpSkillsRoute
   '/perplexity-skills': typeof PerplexitySkillsRoute
+  '/pricing': typeof PricingRoute
+  '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/superhuman-go-skills': typeof SuperhumanGoSkillsRoute
   '/wordpress-skills': typeof WordpressSkillsRoute
@@ -205,9 +245,12 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/chatgpt-skills': typeof ChatgptSkillsRoute
   '/claude-skills': typeof ClaudeSkillsRoute
+  '/contact': typeof ContactRoute
   '/cursor-skills': typeof CursorSkillsRoute
+  '/developers': typeof DevelopersRoute
   '/github-copilot-skills': typeof GithubCopilotSkillsRoute
   '/grok-skills': typeof GrokSkillsRoute
   '/library': typeof LibraryRoute
@@ -215,6 +258,8 @@ export interface FileRoutesById {
   '/mcp': typeof McpRoute
   '/mcp-skills': typeof McpSkillsRoute
   '/perplexity-skills': typeof PerplexitySkillsRoute
+  '/pricing': typeof PricingRoute
+  '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/superhuman-go-skills': typeof SuperhumanGoSkillsRoute
   '/wordpress-skills': typeof WordpressSkillsRoute
@@ -232,9 +277,12 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/about'
     | '/chatgpt-skills'
     | '/claude-skills'
+    | '/contact'
     | '/cursor-skills'
+    | '/developers'
     | '/github-copilot-skills'
     | '/grok-skills'
     | '/library'
@@ -242,6 +290,8 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/mcp-skills'
     | '/perplexity-skills'
+    | '/pricing'
+    | '/privacy'
     | '/sitemap.xml'
     | '/superhuman-go-skills'
     | '/wordpress-skills'
@@ -257,9 +307,12 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/about'
     | '/chatgpt-skills'
     | '/claude-skills'
+    | '/contact'
     | '/cursor-skills'
+    | '/developers'
     | '/github-copilot-skills'
     | '/grok-skills'
     | '/library'
@@ -267,6 +320,8 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/mcp-skills'
     | '/perplexity-skills'
+    | '/pricing'
+    | '/privacy'
     | '/sitemap.xml'
     | '/superhuman-go-skills'
     | '/wordpress-skills'
@@ -282,9 +337,12 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/about'
     | '/chatgpt-skills'
     | '/claude-skills'
+    | '/contact'
     | '/cursor-skills'
+    | '/developers'
     | '/github-copilot-skills'
     | '/grok-skills'
     | '/library'
@@ -292,6 +350,8 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/mcp-skills'
     | '/perplexity-skills'
+    | '/pricing'
+    | '/privacy'
     | '/sitemap.xml'
     | '/superhuman-go-skills'
     | '/wordpress-skills'
@@ -308,9 +368,12 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
   ChatgptSkillsRoute: typeof ChatgptSkillsRoute
   ClaudeSkillsRoute: typeof ClaudeSkillsRoute
+  ContactRoute: typeof ContactRoute
   CursorSkillsRoute: typeof CursorSkillsRoute
+  DevelopersRoute: typeof DevelopersRoute
   GithubCopilotSkillsRoute: typeof GithubCopilotSkillsRoute
   GrokSkillsRoute: typeof GrokSkillsRoute
   LibraryRoute: typeof LibraryRoute
@@ -318,6 +381,8 @@ export interface RootRouteChildren {
   McpRoute: typeof McpRoute
   McpSkillsRoute: typeof McpSkillsRoute
   PerplexitySkillsRoute: typeof PerplexitySkillsRoute
+  PricingRoute: typeof PricingRoute
+  PrivacyRoute: typeof PrivacyRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SuperhumanGoSkillsRoute: typeof SuperhumanGoSkillsRoute
   WordpressSkillsRoute: typeof WordpressSkillsRoute
@@ -338,6 +403,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/chatgpt-skills': {
       id: '/chatgpt-skills'
       path: '/chatgpt-skills'
@@ -352,11 +424,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ClaudeSkillsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/cursor-skills': {
       id: '/cursor-skills'
       path: '/cursor-skills'
       fullPath: '/cursor-skills'
       preLoaderRoute: typeof CursorSkillsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/developers': {
+      id: '/developers'
+      path: '/developers'
+      fullPath: '/developers'
+      preLoaderRoute: typeof DevelopersRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/github-copilot-skills': {
@@ -406,6 +492,20 @@ declare module '@tanstack/react-router' {
       path: '/perplexity-skills'
       fullPath: '/perplexity-skills'
       preLoaderRoute: typeof PerplexitySkillsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pricing': {
+      id: '/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof PricingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sitemap.xml': {
@@ -522,9 +622,12 @@ const ApiPublicV1SkillsRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
   ChatgptSkillsRoute: ChatgptSkillsRoute,
   ClaudeSkillsRoute: ClaudeSkillsRoute,
+  ContactRoute: ContactRoute,
   CursorSkillsRoute: CursorSkillsRoute,
+  DevelopersRoute: DevelopersRoute,
   GithubCopilotSkillsRoute: GithubCopilotSkillsRoute,
   GrokSkillsRoute: GrokSkillsRoute,
   LibraryRoute: LibraryRoute,
@@ -532,6 +635,8 @@ const rootRouteChildren: RootRouteChildren = {
   McpRoute: McpRoute,
   McpSkillsRoute: McpSkillsRoute,
   PerplexitySkillsRoute: PerplexitySkillsRoute,
+  PricingRoute: PricingRoute,
+  PrivacyRoute: PrivacyRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SuperhumanGoSkillsRoute: SuperhumanGoSkillsRoute,
   WordpressSkillsRoute: WordpressSkillsRoute,

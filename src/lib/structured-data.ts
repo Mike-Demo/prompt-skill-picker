@@ -36,7 +36,8 @@ export const webApplicationJsonLd = (): JsonLdScript =>
     isPartOf: { "@type": "WebSite", name: "Skill Finder", url: `${SITE_URL}/` },
   });
 
-export const collectionJsonLd = (name: string, description: string, path: string): JsonLdScript =>  toScript({
+export const collectionJsonLd = (name: string, description: string, path: string): JsonLdScript =>
+  toScript({
     "@type": "CollectionPage",
     name,
     description,
@@ -46,3 +47,37 @@ export const collectionJsonLd = (name: string, description: string, path: string
 
 export const agentJsonLd = (agent: AgentPage): JsonLdScript =>
   collectionJsonLd(agent.heading, agent.description, agent.path);
+
+export const organizationJsonLd = (): JsonLdScript =>
+  toScript({
+    "@type": "Organization",
+    name: "Skill Finder",
+    url: `${SITE_URL}/`,
+    logo: `${SITE_URL}/favicon.svg`,
+    description:
+      "Free directory of open agent skills (SKILL.md files) for AI coding agents, with a read-only JSON API and MCP server.",
+    sameAs: [
+      "https://github.com/Mike-Demo/prompt-skill-picker",
+      "https://github.com/Mike-Demo",
+      "https://www.linkedin.com/in/mikedemopoulos",
+      "https://x.com/mike_demo",
+      "https://www.threads.com/@mdemop",
+    ],
+    contactPoint: {
+      "@type": "ContactPoint",
+      email: "hey.demo@mikedemo.email",
+      contactType: "customer support",
+    },
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Hudson",
+      addressRegion: "WI",
+      addressCountry: "US",
+    },
+    founder: {
+      "@type": "Person",
+      name: "Mike Demopoulos",
+      url: "https://mikedemo.com",
+      sameAs: ["https://github.com/Mike-Demo", "https://www.linkedin.com/in/mikedemopoulos"],
+    },
+  });
