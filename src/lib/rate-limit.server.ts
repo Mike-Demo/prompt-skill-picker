@@ -166,7 +166,9 @@ export async function enforceRateLimit(ip: string, action: RateLimitAction): Pro
   }
 
   if (IN_MEMORY_ACTIONS.has(action)) {
-    enforceInMemory(ipHash, action);
+    // Key by action as well as visitor, so each action keeps its own window:
+    // a burst of API calls must not starve the library pages, or vice versa.
+    enforceInMemory(`${action}:${ipHash}`, action);
     return;
   }
 
