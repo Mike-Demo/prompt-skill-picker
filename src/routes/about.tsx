@@ -94,6 +94,16 @@ function AboutPage() {
             >
               GitHub
             </a>
+            . Demo also publishes his own collection of 27 agent skills — job search,
+            partnerships, content, and dev workflows — at{" "}
+            <a
+              href="https://github.com/Mike-Demo/agent-skills"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium text-primary hover:underline"
+            >
+              github.com/Mike-Demo/agent-skills
+            </a>
             .
           </p>
         </section>

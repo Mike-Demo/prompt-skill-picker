@@ -14,7 +14,7 @@ Skill Finder is built to be used by agents as well as humans. A free, read-only 
 
 ## Who makes it
 
-Skill Finder is made by Mike Demopoulos (Demo) — https://mikedemo.dev. The source is public at https://github.com/Mike-Demo/prompt-skill-picker.
+Skill Finder is made by Mike Demopoulos (Demo) — https://mikedemo.dev. The source is public at https://github.com/Mike-Demo/prompt-skill-picker. Demo's own agent skills collection (27 skills: job search, partnerships, content, dev workflows) is at https://github.com/Mike-Demo/agent-skills.
 
 ## Contact
 
