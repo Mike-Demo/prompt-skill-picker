@@ -19,4 +19,8 @@ declare module "@tgwf/co2" {
 
   /** The package entry exports the CO2 class as `co2`. */
   export const co2: typeof CO2;
+
+  /** Legacy namespace shape (`new co2.CO2()`) for CommonJS interop. */
+  declare const co2Default: { CO2: typeof CO2 };
+  export default co2Default;
 }
