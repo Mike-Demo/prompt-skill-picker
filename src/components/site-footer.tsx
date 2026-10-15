@@ -6,10 +6,6 @@ import { RenderModeSwitch } from "@/components/render-mode-switch";
 import type { RenderMode } from "@/lib/render-mode";
 import { cn } from "@/lib/utils";
 
-interface PerformanceTransferEntry {
-  transferSize: number;
-}
-
 const linkedInUrl = "https://www.linkedin.com/in/mikedemopoulos";
 const xUrl = "https://x.com/mike_demo";
 const threadsUrl = "https://www.threads.com/@mdemop";
