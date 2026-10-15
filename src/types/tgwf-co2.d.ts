@@ -16,4 +16,7 @@ declare module "@tgwf/co2" {
     perByte(bytes: number, green?: boolean): number;
     perVisit(bytes: number, green?: boolean): number;
   }
+
+  /** The package entry exports the CO2 class as `co2`. */
+  export const co2: typeof CO2;
 }

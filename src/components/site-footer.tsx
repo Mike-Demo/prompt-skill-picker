@@ -45,8 +45,11 @@ export function SiteFooter({
             0,
           );
           if (totalBytes <= 0) return;
-          const { CO2 } = await import("@tgwf/co2");
-          const co2 = new CO2({ model: "swd", version: 4 });
+          // Package entry exports the CO2 class as `co2` (docs: new co2.CO2 legacy shape).
+          const co2Module = await import("@tgwf/co2");
+          const CO2Class = co2Module.co2 ?? co2Module.default?.CO2;
+          if (!CO2Class) return;
+          const co2 = new CO2Class({ model: "swd", version: 4 });
           const grams = co2.perByte(totalBytes, false);
           if (cancelled) return;
           if (Number.isFinite(grams) && grams > 0) setCarbonGrams(grams);
