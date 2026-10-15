@@ -1,17 +1,22 @@
 import { Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 
 import { WaIcon } from "@/design-system/font-awsome-web-awesome-171158";
 import { RenderModeSwitch } from "@/components/render-mode-switch";
 import type { RenderMode } from "@/lib/render-mode";
 import { cn } from "@/lib/utils";
 
+interface PerformanceTransferEntry {
+  transferSize: number;
+}
+
 const linkedInUrl = "https://www.linkedin.com/in/mikedemopoulos";
 const xUrl = "https://x.com/mike_demo";
 const threadsUrl = "https://www.threads.com/@mdemop";
 const githubUrl = "https://github.com/Mike-Demo";
 
-const linkClass =
-  "inline-flex items-center gap-1.5 rounded px-1.5 py-1 font-medium text-foreground/80 transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background";
+const carbonLineClass =
+  "text-[11px] text-muted-foreground/70";
 
 export function SiteFooter({
   className,
@@ -21,6 +26,39 @@ export function SiteFooter({
   renderMode: RenderMode;
 }) {
   const year = new Date().getFullYear();
+  const [carbonGrams, setCarbonGrams] = useState<number | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    // Compute shortly after load so most resources have reported transferSize.
+    const timer = window.setTimeout(() => {
+      void (async () => {
+        try {
+          const entries = [
+            ...performance.getEntriesByType("navigation"),
+            ...performance.getEntriesByType("resource"),
+          ] as PerformanceTransferEntry[];
+          const totalBytes = entries.reduce(
+            (total, entry) =>
+              typeof entry.transferSize === "number" ? total + entry.transferSize : total,
+            0,
+          );
+          if (totalBytes <= 0) return;
+          const { CO2 } = await import("@tgwf/co2");
+          const co2 = new CO2({ model: "swd", version: 4 });
+          const grams = co2.perByte(totalBytes, false);
+          if (cancelled) return;
+          if (Number.isFinite(grams) && grams > 0) setCarbonGrams(grams);
+        } catch {
+          // Estimation is best-effort: render nothing on failure.
+        }
+      })();
+    }, 1000);
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
+    };
+  }, []);
 
   return (
     <footer
