@@ -74,6 +74,12 @@ export function SiteFooter({
         <span>Made by MikeDemo</span>
         <span aria-label={`Copyright ${year}`}>© {year}</span>
       </div>
+      {carbonGrams !== null && (
+        <p className={carbonLineClass}>
+          This visit ≈ {carbonGrams.toFixed(2)} g CO₂e · estimated with CO2.js (The Green Web
+          Foundation)
+        </p>
+      )}
       <RenderModeSwitch mode={renderMode} />
       <nav aria-label="Legal links" className="flex flex-wrap items-center justify-center gap-4">
         <Link to="/about" className={linkClass}>
