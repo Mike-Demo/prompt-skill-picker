@@ -15,6 +15,9 @@ const xUrl = "https://x.com/mike_demo";
 const threadsUrl = "https://www.threads.com/@mdemop";
 const githubUrl = "https://github.com/Mike-Demo";
 
+const linkClass =
+  "inline-flex items-center gap-1.5 rounded px-1.5 py-1 font-medium text-foreground/80 transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background";
+
 const carbonLineClass =
   "text-[11px] text-muted-foreground/70";
 
