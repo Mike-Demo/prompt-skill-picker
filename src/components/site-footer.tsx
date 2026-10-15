@@ -37,10 +37,12 @@ export function SiteFooter({
     const timer = window.setTimeout(() => {
       void (async () => {
         try {
-          const entries = [
-            ...performance.getEntriesByType("navigation"),
-            ...performance.getEntriesByType("resource"),
-          ] as PerformanceTransferEntry[];
+          const entries = performance
+            .getEntriesByType("navigation")
+            .concat(performance.getEntriesByType("resource"))
+            .filter(
+              (entry): entry is PerformanceResourceTiming => "transferSize" in entry,
+            );
           const totalBytes = entries.reduce(
             (total, entry) =>
               typeof entry.transferSize === "number" ? total + entry.transferSize : total,
