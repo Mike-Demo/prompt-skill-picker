@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 
 import { WaIcon } from "@/design-system/font-awsome-web-awesome-171158";
 import { RenderModeSwitch } from "@/components/render-mode-switch";
@@ -13,6 +14,9 @@ const githubUrl = "https://github.com/Mike-Demo";
 const linkClass =
   "inline-flex items-center gap-1.5 rounded px-1.5 py-1 font-medium text-foreground/80 transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background";
 
+const carbonLineClass =
+  "text-[11px] text-muted-foreground/70";
+
 export function SiteFooter({
   className,
   renderMode,
@@ -21,6 +25,44 @@ export function SiteFooter({
   renderMode: RenderMode;
 }) {
   const year = new Date().getFullYear();
+  const [carbonGrams, setCarbonGrams] = useState<number | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    // Compute shortly after load so most resources have reported transferSize.
+    const timer = window.setTimeout(() => {
+      void (async () => {
+        try {
+          const entries = performance
+            .getEntriesByType("navigation")
+            .concat(performance.getEntriesByType("resource"))
+            .filter(
+              (entry): entry is PerformanceResourceTiming => "transferSize" in entry,
+            );
+          const totalBytes = entries.reduce(
+            (total, entry) =>
+              typeof entry.transferSize === "number" ? total + entry.transferSize : total,
+            0,
+          );
+          if (totalBytes <= 0) return;
+          // Package entry exports the CO2 class as `co2` (docs: new co2.CO2 legacy shape).
+          const co2Module = await import("@tgwf/co2");
+          const CO2Class = co2Module.co2 ?? co2Module.default?.CO2;
+          if (!CO2Class) return;
+          const co2 = new CO2Class({ model: "swd", version: 4 });
+          const grams = co2.perByte(totalBytes, false);
+          if (cancelled) return;
+          if (Number.isFinite(grams) && grams > 0) setCarbonGrams(grams);
+        } catch {
+          // Estimation is best-effort: render nothing on failure.
+        }
+      })();
+    }, 1000);
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
+    };
+  }, []);
 
   return (
     <footer
@@ -33,6 +75,12 @@ export function SiteFooter({
         <span>Made by MikeDemo</span>
         <span aria-label={`Copyright ${year}`}>© {year}</span>
       </div>
+      {carbonGrams !== null && (
+        <p className={carbonLineClass}>
+          This visit ≈ {carbonGrams.toFixed(2)} g CO₂e · estimated with CO2.js (The Green Web
+          Foundation)
+        </p>
+      )}
       <RenderModeSwitch mode={renderMode} />
       <nav aria-label="Legal links" className="flex flex-wrap items-center justify-center gap-4">
         <Link to="/about" className={linkClass}>

@@ -3,11 +3,14 @@ import { z } from "zod";
 
 import { AGENT_PAGE_LIST } from "@/lib/agents";
 
+// inputSchema expects a raw zod shape; an empty one declares "no parameters".
+const emptyShape: z.ZodRawShape = {};
+
 export default defineTool({
   name: "list_agents",
   title: "List supported agents",
   description: "List the agents that have a curated skill collection, with their keys and pages.",
-  inputSchema: z.object({}).describe("This tool takes no parameters."),
+  inputSchema: emptyShape,
   annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
   handler: () => {
     const agents = AGENT_PAGE_LIST.map((page) => ({

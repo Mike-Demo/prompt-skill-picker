@@ -1,0 +1,26 @@
+declare module "@tgwf/co2" {
+  /**
+   * Minimal ambient types for @tgwf/co2 (the package ships no .d.ts).
+   * Only the SWD-model `perByte` surface used by this app is declared.
+   */
+  export interface CO2Options {
+    model?: "swd" | "1byte";
+    version?: 3 | 4;
+    gridIntensity?: unknown;
+    rating?: unknown;
+  }
+
+  export class CO2 {
+    constructor(options?: CO2Options);
+    /** Estimated CO2e in grams for the given transfer size in bytes. */
+    perByte(bytes: number, green?: boolean): number;
+    perVisit(bytes: number, green?: boolean): number;
+  }
+
+  /** The package entry exports the CO2 class as `co2`. */
+  export const co2: typeof CO2;
+
+  /** Legacy namespace shape (`new co2.CO2()`) for CommonJS interop. */
+  declare const co2Default: { CO2: typeof CO2 };
+  export default co2Default;
+}
