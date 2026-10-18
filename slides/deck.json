@@ -1,0 +1,226 @@
+{
+  "boltSlidesVersion": 1,
+  "boltSlidesId": "11011050-f9d6-4d43-8a9e-3e43af51bbaf",
+  "deck": {
+    "title": "Prompt Skill Picker",
+    "transition": "fade",
+    "font": "space",
+    "accent": "#fbbf24"
+  },
+  "slides": [
+    {
+      "id": "s1",
+      "position": 0,
+      "layout": "cover",
+      "props": {
+        "kicker": "Prompt Skill Picker",
+        "title": "The right playbook, picked ==in seconds==.",
+        "subtitle": "Stop hunting through your prompt library. Describe the task — get the skill that fits.",
+        "foot": "github.com/Mike-Demo/prompt-skill-picker"
+      },
+      "background": { "type": "color", "color": "var(--bg)" },
+      "animation": "cascade",
+      "transition": null,
+      "nav": null,
+      "notes": "Open with the familiar pain: you know you wrote the perfect prompt for this — but you can't find it. One tool fixes that.",
+      "status": "none"
+    },
+    {
+      "id": "s2",
+      "position": 1,
+      "layout": "bigNumber",
+      "props": {
+        "kicker": "The problem",
+        "value": "10 min",
+        "caption": "of every session wasted hunting for the prompt that fits — or worse, re-inventing one you already wrote",
+        "foot": "Anyone working with AI agents accumulates dozens of prompts and skills."
+      },
+      "background": { "type": "color", "color": "var(--bg)" },
+      "animation": "cascade",
+      "transition": null,
+      "nav": null,
+      "notes": "The library grows with every project. Finding the right prompt at the moment of need doesn't scale with it.",
+      "status": "none"
+    },
+    {
+      "id": "s3",
+      "position": 2,
+      "layout": "chat",
+      "props": {
+        "kicker": "What it does",
+        "title": "Describe the task. Get the ==match==.",
+        "name": "Picker",
+        "messages": [
+          { "from": "user", "text": "I need to review a pull request on a Rust service." },
+          { "from": "ai", "text": "Top matches from your library:\n1. rust-pr-review — deep review checklist for Rust changes\n2. pr-review-general — fast first-pass review\n3. security-audit — focused security pass\n\nRanked and ready to load." }
+        ]
+      },
+      "background": { "type": "color", "color": "var(--bg)" },
+      "animation": "cascade",
+      "transition": null,
+      "nav": null,
+      "notes": "Demo the core loop in words: one sentence about the task, ranked candidates back. No filenames, no scrolling.",
+      "status": "none"
+    },
+    {
+      "id": "s4",
+      "position": 3,
+      "layout": "steps",
+      "props": {
+        "kicker": "How it works",
+        "title": "Match ==intent==, not filenames.",
+        "items": [
+          {
+            "title": "Index by capability",
+            "body": "Your library is indexed by what each prompt or skill actually does."
+          },
+          {
+            "title": "Describe the task",
+            "body": "One sentence about the job in front of you."
+          },
+          {
+            "title": "Load the best fit",
+            "body": "The Picker matches intent to capability and surfaces the best matches, ranked."
+          }
+        ]
+      },
+      "background": { "type": "color", "color": "var(--bg)" },
+      "animation": "cascade",
+      "transition": null,
+      "nav": null,
+      "notes": "The key idea: search is over meaning, not memory of filenames. You don't have to remember what you called it.",
+      "status": "none"
+    },
+    {
+      "id": "s5",
+      "position": 4,
+      "layout": "contrast",
+      "props": {
+        "kicker": "Why it matters",
+        "title": "A ==library==, not a pile.",
+        "left": {
+          "label": "With the Picker",
+          "title": "Retrieval",
+          "points": [
+            "The right prompt at the moment of need",
+            "One sentence to find it",
+            "Load and start working"
+          ]
+        },
+        "right": {
+          "label": "Without it",
+          "title": "A pile",
+          "points": [
+            "Scrolling through dozens of files",
+            "Re-inventing prompts you already wrote",
+            "The first ten minutes, gone"
+          ]
+        }
+      },
+      "background": { "type": "color", "color": "var(--bg)" },
+      "animation": "cascade",
+      "transition": null,
+      "nav": null,
+      "notes": "The best prompt in the world is worthless if you can't find it. Retrieval is the difference between a library and a pile.",
+      "status": "none"
+    },
+    {
+      "id": "s6",
+      "position": 5,
+      "layout": "bento",
+      "props": {
+        "kicker": "Key features",
+        "title": "Built for the moment of need.",
+        "tiles": [
+          {
+            "k": "01",
+            "title": "Intent matching",
+            "body": "Ranks by what each prompt does, not what it's called.",
+            "c": 3,
+            "variant": "accent"
+          },
+          {
+            "k": "02",
+            "title": "Ranked results",
+            "body": "Best fit first, with runners-up one glance away.",
+            "c": 3
+          },
+          {
+            "k": "03",
+            "title": "Ready to load",
+            "body": "Pick a match and it's in your session — no copy-paste shuffle.",
+            "c": 2
+          },
+          {
+            "k": "04",
+            "title": "Your library",
+            "body": "Works with the prompts and skills you already have.",
+            "c": 2
+          },
+          {
+            "k": "05",
+            "title": "Open source",
+            "body": "Inspect it, extend it, make it yours.",
+            "c": 2
+          }
+        ]
+      },
+      "background": { "type": "color", "color": "var(--bg)" },
+      "animation": "cascade",
+      "transition": null,
+      "nav": null,
+      "notes": "Hit the highlights quickly — this slide is for scanning, not reading aloud.",
+      "status": "none"
+    },
+    {
+      "id": "s7",
+      "position": 6,
+      "layout": "pillars",
+      "props": {
+        "title": "Ready ==today==.",
+        "items": [
+          {
+            "title": "Working tool",
+            "body": "Not a concept or a waitlist — it runs, today, on real libraries."
+          },
+          {
+            "title": "Open source",
+            "body": "Free to use, free to read, free to build on."
+          },
+          {
+            "title": "Yours to shape",
+            "body": "Bring your own prompts and skills; the Picker does the finding."
+          }
+        ]
+      },
+      "background": { "type": "color", "color": "var(--bg)" },
+      "animation": "cascade",
+      "transition": null,
+      "nav": null,
+      "notes": "Remove the risk: it exists, it works, and it's open source — nothing to buy, nothing to wait for.",
+      "status": "none"
+    },
+    {
+      "id": "s8",
+      "position": 7,
+      "layout": "cover",
+      "props": {
+        "kicker": "Prompt Skill Picker",
+        "title": "Stop searching. ==Start picking.==",
+        "subtitle": "The right playbook, picked in seconds.",
+        "foot": "github.com/Mike-Demo/prompt-skill-picker"
+      },
+      "background": {
+        "type": "gradient",
+        "from": "#06080d",
+        "to": "#171204",
+        "angle": 160
+      },
+      "animation": "cascade",
+      "transition": null,
+      "nav": null,
+      "notes": "Close with the repo link and one line: your library is already worth using — you just need to find things in it.",
+      "status": "none"
+    }
+  ]
+}
