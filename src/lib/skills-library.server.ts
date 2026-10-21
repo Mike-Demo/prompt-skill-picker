@@ -10,6 +10,8 @@ import { allowSkillIds } from "./skills-allowlist.server";
 import { mapWithConcurrency } from "./concurrency";
 import type { SkillLibraryEntry, SkillLibraryResponse } from "./skills.functions";
 import type { AgentKey } from "./agents";
+import { readRegistryCache, writeRegistryCache } from "./registry-cache.server";
+import { requireCaptcha } from "./captcha.server";
 
 /**
  * Broad topic queries used to assemble a browsable catalogue from the
@@ -219,7 +221,20 @@ async function listCached(
   }
 
   if (!slot.inFlight) {
-    slot.inFlight = loadLibrary(topics)
+    slot.inFlight = (async () => {
+      // Anonymous API/MCP readers may consume cached catalogue data, but cannot
+      // bypass human verification by triggering a fresh crawl through an alias.
+      const stored = await readRegistryCache<SkillLibraryResponse>(`catalogue:${key}`, CACHE_TTL_MS);
+      if (stored?.payload.entries?.length) {
+        const response = { ...stored.payload, stale: stored.stale || stored.payload.stale };
+        allowSkillIds(response.entries.map(entry => entry.id));
+        return response;
+      }
+      await requireCaptcha();
+      const response = await loadLibrary(topics);
+      if (response.entries.length > 0) await writeRegistryCache(`catalogue:${key}`, response);
+      return response;
+    })()
       .then((response) => {
         // An empty result means the registry or GitHub call failed; caching it
         // would keep the page blank for the whole TTL.
