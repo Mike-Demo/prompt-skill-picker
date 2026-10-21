@@ -54,6 +54,7 @@ export function HumanVerification() {
       setRequest(null);
     };
     const element = dialog.current;
+    if (element) Object.assign(element, { open: true });
     element?.addEventListener("wa-hide", cancel);
     void (async () => {
       try {
