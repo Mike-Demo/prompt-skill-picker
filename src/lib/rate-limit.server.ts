@@ -7,7 +7,7 @@
 // never persisted.
 import { getRequest } from "@tanstack/react-start/server";
 
-export type RateLimitAction = "search" | "enhance" | "download" | "library" | "gist" | "api";
+export type RateLimitAction = "search" | "enhance" | "download" | "library" | "gist" | "api" | "captcha";
 
 interface Window {
   readonly seconds: number;
@@ -15,6 +15,7 @@ interface Window {
 }
 
 const LIMITS: Record<RateLimitAction, readonly Window[]> = {
+  captcha: [{ seconds: 60, max: 5 }, { seconds: 24 * 60 * 60, max: 50 }],
   search: [
     { seconds: 60, max: 3 },
     { seconds: 24 * 60 * 60, max: 30 },
@@ -33,8 +34,7 @@ const LIMITS: Record<RateLimitAction, readonly Window[]> = {
     { seconds: 60, max: 2 },
     { seconds: 24 * 60 * 60, max: 20 },
   ],
-  // The library is served from a shared server cache, so its limit is enforced
-  // in memory and never writes a database row.
+  // Public page crawling uses durable quotas shared across worker instances.
   library: [
     { seconds: 60, max: 20 },
     { seconds: 60 * 60, max: 200 },
@@ -47,9 +47,10 @@ const LIMITS: Record<RateLimitAction, readonly Window[]> = {
 };
 
 /** Actions counted in memory instead of in the database. */
-const IN_MEMORY_ACTIONS: ReadonlySet<RateLimitAction> = new Set<RateLimitAction>(["library", "api"]);
+const IN_MEMORY_ACTIONS: ReadonlySet<RateLimitAction> = new Set<RateLimitAction>(["api"]);
 
 const ACTION_LABELS: Record<RateLimitAction, string> = {
+  captcha: "verify again",
   search: "search again",
   enhance: "enhance again",
   download: "download again",
@@ -154,15 +155,14 @@ function parseVerdict(value: unknown): Verdict | null {
 
 /**
  * Rejects blocked callers and callers over their quota. Throws RateLimitError.
- * Fails open when the abuse store is unreachable, so an outage cannot lock
- * everyone out.
+ * Expensive actions fail closed when durable abuse protection is unavailable.
  */
 export async function enforceRateLimit(ip: string, action: RateLimitAction): Promise<void> {
   let ipHash: string;
   try {
     ipHash = await hashIp(ip);
   } catch {
-    return;
+    throw new Error("Abuse protection is temporarily unavailable. Please try again later.");
   }
 
   if (IN_MEMORY_ACTIONS.has(action)) {
@@ -175,17 +175,19 @@ export async function enforceRateLimit(ip: string, action: RateLimitAction): Pro
   let verdict: Verdict | null = null;
   try {
     const db = await admin();
-    const { data } = await db.rpc("check_rate_limit", {
+    const { data, error } = await db.rpc("check_rate_limit", {
       _ip_hash: ipHash,
       _action: action,
       _windows: LIMITS[action].map((w) => ({ seconds: w.seconds, max: w.max })),
     });
+    if (error) throw error;
     verdict = parseVerdict(data);
   } catch {
-    return;
+    throw new Error("Abuse protection is temporarily unavailable. Please try again later.");
   }
 
-  if (!verdict || verdict.allowed) return;
+  if (!verdict) throw new Error("Abuse protection is temporarily unavailable. Please try again later.");
+  if (verdict.allowed) return;
   if (verdict.blocked) {
     throw new RateLimitError(BLOCKED_MESSAGE, verdict.retry_after_seconds, true);
   }

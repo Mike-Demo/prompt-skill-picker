@@ -15,6 +15,7 @@ import { useChunkLoadRecovery } from "@/hooks/use-chunk-load-recovery";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SiteFooter } from "@/components/site-footer";
+import { HumanVerification } from "@/components/human-verification";
 import { getRenderMode } from "@/lib/render-mode.functions";
 import { WaSkeleton } from "@/design-system/font-awsome-web-awesome-171158";
 import {
@@ -193,6 +194,7 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <HumanVerification />
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       {renderMode === "off" ? (
         <ClientOnly fallback={<PageSkeleton />}>
