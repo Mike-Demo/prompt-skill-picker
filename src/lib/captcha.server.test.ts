@@ -57,6 +57,13 @@ describe("public expensive action protection", () => {
       _action: "library", _windows: [{ seconds: 60, max: 20 }, { seconds: 3600, max: 200 }],
     }));
   });
+  it("keeps downloads at 10/minute and 200/day", async () => {
+    mocks.rpc.mockResolvedValue({ data: { allowed: true }, error: null });
+    await enforceRateLimit("192.0.2.1", "download");
+    expect(mocks.rpc).toHaveBeenCalledWith("check_rate_limit", expect.objectContaining({
+      _action: "download", _windows: [{ seconds: 60, max: 10 }, { seconds: 86400, max: 200 }],
+    }));
+  });
   it("fails closed when the durable abuse counter is unavailable", async () => {
     mocks.rpc.mockResolvedValue({ data: null, error: new Error("unavailable") });
     await expect(enforceRateLimit("192.0.2.1", "download")).rejects.toThrow("temporarily unavailable");

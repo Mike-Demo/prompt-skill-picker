@@ -225,12 +225,20 @@ async function listCached(
       // Anonymous API/MCP readers may consume cached catalogue data, but cannot
       // bypass human verification by triggering a fresh crawl through an alias.
       const stored = await readRegistryCache<SkillLibraryResponse>(`catalogue:${key}`, CACHE_TTL_MS);
-      if (stored?.payload.entries?.length) {
+      if (stored?.payload.entries?.length && !stored.stale) {
         const response = { ...stored.payload, stale: stored.stale || stored.payload.stale };
         allowSkillIds(response.entries.map(entry => entry.id));
         return response;
       }
-      await requireCaptcha();
+      try {
+        await requireCaptcha();
+      } catch (error) {
+        if (stored?.payload.entries?.length) {
+          allowSkillIds(stored.payload.entries.map(entry => entry.id));
+          return { ...stored.payload, stale: true };
+        }
+        throw error;
+      }
       const response = await loadLibrary(topics);
       if (response.entries.length > 0) await writeRegistryCache(`catalogue:${key}`, response);
       return response;

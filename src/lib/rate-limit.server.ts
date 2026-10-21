@@ -85,7 +85,8 @@ export function getClientIp(): string {
 }
 
 async function hashIp(ip: string): Promise<string> {
-  const salt = process.env["RATE_LIMIT_SALT"] ?? "skill-finder-default-salt";
+  const salt = process.env["RATE_LIMIT_SALT"] ?? process.env["HCAPTCHA_SECRET_KEY"];
+  if (!salt) throw new Error("Abuse protection is temporarily unavailable. Please try again later.");
   const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(`${salt}:${ip}`));
   return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join("");
 }
