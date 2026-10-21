@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
 import { AGENT_KEYS } from "./agents";
+import { captchaAction } from "./captcha.middleware";
 
 
 export interface SkillSuggestion {
@@ -32,6 +33,8 @@ async function guard(
   const { enforceRateLimit, getClientIp } = await import("./rate-limit.server");
   const ip = getClientIp();
   await enforceRateLimit(ip, action);
+  const { requireCaptcha } = await import("./captcha.server");
+  await requireCaptcha();
 }
 
 export interface SearchResponse {
@@ -41,6 +44,7 @@ export interface SearchResponse {
 }
 
 export const searchSkills = createServerFn({ method: "POST" })
+  .middleware([captchaAction])
   .inputValidator((input: unknown) => SearchInput.parse(input))
   .handler(async ({ data }): Promise<SearchResponse> => {
     await guard("search");
@@ -65,7 +69,8 @@ export interface SavedSearchResponse {
 export const getSavedSearch = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => TokenInput.parse(input))
   .handler(async ({ data }): Promise<SavedSearchResponse | null> => {
-    await guard("library");
+    const { enforceRateLimit, getClientIp } = await import("./rate-limit.server");
+    await enforceRateLimit(getClientIp(), "api");
     const { loadSavedSearch } = await import("./saved-search.server");
     const saved = await loadSavedSearch(data.token);
     if (!saved) return null;
@@ -80,6 +85,7 @@ export const getSavedSearch = createServerFn({ method: "POST" })
 const GistInput = z.object({ id: z.string().min(3).max(200) });
 
 export const createSkillGist = createServerFn({ method: "POST" })
+  .middleware([captchaAction])
   .inputValidator((input: unknown) => GistInput.parse(input))
   .handler(async ({ data }): Promise<{ url: string }> => {
     await guard("gist");
@@ -101,6 +107,7 @@ export const createSkillGist = createServerFn({ method: "POST" })
   });
 
 export const enhancePrompt = createServerFn({ method: "POST" })
+  .middleware([captchaAction])
   .inputValidator((input: unknown) => SearchInput.parse(input))
   .handler(async ({ data }): Promise<{ enhanced: string }> => {
     await guard("enhance");
@@ -109,6 +116,7 @@ export const enhancePrompt = createServerFn({ method: "POST" })
   });
 
 export const fetchSkillFiles = createServerFn({ method: "POST" })
+  .middleware([captchaAction])
   .inputValidator((input: unknown) => FetchInput.parse(input))
   .handler(async ({ data }): Promise<SkillFile[]> => {
     await guard("download");
@@ -137,7 +145,7 @@ export interface SkillLibraryResponse {
   stale: boolean;
 }
 
-export const listSkills = createServerFn({ method: "GET" }).handler(
+export const listSkills = createServerFn({ method: "GET" }).middleware([captchaAction]).handler(
   async (): Promise<SkillLibraryResponse> => {
     await guard("library");
     const { listSkillLibrary } = await import("./skills-library.server");
@@ -148,6 +156,7 @@ export const listSkills = createServerFn({ method: "GET" }).handler(
 const AgentInput = z.object({ agent: z.enum(AGENT_KEYS) });
 
 export const listAgentSkills = createServerFn({ method: "POST" })
+  .middleware([captchaAction])
   .inputValidator((input: unknown) => AgentInput.parse(input))
   .handler(async ({ data }): Promise<SkillLibraryResponse> => {
     await guard("library");
