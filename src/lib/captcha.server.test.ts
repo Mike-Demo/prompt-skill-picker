@@ -12,6 +12,7 @@ import { enforceRateLimit } from "./rate-limit.server";
 beforeEach(() => {
   vi.resetAllMocks();
   mocks.cookie = "";
+  mocks.rpc.mockResolvedValue({ data: null, error: null });
   vi.stubEnv("HCAPTCHA_SECRET_KEY", "unit-test-secret");
   vi.stubEnv("HCAPTCHA_SITEKEY", "unit-test-sitekey");
 });

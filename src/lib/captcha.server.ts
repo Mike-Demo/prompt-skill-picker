@@ -1,5 +1,5 @@
 import { getCookie, setCookie } from "@tanstack/react-start/server";
-import { getClientIp } from "./rate-limit.server";
+import { getClientIp, recordCaptchaFailure } from "./rate-limit.server";
 
 const COOKIE = "skillfinder_verified";
 const TTL = 5 * 60 * 1000;
@@ -38,6 +38,7 @@ export async function verifyCaptcha(token: string): Promise<void> {
   });
   const result: unknown = await response.json();
   if (!response.ok || typeof result !== "object" || result === null || !("success" in result) || result.success !== true) {
+    await recordCaptchaFailure();
     throw new Error("Human verification failed or expired. Please try again.");
   }
   const expiry = String(Date.now() + TTL);

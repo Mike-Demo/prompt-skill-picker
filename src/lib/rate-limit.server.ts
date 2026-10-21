@@ -95,6 +95,12 @@ async function admin() {
   return supabaseAdmin;
 }
 
+export async function recordCaptchaFailure(): Promise<void> {
+  const db = await admin();
+  const { error } = await db.rpc("record_captcha_failure", { _ip_hash: await hashIp(getClientIp()) });
+  if (error) throw new Error("Abuse protection is temporarily unavailable. Please try again later.");
+}
+
 // ---------------------------------------------------------------------------
 // In-memory sliding window for cheap, cache-backed actions.
 // ---------------------------------------------------------------------------
